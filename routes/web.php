@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('posts.welcome');
+});
+
+Route::group(['namespace' => 'App\Http\Controllers'], function () {
+    //Posts
+    Route::get('/login', 'UserController@login')->name('users.login');
+    Route::get('/postList', 'PostsController@postList')->name('posts.postList');
+    Route::get('/createPost', 'PostsController@createPost');
+    Route::post('/confirmPost', 'PostsController@confirmPost')->name("confirmPost");
+    Route::post('/store', 'PostsController@store')->name("store");
+    Route::get('/edit/{id}', 'PostsController@edit')->name("edit");
+    Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
+    Route::post('/update/{id}', 'PostsController@update')->name("update");
+    //Users
+    Route::get('/register', 'UserController@register');
+    Route::post('/confirmRegister', 'UserController@confirmRegister')->name("confirmRegister");
+    //User List
+    Route::get('/userList', 'UserController@userList')->name('users.userList');
 });
