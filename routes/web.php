@@ -30,7 +30,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
     Route::post('/update/{id}', 'PostsController@update')->name("update");
     //Upload CSV file
-    Route::post('/uploadCSV', 'PostsController@uploadCSV')->name("uploadCSV");
+    Route::get('/uploadCSV', 'PostsController@uploadCSV')->name("uploadCSV");
     //Users
     Route::get('/register', 'UserController@register');
     Route::post('/confirmRegister', 'UserController@confirmRegister')->name("confirmRegister");

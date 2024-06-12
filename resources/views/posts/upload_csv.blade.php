@@ -26,11 +26,8 @@
 <!--Register -->
 <section class="vh-100">
   <div class="container h-100 mt-5">
-    <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="row d-flex justify-content-center align-items-center">
       <div class="col-xl-9">
-
-     
-
         <div class="card" style="border-radius: 15px;">
           <div class="card-body">
           <form action="{{ route('confirmRegister') }}" method="POST" enctype="multipart/form-data">
