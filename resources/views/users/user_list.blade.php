@@ -72,7 +72,7 @@
                         <td class="align-middle">{{ $rs->address }}</td>
                         <td class="align-middle">
                            
-                                <a href="{{ route('edit', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>
+                                <a href="{{ route('profile', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>
                                 <form action="#" method="POST" type="button" class="btn btn-danger p-0" onsubmit="return confirm('Delete?')">
                                     @csrf
                                     @method('DELETE')

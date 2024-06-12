@@ -34,4 +34,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::post('/confirmRegister', 'UserController@confirmRegister')->name("confirmRegister");
     //User List
     Route::get('/userList', 'UserController@userList')->name('users.userList');
+    //User Profile
+    Route::get('/profile/{id}', 'UserController@profile')->name("profile");
+    Route::get('/editProfile/{id}', 'UserController@editProfile')->name("editProfile");
+
 });

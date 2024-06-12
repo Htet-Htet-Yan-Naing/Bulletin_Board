@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Register</title>
+        <title>Profile Edit</title>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -16,7 +16,7 @@
       <!--Nav bar -->
     <nav class="navbar navbar-expand-sm bg-success">
   <div class="container-fluid">
-     <span class="navbar-text text-white">Register</span>
+     <span class="navbar-text text-white">Profile Edit</span>
   </div>
 </nav>
 
@@ -62,7 +62,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="email" class="form-control form-control-lg" placeholder="example@example.com"  value="{{ $user->email }}"/>
+                <input type="email" class="form-control form-control-lg" placeholder="example@example.com" value="{{ $user->email }}"/>
 
               </div>
             </div>
@@ -75,7 +75,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-              <input type="password" class="form-control form-control-lg"  value="{{ $user->password }}"/>
+              <input type="password" class="form-control form-control-lg" value="{{ $user->password }}"/>
 
               </div>
             </div>
@@ -89,7 +89,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-              <input type="password" class="form-control form-control-lg"  value="{{ $user->password }}"/>
+              <input type="password" class="form-control form-control-lg" value="{{ $user->password }}"/>
 
               </div>
             </div>
@@ -100,7 +100,7 @@
                 <h6 class="mb-0">Type</h6>
               </div>
               <div class="col-md-9 pe-5">
-              <select name="type" id="" class="form-select" value="{{ $user->type }}">
+              <select name="type" id="" class="form-select">
           <option>Admin</option>
           <option>User</option>
         </select>
@@ -117,7 +117,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-              <input type="phone" class="form-control form-control-lg"  value="{{ $user->phone }}"/>
+              <input type="phone" class="form-control form-control-lg" value="{{ $user->phone }}"/>
 
               </div>
             </div>
@@ -129,7 +129,7 @@
 
               </div>
               <div class="col-md-9 pe-5">
-              <input class="form-control form-control-lg" id="dd" type="date" name="date" value="{{ $user->date }}"/>
+              <input class="form-control form-control-lg" id="dd" type="date" name="date" value="{{ $user->dob }}"/>
               </div>
             </div>
 
@@ -141,28 +141,30 @@
               </div>
               <div class="col-md-9 pe-5">
 
-              <input type="phone" class="form-control form-control-lg"  value="{{ $user->address }}"/>
+              <input type="phone" class="form-control form-control-lg" value="{{ $user->address }}"/>
 
               </div>
             </div>
-
-          
 
             <div class="row align-items-center py-3">
               <div class="col-md-3 ps-5">
 
-                <h6 class="mb-0">Profile</h6>
+              <h6 class="mb-0">Old Profile</h6>
 
               </div>
               <div class="col-md-9 pe-5">
+
               <img src="{{asset($imagePath)}}" alt="error" class="rounded" width="200" height="200" name="profile">
+
               </div>
             </div>
+
               <!-- Button -->
   <div class="row d-flex justify-content-center align-content-center">
   <div class="col-sm-6">
-    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-4">Register</button>
-  <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
+    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-3">Register</button>
+  <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-3">Clear</button>
+  <a href="#" data-mdb-button-init data-mdb-ripple-init class="btn-block col-sm-7">Change password</a>
 </div>
 </div>
 

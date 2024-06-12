@@ -22,11 +22,26 @@ public function register()
 }
 public function confirmRegister(\Illuminate\Http\Request $request)
 {
-    
     $user = $request;
     $imageName=time().'.'.$request->profile->extension();
         $success=$request->profile->move(public_path('img'),$imageName);
         $imagePath = 'img/' . $imageName;
     return view('users.create_user_confirm',compact('user','imagePath'));
 }
+public function profile(string $id)
+{ 
+    $user = User::findOrFail($id);
+        $imageName = $user->profile;
+    $imagePath = 'img/' . $imageName;
+    return view('users.show_profile', compact('user','imagePath'));
+}
+
+public function editProfile(\Illuminate\Http\Request $request,$id)
+{
+    $user = User::findOrFail($id);
+    $imageName = $user->profile;
+    $imagePath = 'img/' . $imageName;
+    return view('users.edit_profile',compact('user','imagePath'));
+}
+
 }
