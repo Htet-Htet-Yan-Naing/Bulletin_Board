@@ -9,7 +9,11 @@ class UserController extends Controller
 {
     public function login()
 {
-    return view('users.login');
+    return view('auth.login');
+}
+public function changePassword()
+{
+    return view('auth.change_password');
 }
 public function userList()
 {

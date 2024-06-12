@@ -51,5 +51,9 @@ class PostsController extends Controller
         $request->session()->flash('success', 'Post updated successfully!');   
         return redirect()->route('posts.postList');
     }
+    public function uploadCSV(Request $request, string $id)
+    {
+        return view('posts.upload_csv');
+    }
 
 }

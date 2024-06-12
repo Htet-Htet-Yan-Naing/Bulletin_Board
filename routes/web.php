@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
     //Posts
-    Route::get('/login', 'UserController@login')->name('users.login');
+    Route::get('/login', 'UserController@login')->name('auth.login');
     Route::get('/postList', 'PostsController@postList')->name('posts.postList');
     Route::get('/createPost', 'PostsController@createPost');
     Route::post('/confirmPost', 'PostsController@confirmPost')->name("confirmPost");
@@ -29,6 +29,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::get('/edit/{id}', 'PostsController@edit')->name("edit");
     Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
     Route::post('/update/{id}', 'PostsController@update')->name("update");
+    //Upload CSV file
+    Route::post('/uploadCSV', 'PostsController@uploadCSV')->name("uploadCSV");
     //Users
     Route::get('/register', 'UserController@register');
     Route::post('/confirmRegister', 'UserController@confirmRegister')->name("confirmRegister");
@@ -37,5 +39,6 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     //User Profile
     Route::get('/profile/{id}', 'UserController@profile')->name("profile");
     Route::get('/editProfile/{id}', 'UserController@editProfile')->name("editProfile");
-
+    //Change Password
+    Route::get('/change_password', 'UserController@changePassword')->name('auth.change_password');
 });
