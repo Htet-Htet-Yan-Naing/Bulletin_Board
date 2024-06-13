@@ -164,7 +164,7 @@
   <div class="col-sm-6">
     <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-3">Register</button>
   <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-3">Clear</button>
-  <a href="#" data-mdb-button-init data-mdb-ripple-init class="btn-block col-sm-7">Change password</a>
+  <a href="{{ route('change_password', $user->id)}}" data-mdb-button-init data-mdb-ripple-init class="btn-block col-sm-7">Change password</a>
 </div>
 </div>
 

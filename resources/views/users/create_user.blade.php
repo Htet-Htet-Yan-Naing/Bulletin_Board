@@ -15,9 +15,29 @@
 
     <body class="antialiased">
       <!--Nav bar -->
-    <nav class="navbar navbar-expand-sm bg-success">
+      <nav class="navbar navbar-expand-sm navbar-light bg-light">
   <div class="container-fluid">
-     <span class="navbar-text text-white">Register</span>
+    <a class="navbar-brand" href="javascript:void(0)">Logo</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mynavbar">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)">Link</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-2" type="text" placeholder="Search">
+        <button class="btn btn-primary" type="button">Search</button>
+      </form>
+    </div>
   </div>
 </nav>
 
@@ -32,19 +52,17 @@
      
 
         <div class="card" style="border-radius: 15px;">
-          <div class="card-body">
-            
 
+        <div class="card-header bg-success p-3 text-white">
+            Register
+        </div>
+
+          <div class="card-body">
           <form action="{{ route('confirmRegister') }}" method="POST" enctype="multipart/form-data">
           @csrf
-
-
-
           <div class="row align-items-center pt-4 pb-3">
               <div class="col-md-3 ps-5">
-
                 <h6 class="mb-0">Full name</h6>
-
               </div>
               <div class="col-md-9 pe-5">
 

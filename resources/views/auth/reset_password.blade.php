@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Change password</title>
+        <title>Login</title>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -14,7 +14,7 @@
     <body class="antialiased">
     <nav class="navbar navbar-expand-sm bg-success">
   <div class="container-fluid">
-     <span class="navbar-text text-white">Change Password</span>
+     <span class="navbar-text text-white">Reset Password</span>
   </div>
 </nav>
     <div class="container-md col-sm-6 mt-5">
@@ -24,26 +24,18 @@
     <div class="card p-3" style="border-radius: 15px;">
           <div class="card-body">
 
-    <form action="{{ route('update_password',$user->id) }}" method="POST" >
-    @csrf
-    @method('PUT')
+    <form>
   <!-- Current password -->
   <div class="mb-3 mt-5 row d-flex">
-      <label for="current-pw" class="control-label col-sm-4">Current password:</label>
-      <div class="col-sm-8"> <input type="password" class="form-control" id="current-pw" name="currentPw"></div>
+      <label for="current-pw" class="control-label col-sm-4">Password:</label>
+      <div class="col-sm-8"> <input type="password" class="form-control" id="pw" name="pw"></div>
     </div>
 
   <!-- New password -->
   <div class="mb-3 row d-flex">
-      <label for="new-pw" class="control-label col-sm-4">New Password:</label>
-      <div class="col-sm-8"><input type="password" class="form-control" id="new-pw" name="newPw"></div>
+      <label for="new-pw" class="control-label col-sm-4">Password Confirmation:</label>
+      <div class="col-sm-8"><input type="password" class="form-control" id="pw-confirm" name="pw-confirm"></div>
     </div>
-
-  <!-- New confirm password -->
-  <div class="mb-3 row d-flex">
-      <label for="new-pw" class="control-label col-sm-4">New confirm Password:</label>
-      <div class="col-sm-8"><input type="password" class="form-control" id="new-confirm-pw" name="newConfirmPw"></div>
-  </div>
  
   <!-- Submit button -->
   <div class="row d-flex justify-content-center align-content-center">

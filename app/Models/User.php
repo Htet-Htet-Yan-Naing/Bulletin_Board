@@ -32,7 +32,7 @@ protected $fillable = [
     'update_user_id',
     'delete_user_id',
     'create_at',
-    'update_at',
+    'updated_at',
     'deleted_at'
 ];
 

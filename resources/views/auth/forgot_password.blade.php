@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Change password</title>
+        <title>Forgot password?</title>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -14,9 +14,10 @@
     <body class="antialiased">
     <nav class="navbar navbar-expand-sm bg-success">
   <div class="container-fluid">
-     <span class="navbar-text text-white">Change Password</span>
+     <span class="navbar-text text-white">Forgot password?</span>
   </div>
 </nav>
+
     <div class="container-md col-sm-6 mt-5">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-sm-12">
@@ -24,31 +25,17 @@
     <div class="card p-3" style="border-radius: 15px;">
           <div class="card-body">
 
-    <form action="{{ route('update_password',$user->id) }}" method="POST" >
-    @csrf
-    @method('PUT')
+    <form>
   <!-- Current password -->
   <div class="mb-3 mt-5 row d-flex">
-      <label for="current-pw" class="control-label col-sm-4">Current password:</label>
-      <div class="col-sm-8"> <input type="password" class="form-control" id="current-pw" name="currentPw"></div>
+      <label for="current-pw" class="control-label col-sm-4">Email:</label>
+      <div class="col-sm-8"> <input type="email" class="form-control" id="email" name="email"></div>
     </div>
-
-  <!-- New password -->
-  <div class="mb-3 row d-flex">
-      <label for="new-pw" class="control-label col-sm-4">New Password:</label>
-      <div class="col-sm-8"><input type="password" class="form-control" id="new-pw" name="newPw"></div>
-    </div>
-
-  <!-- New confirm password -->
-  <div class="mb-3 row d-flex">
-      <label for="new-pw" class="control-label col-sm-4">New confirm Password:</label>
-      <div class="col-sm-8"><input type="password" class="form-control" id="new-confirm-pw" name="newConfirmPw"></div>
-  </div>
  
   <!-- Submit button -->
   <div class="row d-flex justify-content-center align-content-center">
   <div class="col-sm-4">
-    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block col-sm-12">Update password</button>
+    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block col-sm-12">Reset Password</button>
 </div>
 </div>
  

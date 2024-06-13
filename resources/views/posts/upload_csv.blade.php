@@ -20,9 +20,6 @@
      <span class="navbar-text text-white">Upload CSV file</span>
   </div>
 </nav>
-
-
-
 <!--Register -->
 <section class="vh-100">
   <div class="container h-100 mt-5">
