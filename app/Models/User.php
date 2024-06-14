@@ -29,9 +29,9 @@ class User extends Authenticatable
         'address',
         'dob',
         'create_user_id',
-        'update_user_id',
-        'delete_user_id',
-        'create_at',
+        'updated_user_id',
+        'deleted_user_id',
+        'created_at',
         'updated_at',
         'deleted_at'
     ];

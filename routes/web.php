@@ -48,4 +48,5 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::get('/forgot_password', 'UserController@forgotPassword')->name('auth.forgot_password');
     //Reset Password
     Route::get('/reset_password', 'UserController@resetPassword')->name('auth.reset_password');
+  
 });

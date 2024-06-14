@@ -67,7 +67,7 @@
         <div class="col-xl-12">
           <div class="card" style="border-radius: 15px;">
             <div class="card-header bg-success p-3 text-white">
-              Post List
+             Hello admin!
             </div>
             <div class="card-body">
               <div class="float-end">
