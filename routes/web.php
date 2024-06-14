@@ -41,8 +41,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::get('/editProfile/{id}', 'UserController@editProfile')->name("editProfile");
     //Change Password
     Route::get('/change_password/{id}', 'UserController@changePassword')->name('change_password');
-     //Update Password
-     Route::put('/update_password/{id}', 'UserController@updatePassword')->name('update_password');
+    //Update Password
+    Route::put('/update_password/{id}', 'UserController@updatePassword')->name('update_password');
     //Forgot Password
     Route::get('/forgot_password', 'UserController@forgotPassword')->name('auth.forgot_password');
     //Reset Password
