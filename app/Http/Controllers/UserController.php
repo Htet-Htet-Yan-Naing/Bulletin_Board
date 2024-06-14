@@ -80,5 +80,4 @@ class UserController extends Controller
         $imagePath = 'img/' . $imageName;
         return view('users.edit_profile', compact('user', 'imagePath'));
     }
-
 }
