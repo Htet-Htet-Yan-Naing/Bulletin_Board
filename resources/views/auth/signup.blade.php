@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reset password</title>
+  <title>Sign up</title>
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -54,24 +54,36 @@
         <div class="col-xl-7">
           <div class="card" style="border-radius: 15px;">
             <div class="card-header bg-success p-3 text-white">
-              Reset password
+              Sign up
             </div>
             <div class="card-body">
               <form>
-                <!-- Current password -->
+                <!-- Name -->
                 <div class="mb-3 mt-3 row d-flex">
-                  <label for="current-pw" class="control-label col-sm-4">Password:</label>
-                  <div class="col-sm-8"> <input type="password" class="form-control" id="pw" name="pw"></div>
+                  <label for="name" class="control-label col-sm-4">Name:</label>
+                  <div class="col-sm-8"> <input type="text" class="form-control" id="name" name="name"></div>
                 </div>
-                <!-- New password -->
+                <!-- Email address -->
                 <div class="mb-3 row d-flex">
-                  <label for="new-pw" class="control-label col-sm-4">Password Confirmation:</label>
-                  <div class="col-sm-8"><input type="password" class="form-control" id="pw-confirm" name="pw-confirm"></div>
+                  <label for="email" class="control-label col-sm-4">Email Address:</label>
+                  <div class="col-sm-8"><input type="email" class="form-control" id="email" name="email"></div>
                 </div>
-                <!-- Submit button -->
-                <div class="row d-flex justify-content-center align-content-center">
-                  <div class="col-sm-4">
-                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block col-sm-12">Update password</button>
+                <!-- Password -->
+                <div class="mb-3 row d-flex">
+                  <label for="password" class="control-label col-sm-4">Password:</label>
+                  <div class="col-sm-8"><input type="password" class="form-control" id="password" name="password"></div>
+                </div>
+                 <!-- Password Confirmation -->
+                 <div class="mb-3 row d-flex">
+                  <label for="password-confirm" class="control-label col-sm-4">Password_confirmation:</label>
+                  <div class="col-sm-8"><input type="password" class="form-control" id="password-confirm" name="password-confirm"></div>
+                </div>
+                 <!-- Button -->
+                 <div class="row d-flex">
+                 <div class="col-sm-4"></div>
+                  <div class="col-sm-8">
+                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-3">Register</button>
+                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-3">Clear</button>
                   </div>
                 </div>
               </form>

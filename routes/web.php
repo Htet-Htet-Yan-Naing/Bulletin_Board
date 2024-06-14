@@ -21,6 +21,7 @@ Route::get('/', function () {
 
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
     //Posts
+    Route::get('/signup', 'UserController@signup')->name('auth.signup');
     Route::get('/login', 'UserController@login')->name('auth.login');
     Route::get('/postList', 'PostsController@postList')->name('posts.postList');
     Route::get('/createPost', 'PostsController@createPost');
