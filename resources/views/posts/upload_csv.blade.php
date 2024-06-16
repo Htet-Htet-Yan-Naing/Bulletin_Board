@@ -4,12 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Confirm edit</title>
+  <title>Upload CSV file</title>
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <style>
     .nav-link {
       padding: 0;
@@ -22,8 +22,8 @@
 </head>
 
 <body class="antialiased">
-  <!-- Navigation bar start -->
-  <nav class="navbar navbar-expand-sm navbar-light bg-light">
+   <!-- Navigation bar start -->
+   <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand text-success" href="#">Bulletin_Board</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
@@ -62,42 +62,33 @@
         <div class="col-xl-6">
           <div class="card" style="border-radius: 15px;">
             <div class="card-header bg-success p-3 text-white">
-              Edit
+              Upload CSV file
             </div>
             <div class="card-body">
-              <form action="{{ route('update', $post->id) }}" method="POST">
+              <form action="{{ route('confirmRegister') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <!-- Email input -->
-                <div class="mb-3 mt-3 row d-flex">
-                  <label for="email" class="control-label col-sm-3">Title:</label>
-                  <div class="col-sm-9"> <input type="text" class="form-control" id="email" name="title" value="{{ $post->title }}"></div>
-                </div>
-                <!-- Password input -->
-                <div class="mb-3 row d-flex">
-                  <label for="pwd" class="control-label col-sm-3">Description:</label>
-                  <div class="col-sm-9">
-                    <textarea class="form-control" rows="5" id="comment" name="description">{{ $post->description }}</textarea>
+                <div class="row align-items-center py-3">
+                  <div class="col-md-3 ps-5">
+                    <h6 class="mb-0">CSV file:</h6>
+                  </div>
+                  <div class="col-md-9 pe-5">
+                    <input class="form-control form-control-lg" id="formFileLg" type="file" name="profile" />
                   </div>
                 </div>
-                <div class="row form-inline">
-                  <div class="d-flex">
-                    <label class="form-check-label col-md-3" for="flexSwitchCheckDefault">Status</label>
-                    <div class="col-sm-9 form-switch">
-                      <input type="hidden" name="toggle_switch" value="{{$toggleStatus}}">
-                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" @if($toggleStatus == 1) checked @endif>
-                    </div>
-                  </div>
-                </div>
-                <br>
-                <!-- Submit button -->
+                <!-- Button -->
                 <div class="row d-flex justify-content-center align-content-center">
                   <div class="col-sm-6">
-                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-5">Confirm</button>
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-5">Clear</button>
+                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-4">Upload</button>
+                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
                   </div>
                 </div>
               </form>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </body>
 
 </html>

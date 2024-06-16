@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Confirm edit</title>
+  <title>Post List</title>
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -56,48 +56,76 @@
     </div>
   </nav>
   <!-- Navigation bar end -->
+  @if(Session::has('success'))
+    <div class="alert alert-success" role="alert">
+    {{ Session::get('success') }}
+    </div>
+  @endif
   <section>
     <div class="container mt-5">
       <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-xl-6">
+        <div class="col-xl-12">
           <div class="card" style="border-radius: 15px;">
             <div class="card-header bg-success p-3 text-white">
-              Edit
+             Hello admin!
             </div>
             <div class="card-body">
-              <form action="{{ route('update', $post->id) }}" method="POST">
-                @csrf
-                <!-- Email input -->
-                <div class="mb-3 mt-3 row d-flex">
-                  <label for="email" class="control-label col-sm-3">Title:</label>
-                  <div class="col-sm-9"> <input type="text" class="form-control" id="email" name="title" value="{{ $post->title }}"></div>
+              <div class="float-end">
+                <div class="container py-5">
+                  <label class=""> Keyword: </label>
+                  <input class="search-btn p-2" type="text" name="search-keyword" placeholder="Type Something" style="border:1px solid black;border-radius:8px;">
+                  <button type="button" class="btn btn-success btn-lg">Search</button>
+                  <button type="button" class="btn btn-success btn-lg">Create</button>
+                  <button type="button" class="btn btn-success btn-lg">Upload</button>
+                  <button type="button" class="btn btn-success btn-lg">Download</button>
                 </div>
-                <!-- Password input -->
-                <div class="mb-3 row d-flex">
-                  <label for="pwd" class="control-label col-sm-3">Description:</label>
-                  <div class="col-sm-9">
-                    <textarea class="form-control" rows="5" id="comment" name="description">{{ $post->description }}</textarea>
-                  </div>
-                </div>
-                <div class="row form-inline">
-                  <div class="d-flex">
-                    <label class="form-check-label col-md-3" for="flexSwitchCheckDefault">Status</label>
-                    <div class="col-sm-9 form-switch">
-                      <input type="hidden" name="toggle_switch" value="{{$toggleStatus}}">
-                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" @if($toggleStatus == 1) checked @endif>
-                    </div>
-                  </div>
-                </div>
-                <br>
-                <!-- Submit button -->
-                <div class="row d-flex justify-content-center align-content-center">
-                  <div class="col-sm-6">
-                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-5">Confirm</button>
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-5">Clear</button>
-                  </div>
-                </div>
-              </form>
+              </div>
+              <div class="container py-5">
+                <table class="table table-hover table-striped">
+                  <thead class="table-primary">
+                    <tr>
+                      <th>Post Title</th>
+                      <th>Post Description</th>
+                      <th>Posted User</th>
+                      <th>Posted Date</th>
+                      <th>Operation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @if($posts->count() > 0)
+            @foreach($posts as $rs)
+        <tr>
+          <td class="align-middle">{{ $rs->title }}</td>
+          <td class="align-middle">{{ $rs->description }}</td>
+          <td class="align-middle">admin</td>
+          <td class="align-middle">{{ $rs->created_at}}</td>
+          <td class="align-middle">
+
+          <a href="{{ route('edit', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>
+          <form action="#" method="POST" type="button" class="btn btn-danger p-0" onsubmit="return confirm('Delete?')">
+          @csrf
+          @method('DELETE')
+          <button class="btn btn-danger m-0">Delete</button>
+          </form>
+
+          </td>
+        </tr>
+      @endforeach
+          @else
+      <tr>
+        <td class="text-center" colspan="5">Product not found</td>
+      </tr>
+    @endif
+                  </tbody>
+                </table>
+                {!! $posts->links() !!}
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </body>
 
 </html>

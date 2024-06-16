@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Confirm edit</title>
+  <title>Login</title>
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -62,42 +62,62 @@
         <div class="col-xl-6">
           <div class="card" style="border-radius: 15px;">
             <div class="card-header bg-success p-3 text-white">
-              Edit
+              Login
             </div>
             <div class="card-body">
-              <form action="{{ route('update', $post->id) }}" method="POST">
-                @csrf
+              <form>
                 <!-- Email input -->
                 <div class="mb-3 mt-3 row d-flex">
-                  <label for="email" class="control-label col-sm-3">Title:</label>
-                  <div class="col-sm-9"> <input type="text" class="form-control" id="email" name="title" value="{{ $post->title }}"></div>
+                  <label for="email" class="control-label col-sm-3">Email:</label>
+                  <div class="col-sm-9"> <input type="email" class="form-control" id="email" placeholder="Enter email" name="email"></div>
                 </div>
                 <!-- Password input -->
                 <div class="mb-3 row d-flex">
-                  <label for="pwd" class="control-label col-sm-3">Description:</label>
-                  <div class="col-sm-9">
-                    <textarea class="form-control" rows="5" id="comment" name="description">{{ $post->description }}</textarea>
-                  </div>
+                  <label for="pwd" class="control-label col-sm-3">Password:</label>
+                  <div class="col-sm-9"><input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd"></div>
                 </div>
-                <div class="row form-inline">
-                  <div class="d-flex">
-                    <label class="form-check-label col-md-3" for="flexSwitchCheckDefault">Status</label>
-                    <div class="col-sm-9 form-switch">
-                      <input type="hidden" name="toggle_switch" value="{{$toggleStatus}}">
-                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" @if($toggleStatus == 1) checked @endif>
+                <!-- 2 column grid layout for inline styling -->
+                <div class="row mb-4">
+                  <div class="col d-flex justify-content-center">
+                    <!-- Checkbox -->
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+                      <label class="form-check-label" for="form2Example31"> Remember me </label>
                     </div>
                   </div>
-                </div>
-                <br>
-                <!-- Submit button -->
-                <div class="row d-flex justify-content-center align-content-center">
-                  <div class="col-sm-6">
-                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-5">Confirm</button>
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-5">Clear</button>
+                  <div class="col">
+                    <!-- Simple link -->
+                    <a href="#!">Forgot password?</a>
                   </div>
+                </div>
+                <!-- Submit button -->
+                <div class="row">
+                  <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-12">Log In</button>
+                </div>
+                <!-- Register buttons -->
+                <div class="text-center">
+                  <p>Create account? <a href="#!"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                      </svg></a></p>
+                  <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-facebook-f"></i>
+                  </button>
+                  <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-google"></i>
+                  </button>
+                  <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-twitter"></i>
+                  </button>
+                  <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-github"></i>
+                  </button>
                 </div>
               </form>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 
 </html>
