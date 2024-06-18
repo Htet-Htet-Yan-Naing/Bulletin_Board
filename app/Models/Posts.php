@@ -15,8 +15,8 @@ class Posts extends Model
         'create_user_id',
         'updated_user_id',
         'deleted_user_id',
-        'create_at',
-        'update_at',
+        'created_at',
+        'updated_at',
         'deleted_at'
     ];
 }

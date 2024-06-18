@@ -18,18 +18,18 @@ class UserSeeder extends Seeder
         DB::table('users')->insert(
             [
                 [
-                    'name' => "Hla Hla",
-                    'email' => 'hlahla@gmail.com',
+                    'name' => "Htet Htet",
+                    'email' => 'htethtet@gmail.com',
                     'password' => '123456',
-                    'profile' => 'D:\HHYN_Laravel\BulletinBoard\image\admin.jpeg',
+                    'profile' => '1718180619.jpg',
                     'type' => '0',
                     'phone' => '912345678',
                     'address' => 'mandalay',
                     'dob' => '6.1.2001',
                     'create_user_id' => 1,
-                    'update_user_id' => 1,
-                    'create_at' => Carbon::now(),
-                    'update_at' => Carbon::now(),
+                    'updated_user_id' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
             ]

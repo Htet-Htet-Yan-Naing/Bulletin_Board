@@ -4,17 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function signup()
-    {
-        return view('auth.signup');
-    }
-    public function login()
-    {
-        return view('auth.login');
-    }
+    
     public function changePassword(\Illuminate\Http\Request $request, $id)
     {
         $user = User::findOrFail($id);

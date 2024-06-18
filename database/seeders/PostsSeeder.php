@@ -18,26 +18,32 @@ class PostsSeeder extends Seeder
         DB::table('posts')->insert(
             [
                 [
+                    'title' => "Title01",
+                    'description' => 'Description01',
+                    'status' => 1,
+                    'create_user_id' => 1,
+                    'updated_user_id' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ],
+                [
                     'title' => "Title02",
                     'description' => 'Description02',
                     'status' => 1,
                     'create_user_id' => 1,
                     'updated_user_id' => 1,
-                    'deleted_user_id' => 1,
                     'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'deleted_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
                 ],
                 [
                     'title' => "Title03",
                     'description' => 'Description03',
                     'status' => 1,
                     'create_user_id' => 1,
-                    'updated_user_id' => 1,
-                    'deleted_user_id' => 1,
+                    'updated_user_id' => 1,  
                     'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'deleted_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                    
                 ],
                 [
                     'title' => "Title04",
@@ -45,10 +51,9 @@ class PostsSeeder extends Seeder
                     'status' => 1,
                     'create_user_id' => 1,
                     'updated_user_id' => 1,
-                    'deleted_user_id' => 1,
                     'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'deleted_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+
                 ],
                 [
                     'title' => "Title05",
@@ -56,21 +61,9 @@ class PostsSeeder extends Seeder
                     'status' => 1,
                     'create_user_id' => 1,
                     'updated_user_id' => 1,
-                    'deleted_user_id' => 1,
                     'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'deleted_at' => Carbon::now(),
-                ],
-                [
-                    'title' => "Title06",
-                    'description' => 'Description0',
-                    'status' => 1,
-                    'create_user_id' => 1,
-                    'updated_user_id' => 1,
-                    'deleted_user_id' => 1,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'deleted_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                    
                 ]
             ]
         );
