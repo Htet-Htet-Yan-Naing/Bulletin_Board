@@ -18,7 +18,7 @@ class AuthController extends Controller
     }
     public function signupSave(Request $request)
     {
-       //dd($request->all());
+    //dd($request->all());
     //    $validator=Validator::make($request->all(), [
     //         'name' => 'required',
     //         'email' => 'required|email',
@@ -37,23 +37,14 @@ class AuthController extends Controller
             'pw.min' => 'The password must be at least 4 characters.',
             'pw.confirmed' => 'The password confirmation does not match.',
     ]);
-    $user= User::create([
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'password' => Hash::make($validatedData['pw']),
-        'type' => "1",
-        'create_user_id'=>1,
-        'updated_user_id'=>1
-    ]);
-        // $user=User::create([   
-        //     'name' => $request->name,
-        //     'email' => $request->email,  
-        //     'password' => Hash::make($request->password),
-        //     'type' => "1",
-        //     'create_user_id'=>3,
-        //     'updated_user_id'=>3
-        // ]);
-
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['pw']),
+            'type' => "1",
+            'create_user_id' => 1,
+            'updated_user_id' => 1
+        ]);
          $user->create_user_id = $user->id;
          $user->updated_user_id = $user->id;
          $user->save();

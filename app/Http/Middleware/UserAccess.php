@@ -5,6 +5,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostsControllerController;
 class UserAccess
 {
     /**

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Posts;
 use Illuminate\Http\Request;
 
@@ -8,74 +9,91 @@ class PostsController extends Controller
 {
     public function adminPostList()
     {
-        $posts = Posts::Paginate(6);
+        $posts = Posts::where('deleted_at', null)
+        ->where('deleted_user_id', null)
+        ->paginate(6);
         return view('posts.post_list', compact('posts'));
     }
     public function userPostList()
-    {    
-    $userId = auth()->id();
-    $posts = Posts::where('create_user_id', $userId)->paginate(6);
-    // $posts = Posts::Paginate(6);
-    return view('posts.post_list', compact('posts'));
-    }
-    public function createPost()
     {
-        
+        $userId = auth()->id();
+        $posts = Posts::where('create_user_id', $userId)
+        ->where('deleted_at', null)
+        ->where('deleted_user_id', null)
+        ->paginate(6);
+        return view('posts.post_list', compact('posts'));
+    }
+    public function searchPost(Request $request)
+    {
+        if (auth()->user()->type == 'admin') {
+            dd($request->all());
+            //dd(auth()->user()->type);
+            //return redirect()->route('admin.postList');//Go to web.php to route with middleware (compact with user()->type)
+        } else {
+            $userId = auth()->id();
+            $search = strtolower($request->input('search'));
+            if ($search != '') {
+                $posts = Posts::where(function($query) use ($search) {
+                    $query->where('title', 'like', "%$search%")
+                          ->orWhere('description', 'like', "%$search%");
+                })
+                ->where('create_user_id', $userId)
+                ->where('status', 1)
+                ->where('deleted_at', null)
+                ->where('deleted_user_id', null)
+                ->paginate(6);
+                return view('posts.post_list', compact('posts'));
+            }
+        }
+    }
+
+    public function createPost(Request $request)
+    {
         return view('posts.create_post');
     }
     public function confirmPost(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|unique:posts|max:255',
             'description' => 'required',
         ], [
-                'title.required' => 'The title field can\'t be blank.',
-                'description.required' => 'The description field can\'t be blank.',
-                'title.max' => '255 characters is the maximum allowed',
-               
+            'title.required' => 'The title field can\'t be blank.',
+            'description.required' => 'The description field can\'t be blank.',
+            'title.max' => '255 characters is the maximum allowed',
+
         ]);
         $title = $request->title;
         $description = $request->description;
-        $create_user_id=auth()->id();
-       // dd($create_user_id);
-        $updated_user_id=auth()->id();
-       // dd($updated_user_id);
-        return view('posts.create_confirm_post', compact('title', 'description','create_user_id','updated_user_id'));
+        $create_user_id = auth()->id();
+        $updated_user_id = auth()->id();
+        return view('posts.create_confirm_post', compact('title', 'description', 'create_user_id', 'updated_user_id'));
     }
-    // public function store(\Illuminate\Http\Request $request)
-    // {
-    //     Posts::create($request->all());
-    //     $request->session()->flash('success', 'Post created successfully!');
-    //     return redirect()->route('posts.postList');
-    // }
+    
     public function postSave(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|unique:posts|max:255',
             'description' => 'required',
         ], [
-                'title.required' => 'The title field can\'t be blank.',
-                'description.required' => 'The description field can\'t be blank.',
-                'title.max' => '255 characters is the maximum allowed',
-               
+            'title.required' => 'The title field can\'t be blank.',
+            'description.required' => 'The description field can\'t be blank.',
+            'title.max' => '255 characters is the maximum allowed',
+
         ]);
-        $post= Posts::create([
+        $post = Posts::create([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
-            'create_user_id'=>1,
-            'updated_user_id'=>1
+            'create_user_id' => 1,
+            'updated_user_id' => 1
         ]);
-             $post->create_user_id = auth()->id();
-             $post->updated_user_id =auth()->id();
-             $post->save();
-             $request->session()->flash('success', 'Post created successfully!');
-              
+        $post->create_user_id = auth()->id();
+        $post->updated_user_id = auth()->id();
+        $post->save();
+        $request->session()->flash('success', 'Post created successfully!');
         if (auth()->user()->type == 'admin') {
-           //dd(auth()->user()->type);
             return redirect()->route('admin.postList');//Go to web.php to route with middleware (compact with user()->type)
         } else {
-           //dd(auth()->user()->type);
-           return redirect()->route('user.postList');//Go to web.php to route with middleware
+            return redirect()->route('user.postList');//Go to web.php to route with middleware
         }
     }
     public function edit(string $id)
@@ -93,9 +111,20 @@ class PostsController extends Controller
     public function update(Request $request, string $id)
     {
         $post = Posts::findOrFail($id);
+        $toggleStatus = $post->toggle_switch;
+        if($toggleStatus==1){
+            $post->status = 1;
+        }
+        else{
+            $post->status = 0;
+        }
         $post->update($request->all());
         $request->session()->flash('success', 'Post updated successfully!');
-        return redirect()->route('posts.postList');
+        if (auth()->user()->type == 'admin') {
+             return redirect()->route('admin.postList');
+         } else {
+            return redirect()->route('user.postList');
+         }
     }
     public function uploadCSV(Request $request)
     {

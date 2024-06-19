@@ -84,8 +84,8 @@
                   <div class="d-flex">
                     <label class="form-check-label col-md-3" for="flexSwitchCheckDefault">Status</label>
                     <div class="col-sm-9 form-switch">
-                      <input type="hidden" name="toggle_switch" value="1">
-                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                      <input type="hidden" name="toggle_switch" value="{{ $posts->status }}">
+                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" @if($posts->status == 1) checked @endif>
                     </div>
                   </div>
                 </div>

@@ -27,6 +27,10 @@ class User extends Authenticatable
         'updated_user_id',
     ];
 
+    public function posts()
+    {
+        return $this->hasMany(Posts::class, 'create_user_id', 'id');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

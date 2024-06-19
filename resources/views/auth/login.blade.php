@@ -16,7 +16,7 @@
               <div class="mb-3 mt-3 row justify-content-center align-items-center">
                     <label for="email" class="control-label col-md-2 text-md-end">Email:</label>
                     <div class="col-md-8">
-                        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" >
+                        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" value="{{ old('email') }}">
                         @error('email')
                           <span class="text-red-600">{{$message}}</span>
                         @enderror
@@ -27,7 +27,7 @@
                 <div class="mb-3 mt-3 row justify-content-center align-items-center">
                     <label for="password" class="control-label col-md-2 text-md-end">Password:</label>
                     <div class="col-md-8">
-                      <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+                      <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" value="{{ old('password') }}">
                       @error('password')
                           <span class="text-red-600">{{$message}}</span>
                       @enderror

@@ -16,35 +16,47 @@
                 <!-- Name -->
                 <div class="mb-3 mt-3 row d-flex">
                   <label for="name" class="control-label col-sm-4">Name:</label>
-                  <div class="col-sm-8"> <input type="text" class="form-control" id="name" name="name" ></div>
-                  @error('name')
+                  <div class="col-sm-8"> 
+                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
+                    @error('name')
                             <span class="text-red-600">{{$message}}</span>
-                            @enderror
+                   @enderror
+                  </div>
+                 
                 </div>
                 <!-- Email address -->
                 <div class="mb-3 row d-flex">
                   <label for="email" class="control-label col-sm-4">Email Address:</label>
-                  <div class="col-sm-8"><input type="email" class="form-control" id="email" name="email" ></div>
-                  @error('email')
+                  <div class="col-sm-8">
+                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}">
+                    @error('email')
                             <span class="text-red-600">{{$message}}</span>
-                  @enderror
+                   @enderror
+                  </div>
+                  
                 </div>
                 <!-- Password -->
                 <div class="mb-3 row d-flex">
                   <label for="password" class="control-label col-sm-4">Password:</label>
-                  <div class="col-sm-8"><input type="password" class="form-control @error('pw') is-invalid @enderror" id="password" name="pw"></div>
-                  @error('pw')
+                  <div class="col-sm-8">
+                    <input type="password" class="form-control @error('pw') is-invalid @enderror" id="password" name="pw" value="{{ old('pw') }}">
+                    @error('pw')
                             <span class="text-red-600">{{ $message }}</span>
-                            @enderror
+                    @enderror
+                  </div>
+                 
                 </div>
                 
                  <!-- Password Confirmation -->
                  <div class="mb-3 row d-flex">
                   <label for="pw_confirmation" class="control-label col-sm-4">Password_confirmation:</label>
-                  <div class="col-sm-8"><input type="password" class="form-control" id="pw_confirmation" name="pw_confirmation"></div>
-                  @error('pw_confirmation')
+                  <div class="col-sm-8">
+                    <input type="password" class="form-control" id="pw_confirmation" name="pw_confirmation" value="{{ old('pw_confirmation') }}">
+                    @error('pw_confirmation')
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>
-                            @enderror
+                    @enderror
+                </div>
+                  
                            
                 </div>
                  <!-- Button -->

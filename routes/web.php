@@ -26,6 +26,12 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/createPost', [PostsController::class, 'createPost'])->name("createPost");
     Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
+    Route::get('/searchPost', [PostsController::class, 'searchPost'])->name("searchPost");
+    Route::post('/postSave', [PostsController::class, 'postSave'])->name("post.save");
+    Route::get('/edit/{id}', [PostsController::class, 'edit'])->name("edit");
+    Route::post('/confirmEdit/{id}', [PostsController::class, 'confirmEdit'])->name("confirmEdit");
+    //Route::post('/update/{id}', 'PostsController@update')->name("update");
+    Route::post('/update/{id}', [PostsController::class, 'update'])->name("update"); 
 });
 //Route::get('/home',[HomeController::class,'index'] )->name('home');
 //Normal Users Routes List
@@ -33,10 +39,10 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/adminPostList', [PostsController::class, 'adminPostList'])->name('admin.postList');
     //Route::get('/adminCreatePost', [PostsController::class, 'createPost'])->name("createPost");
     //Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
-    Route::post('/postSave', 'PostsController@postSave')->name("postSave");
-    Route::get('/edit/{id}', 'PostsController@edit')->name("edit");
-    Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
-    Route::post('/update/{id}', 'PostsController@update')->name("update");
+    //Route::post('/postSave', 'PostsController@postSave')->name("postSave");
+    //Route::get('/edit/{id}', [PostsController::class, 'edit'])->name("edit");
+    //Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
+    //Route::post('/update/{id}', 'PostsController@update')->name("update");
     //Route::get('/postList', 'PostsController@postList')->name('postList');
 });
  
@@ -47,10 +53,11 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     //Route::get('/userList', 'UserController@userList')->name('userList');
     //Route::get('/createPost', [PostsController::class, 'createPost'])->name("createPost");
     //Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
-    Route::post('/postSave', [PostsController::class, 'postSave'])->name("post.save");
-    Route::get('/edit/{id}', 'PostsController@edit')->name("edit");
-    Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
-    Route::post('/update/{id}', 'PostsController@update')->name("update");
+    //Route::post('/postSave', [PostsController::class, 'postSave'])->name("post.save");
+    //Route::get('/edit/{id}', [PostsController::class, 'edit'])->name("edit");
+    //Route::get('/edit/{id}', 'PostsController@edit')->name("edit");
+    //Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
+    //Route::post('/update/{id}', 'PostsController@update')->name("update");
 });
 
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
