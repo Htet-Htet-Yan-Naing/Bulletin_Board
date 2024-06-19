@@ -17,7 +17,10 @@
                     <label for="email" class="control-label col-md-2 text-md-end">Email:</label>
                     <div class="col-md-8">
                         <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" >
-                    </div>
+                        @error('email')
+                          <span class="text-red-600">{{$message}}</span>
+                        @enderror
+                      </div>
                 </div>
 
                 <!-- Password input -->
@@ -25,6 +28,9 @@
                     <label for="password" class="control-label col-md-2 text-md-end">Password:</label>
                     <div class="col-md-8">
                       <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+                      @error('password')
+                          <span class="text-red-600">{{$message}}</span>
+                      @enderror
                     </div>
                 </div>
 

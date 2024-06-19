@@ -62,8 +62,8 @@ class PostsController extends Controller
         $post= Posts::create([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
-            'create_user_id'=>9,
-            'updated_user_id'=>9
+            'create_user_id'=>1,
+            'updated_user_id'=>1
         ]);
              $post->create_user_id = auth()->id();
              $post->updated_user_id =auth()->id();

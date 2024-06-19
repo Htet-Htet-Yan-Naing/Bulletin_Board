@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Posts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -41,8 +42,8 @@ class AuthController extends Controller
         'email' => $validatedData['email'],
         'password' => Hash::make($validatedData['pw']),
         'type' => "1",
-        'create_user_id'=>9,
-        'updated_user_id'=>9
+        'create_user_id'=>1,
+        'updated_user_id'=>1
     ]);
         // $user=User::create([   
         //     'name' => $request->name,

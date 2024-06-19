@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostsController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,13 +23,16 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'loginAction')->name('login.action');
     Route::get('/logout', 'logout')->middleware('auth')->name('logout');
 });
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/createPost', [PostsController::class, 'createPost'])->name("createPost");
+    Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
+});
 //Route::get('/home',[HomeController::class,'index'] )->name('home');
 //Normal Users Routes List
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
-    Route::get('/postList', [PostsController::class, 'adminPostList'])->name('admin.postList');
-    Route::get('/createPost', [PostsController::class, 'createPost'])->name("createPost");
-    Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
+    Route::get('/adminPostList', [PostsController::class, 'adminPostList'])->name('admin.postList');
+    //Route::get('/adminCreatePost', [PostsController::class, 'createPost'])->name("createPost");
+    //Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
     Route::post('/postSave', 'PostsController@postSave')->name("postSave");
     Route::get('/edit/{id}', 'PostsController@edit')->name("edit");
     Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
@@ -38,11 +42,11 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
  
 //Admin Routes List
 Route::middleware(['auth', 'user-access:user'])->group(function () {
-    Route::get('/postList', [PostsController::class, 'userPostList'])->name('user.postList');
+    Route::get('/userPostList', [PostsController::class, 'userPostList'])->name('user.postList');
     //Route::get('/userList', [UserController::class, 'userList'])->name('userList');
     //Route::get('/userList', 'UserController@userList')->name('userList');
-    Route::get('/createPost', [PostsController::class, 'createPost'])->name("createPost");
-    Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
+    //Route::get('/createPost', [PostsController::class, 'createPost'])->name("createPost");
+    //Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
     Route::post('/postSave', [PostsController::class, 'postSave'])->name("post.save");
     Route::get('/edit/{id}', 'PostsController@edit')->name("edit");
     Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
