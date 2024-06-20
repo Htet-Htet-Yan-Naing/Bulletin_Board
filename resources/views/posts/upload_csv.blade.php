@@ -9,21 +9,22 @@
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <style>
-    .nav-link {
-      padding: 0;
-    }
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <style>
+      .nav-link {
+        padding: 0;
+      }
 
-    .dropdown-menu {
-      margin: .5rem -7.5rem;
-    }
-  </style>
+      .dropdown-menu {
+        margin: .5rem -7.5rem;
+      }
+    </style>
 </head>
 
 <body class="antialiased">
-   <!-- Navigation bar start -->
-   <nav class="navbar navbar-expand-sm navbar-light bg-light">
+  <!-- Navigation bar start -->
+  <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand text-success" href="#">Bulletin_Board</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
@@ -64,22 +65,30 @@
             <div class="card-header bg-success p-3 text-white">
               Upload CSV file
             </div>
+            @if(Session::has('error'))
+            <div class="alert alert-success" role="alert">
+              {{ Session::get('error') }}
+            </div>
+            @endif
             <div class="card-body">
-              <form action="{{ route('confirmRegister') }}" method="POST" enctype="multipart/form-data">
+              <form action="{{ route('posts.uploadCSV') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
                     <h6 class="mb-0">CSV file:</h6>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input class="form-control form-control-lg" id="formFileLg" type="file" name="profile" />
+                    <input class="form-control form-control-lg" id="formFileLg" type="file" name="csvfile" />
+                      @error('csvfile')
+                        <span class="text-red-600">{{$message}}</span>
+                      @enderror
                   </div>
                 </div>
                 <!-- Button -->
                 <div class="row d-flex justify-content-center align-content-center">
                   <div class="col-sm-6">
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-4">Upload</button>
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
+                    <button type="clear" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
                   </div>
                 </div>
               </form>

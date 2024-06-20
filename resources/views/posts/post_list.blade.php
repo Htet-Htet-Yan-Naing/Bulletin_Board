@@ -17,9 +17,10 @@
         <div class="float-end">
           <div class="container py-5">
             <label class=""> Keyword: </label>
-            <form action="{{ route('searchPost') }}" method="get" class="d-inline">
+            <form action="{{ route('searchPost', ['search' => request('search')]) }}" method="get" class="d-inline">
+            <!--value="{{ request('search') }}"-->
               @csrf
-              <input class="search-btn p-2" type="text" name="search" placeholder="Type Something" value="{{ request('search') }}" style="border:1px solid black;border-radius:8px;">
+              <input class="search-btn p-2" type="text" name="search" value="{{ old('text') }}" placeholder="Type Something"  style="border:1px solid black;border-radius:8px;">
               <button type="submit" class="btn btn-success btn-lg">Search</button>
             </form>
 
@@ -27,8 +28,23 @@
               @csrf
               <button type="submit" class="btn btn-success btn-lg">Create</button>
             </form>
-            <button type="button" class="btn btn-success btn-lg">Upload</button>
-            <button type="button" class="btn btn-success btn-lg">Download</button>
+
+            <form action="{{ route('posts.upload')}}" method="get" class="d-inline">
+              @csrf
+              <input type="hidden" name="search" value="{{ request('search') }}">
+              <button type="submit" class="btn btn-success btn-lg">Upload</button>
+            </form>
+            
+
+            <form action="{{ route('posts.download')}}" method="get" class="d-inline">
+              @csrf
+              <input type="hidden" name="search" value="{{ request('search') }}">
+              <button type="submit" class="btn btn-success btn-lg">Download</button>
+            </form>
+            
+
+
+            <!--<button type="button" class="btn btn-success btn-lg">Download</button>-->
           </div>
         </div>
         <div class="container py-5">
@@ -44,39 +60,22 @@
             </thead>
             <tbody>
               @if($posts->count() > 0)
-          @foreach($posts as $rs)
-        <tr>
-        <td class="align-middle">{{ $rs->title }}</td>
-        <td class="align-middle">{{ $rs->description }}</td>
-        <td class="align-middle">{{ $rs->user->type}}</td>
-        <td class="align-middle">{{ $rs->created_at->format('Y-m-d') }}</td>
-        <td class="align-middle">
-        <a href="{{ route('edit', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>
-        <!--<form action="#" method="POST" type="button" class="btn btn-danger p-0" >-->
-        <!--@csrf-->
-        <!-- onsubmit="return confirm('Delete?')"-->
-        <button class="btn btn-danger m-0 delete-post-btn" onclick="document.getElementById('id01').style.display='block'">Delete</button>
-        <!--</form>-->
+            @foreach($posts as $rs)
+          <tr>
+          <td class="align-middle">{{ $rs->title }}</td>
+          <td class="align-middle">{{ $rs->description }}</td>
+          <td class="align-middle">{{ $rs->user->type}}</td>
+          <td class="align-middle">{{ $rs->created_at->format('Y-m-d') }}</td>
+          <td class="align-middle">
+            <a href="{{ route('edit', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>
 
-        <!-- Delete Dialog Box -->
-        <div id="id01" class="modal">
-        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
-        <form class="modal-content" action="/action_page.php">
-          <div class="container">
-          <h1>Delete Account</h1>
-          <p>Are you sure you want to delete your account?</p>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal" data-id="{{ $rs->id }}"
+                                                        data-title="{{ $rs->title }}" data-description="{{ $rs->description }}"
+                                                        data-status="{{$rs->status}}" >Delete</button>
 
-          <div class="clearfix">
-          <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-          <button type="button" onclick="document.getElementById('id01').style.display='none'" class="deletebtn">Delete</button>
-          </div>
-          </div>
-        </form>
-        </div>
-        <!-- Delete Dialog Box -->
-
-        </td>
-        </tr>
+          </td>
+          </tr>
       @endforeach
         @else
         <tr>
@@ -91,16 +90,59 @@
     </div>
   </div>
 </div>
-<script>
-// Get the modal
-var modal = document.getElementById('id01');
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-</script>
+ <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Confirm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the post?</p>
+                    <p><strong>ID:</strong> <span id="postId"></span></p>
+                    <p><strong>Title:</strong> <span id="postTitle"></span></p>
+                    <p><strong>Description:</strong> <span id="postDescription"></span></p>
+                    <p><strong>Status:</strong> <span id="postStatus"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <form id="deleteForm" action="#" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const postId = button.getAttribute('data-id');
+            const postTitle = button.getAttribute('data-title');
+            const postDescription = button.getAttribute('data-description');
+            const postStatus = button.getAttribute('data-status');
+
+            const modalTitle = deleteModal.querySelector('.modal-title');
+            const modalBodyId = deleteModal.querySelector('#postId');
+            const modalBodyTitle = deleteModal.querySelector('#postTitle');
+            const modalBodyDescription = deleteModal.querySelector('#postDescription');
+            const modalBodyStatus = deleteModal.querySelector('#postStatus');
+
+            modalTitle.textContent = `Delete Confirm - ${postTitle}`;
+            modalBodyId.textContent = postId;
+            modalBodyTitle.textContent = postTitle;
+            modalBodyDescription.textContent = postDescription;
+            modalBodyStatus.textContent = postStatus == 1 ? 'Active' : 'Inactive';
+            deleteForm.action = `/postlists/${postId}/destroy`;
+        });
+    </script>
+
+
+
 @endsection
 <!-- Changes happen here -->

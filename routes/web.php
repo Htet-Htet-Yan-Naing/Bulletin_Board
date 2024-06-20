@@ -32,6 +32,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/confirmEdit/{id}', [PostsController::class, 'confirmEdit'])->name("confirmEdit");
     //Route::post('/update/{id}', 'PostsController@update')->name("update");
     Route::post('/update/{id}', [PostsController::class, 'update'])->name("update"); 
+    Route::delete('/postlists/{id}/destroy', [PostsController::class, 'destroy'])->name('post.destroy');
+    route::get('/posts/download',[PostsController::class, 'download'])->name('posts.download');
+    Route::get('/posts/upload',  [PostsController::class, 'upload'])->name("posts.upload");
+    Route::post('/posts/uploadCSV',  [PostsController::class, 'uploadCSV'])->name("posts.uploadCSV");
 });
 //Route::get('/home',[HomeController::class,'index'] )->name('home');
 //Normal Users Routes List
@@ -69,7 +73,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     // Route::post('/confirmEdit/{id}', 'PostsController@confirmEdit')->name("confirmEdit");
     // Route::post('/update/{id}', 'PostsController@update')->name("update");
     //Upload CSV file
-    Route::get('/uploadCSV', 'PostsController@uploadCSV')->name("uploadCSV");
+    //Route::get('/uploadCSV', 'PostsController@uploadCSV')->name("uploadCSV");
     //Users
     Route::get('/register', 'UserController@register');
     Route::post('/confirmRegister', 'UserController@confirmRegister')->name("confirmRegister");
