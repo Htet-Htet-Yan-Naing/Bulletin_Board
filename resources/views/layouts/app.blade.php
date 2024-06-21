@@ -36,24 +36,18 @@
   background-color: #ccc;
   color: black;
 }
-
-/* Add a color to the delete button */
 .deletebtn {
   background-color: #f44336;
 }
-
-/* Add padding and center-align text to the container */
 .container {
   padding: 16px;
- 
- 
 }
-
   </style>
 </head>
 
 <body>
   <!-- Navigation bar start -->
+  
   <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand text-success" href="#">Bulletin_Board</a>
@@ -62,17 +56,26 @@
       </button>
       <div class="collapse navbar-collapse" id="mynavbar">
         <ul class="navbar-nav me-auto">
+        @auth
           <li class="nav-item">
             <a class="nav-link text-success" href="#">Users</a>
           </li>
+        @endauth
+
+          @auth
           <li class="nav-item">
-            <a class="nav-link text-success" href="#">Posts</a>
+            @if(auth()->user()->type == 'admin')
+              <a class="nav-link text-success" href="{{ route('admin.postList') }}">Posts</a>
+            @else
+              <a class="nav-link text-success" href="{{ route('user.postList') }}">Posts</a>
+            @endif
           </li>
+          @endauth
         </ul>
-        <!-- Displayed if the user is authenticated -->
+        <!-- Displayed if the user is authenticated start-->
         @auth
           <form class="d-flex align-items-center">
-            <a class="nav-link text-success" href="#">Create User</a>
+            <a class="nav-link text-success" href="{{ route('signup') }}">Create User</a>
             <a class="nav-link text-success ms-3" href="#">{{ auth()->user()->name }}</a>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill-gear text-success" viewBox="0 0 16 16">
               <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
@@ -86,13 +89,14 @@
             </div>
           </form>
         @endauth
-        <!-- Displayed if the user is authenticated -->
-        <!-- Displayed if the user is not authenticated -->
+        <!-- Displayed if the user is authenticated end-->
+
+        <!-- Displayed if the user is not authenticated start-->
         @guest  
-          <a class="nav-link text-success ms-3" href="{{ route('login') }}">Login</a>
-          <a class="nav-link text-success ms-3" href="#">Register</a>
+          <a class="nav-link text-success ms-0" href="{{ route('login') }}">Login</a>
+          <a class="nav-link text-success ms-3" href="{{ route('signup') }}">Sign up</a>
         @endguest
-         <!-- Displayed if the user is not authenticated -->
+         <!-- Displayed if the user is not authenticated end-->
     </div>
     </div>
   </nav>
@@ -103,5 +107,4 @@
     </div>
   </section>
 </body>
-
 </html>

@@ -1,12 +1,11 @@
 @extends('layouts.app')
 @section('title', 'Create Post')
-<!-- Changes happen here -->
 @section('contents')
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-xl-6">
     <div class="card" style="border-radius: 15px;">
       <div class="card-header bg-success p-3 text-white">
-        Create post
+        Create Post
       </div>
       <div class="card-body">
         <form action="{{ route('confirmPost') }}" method="get">
@@ -51,4 +50,3 @@
   });
 </script>
 @endsection
-<!-- Changes happen here -->

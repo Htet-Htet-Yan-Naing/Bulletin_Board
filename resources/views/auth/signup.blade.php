@@ -1,13 +1,11 @@
 @extends('layouts.app')
-
 @section('title', 'Sign up')
- <!-- Changes happen here -->
  @section('contents')
  <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-7">
           <div class="card" style="border-radius: 15px;">
             <div class="card-header bg-success p-3 text-white">
-              Sign up
+              Sign Up
             </div>
             <div class="card-body">
               <form action="{{route('signup.save')}}" method="POST" novalidate>
@@ -55,9 +53,7 @@
                     @error('pw_confirmation')
                                 <div class="alert alert-danger mt-1">{{ $message }}</div>
                     @enderror
-                </div>
-                  
-                           
+                </div> 
                 </div>
                  <!-- Button -->
                  <div class="row d-flex">
@@ -72,5 +68,4 @@
             </div>
           </div>
         </div>
-        @endsection
-        <!-- Changes happen here -->    
+@endsection

@@ -19,7 +19,7 @@ class PostsController extends Controller
     public function adminPostList()
     {
         $posts = Posts::where('deleted_at', null)
-            ->where('deleted_user_id', null)
+            ->latest()
             ->paginate(6);
         return view('posts.post_list', compact('posts'));
     }
@@ -28,7 +28,7 @@ class PostsController extends Controller
         $userId = auth()->id();
         $posts = Posts::where('create_user_id', $userId)
             ->where('deleted_at', null)
-            ->where('deleted_user_id', null)
+            ->latest()
             ->paginate(6);
         return view('posts.post_list', compact('posts'));
     }
@@ -41,15 +41,15 @@ class PostsController extends Controller
     {
         $validatedData = $request->validate(
             [
-                //'title' => 'required|unique:posts|max:255',
                 'title' => 'required|max:255',
-                'description' => 'required',
+                'description' => 'required|max:255',
             ],
             [
                 'title.required' => 'The title field can\'t be blank.',
                 'title.unique' => 'The title has already been taken.',
                 'description.required' => 'The description field can\'t be blank.',
                 'title.max' => '255 characters is the maximum allowed',
+                'description.max' => '255 characters is the maximum allowed',
             ]
         );
         $existingPost = Posts::withTrashed()
@@ -65,30 +65,46 @@ class PostsController extends Controller
         $create_user_id = auth()->id();
         $updated_user_id = auth()->id();
         return view('posts.create_confirm_post', compact('title', 'description', 'create_user_id', 'updated_user_id'));
-
     }
 
     public function postSave(Request $request)
     {
         $validatedData = $request->validate([
             'title' => 'required|max:255',
-            'description' => 'required',
+            'description' => 'required|max:255',
         ], [
             'title.required' => 'The title field can\'t be blank.',
+            'title.unique' => 'The title has already been taken.',
             'description.required' => 'The description field can\'t be blank.',
             'title.max' => '255 characters is the maximum allowed',
+            'description.max' => '255 characters is the maximum allowed'
+        ]);
+        $existingPost = Posts::withTrashed()
+            ->where('title', $request->title)
+            ->first();
+        if ($existingPost) {
+            if ($existingPost->deleted_at) {
+                $existingPost->title = $validatedData['title'];
+                $existingPost->description = $validatedData['description'];
+                $existingPost->create_user_id = auth()->id();
+                $existingPost->updated_user_id = auth()->id();
+                $existingPost->deleted_at = null;
+                $existingPost->save();
+                $request->session()->flash('success', 'Post updated successfully!');
+            }
+        } else {
+            $post = Posts::create([
+                'title' => $validatedData['title'],
+                'description' => $validatedData['description'],
+                'create_user_id' => 1,
+                'updated_user_id' => 1
+            ]);
+            $post->create_user_id = auth()->id();
+            $post->updated_user_id = auth()->id();
+            $post->save();
+            $request->session()->flash('success', 'Post created successfully!');
 
-        ]);
-        $post = Posts::create([
-            'title' => $validatedData['title'],
-            'description' => $validatedData['description'],
-            'create_user_id' => 1,
-            'updated_user_id' => 1
-        ]);
-        $post->create_user_id = auth()->id();
-        $post->updated_user_id = auth()->id();
-        $post->save();
-        $request->session()->flash('success', 'Post created successfully!');
+        }
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.postList');//Go to web.php to route with middleware (compact with user()->type)
         } else {
@@ -97,7 +113,6 @@ class PostsController extends Controller
     }
     public function edit(string $id)
     {
-        // dd($id);
         $posts = Posts::findOrFail($id);
         return view('posts.edit_post', compact('posts'));
     }
@@ -127,9 +142,7 @@ class PostsController extends Controller
     }
     public function destroy(Request $request, $id)
     {
-        //dd($id);
         $post = Posts::findOrFail($id);
-        //dd($post->title);
         DB::table('posts')
             ->where('id', $id)
             ->update(
@@ -147,28 +160,42 @@ class PostsController extends Controller
     }
     public function searchPost(Request $request)
     {
+        $validatedData = $request->validate(
+            [
+                'search' => 'required',
+            ],
+            [
+                'search.required' => 'Type somthing to search',
+            ]
+        );
         if (auth()->user()->type == 'admin') {
-            //dd($request->all());
-            //dd(auth()->user()->type);
-            //return redirect()->route('admin.postList');//Go to web.php to route with middleware (compact with user()->type)
+            $userId = auth()->id();
+            $search = strtolower($request->input('search'));
+            if ($search != '') {
+                $posts = Posts::where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%$search%")
+                        ->orWhere('description', 'like', "%$search%");
+                })
+                    ->where('deleted_at', null)
+                    ->paginate(6);
+                return view('posts.post_list', compact('posts'));
+            }
         } else {
             $userId = auth()->id();
             $search = strtolower($request->input('search'));
-            //dd($search);
             if ($search != '') {
                 $posts = Posts::where(function ($query) use ($search) {
                     $query->where('title', 'like', "%$search%")
                         ->orWhere('description', 'like', "%$search%");
                 })
                     ->where('create_user_id', $userId)
-                    ->where('status', 1)
                     ->where('deleted_at', null)
-                    ->where('deleted_user_id', null)
                     ->paginate(6);
                 return view('posts.post_list', compact('posts'));
             }
         }
     }
+
     public function download(Request $request)
     {
         if (auth()->user()->type == 'admin') {
@@ -184,9 +211,9 @@ class PostsController extends Controller
 
             return new StreamedResponse(function () use ($posts) {
                 $handle = fopen('php://output', 'w');
-                fputcsv($handle, ['ID', 'Title', 'Content', 'Created At']);
+                fputcsv($handle, ['ID', 'Post Title', 'Post Description', 'Posted User', 'Posted Date']);
                 foreach ($posts as $post) {
-                    fputcsv($handle, [$post->id, $post->title, $post->content, $post->created_at]);
+                    fputcsv($handle, [$post->id, $post->title, $post->description, $post->user->type, $post->created_at]);
                 }
                 fclose($handle);
             }, 200, [
@@ -211,7 +238,7 @@ class PostsController extends Controller
         }
         // Retrieve the uploaded file
         $file = $request->file('csvfile');
-       try {
+        try {
             // Parse the CSV file using league/csv
             $csv = Reader::createFromPath($file->getRealPath(), 'r');
             $csv->setHeaderOffset(0); // Set the header offset
@@ -248,10 +275,10 @@ class PostsController extends Controller
             }
 
             return redirect()->route('user.postList')->with('success', 'CSV data uploaded successfully.');
-        } 
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return redirect()->back()->with('error', 'There was an error processing the CSV file.')->withInput();
         }
     }
 
 }
+

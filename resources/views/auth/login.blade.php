@@ -1,7 +1,5 @@
 @extends('layouts.app')
-
 @section('title', 'Login')
- <!-- Changes happen here -->
  @section('contents')
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-7">
@@ -33,7 +31,6 @@
                       @enderror
                     </div>
                 </div>
-
 
                 <div class="row mb-3">
                   <div class="col-md-3"></div>
@@ -75,5 +72,5 @@
           </div>
         </div>
       </div>
-      @endsection
-      <!-- Changes happen here -->   
+@endsection
+  
