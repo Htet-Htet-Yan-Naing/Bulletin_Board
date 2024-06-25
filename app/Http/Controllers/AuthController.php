@@ -2,7 +2,6 @@
 
 
 namespace App\Http\Controllers;
-
 use App\Models\User;
 use App\Models\Posts;
 use Illuminate\Http\Request;
@@ -17,13 +16,13 @@ class AuthController extends Controller
     {
         return view("auth/signup");
     }
-    
     public function signupSave(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
-            'pw' => 'required|min:4|confirmed',
+            'pw' => 'required|min:4',
+            'pw_confirmation' => 'same:newPw',
         ], [
             'name.required' => 'The name field can\'t be blank.',
             'email.required' => 'The email field can\'t be blank.',
@@ -31,7 +30,7 @@ class AuthController extends Controller
             'email.unique' => 'The email has already been taken.',
             'pw.required' => 'The password field can\'t be blank.',
             'pw.min' => 'The password must be at least 4 characters.',
-            'pw.confirmed' => 'The password confirmation does not match.',
+            'pw_confirmation.same' => 'The password confimation field must match the new password field.'
         ]);
         if (Auth::check()) {
             $user = User::create([
@@ -61,6 +60,44 @@ class AuthController extends Controller
             return redirect()->route('login');
         }
     }
+    public function changePassword(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        return view('auth.change_password', compact('user'));
+    }
+    public function updatePassword(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'newPw' => 'required|min:4',
+            'pw_confirmation' => 'same:newPw',
+        ], [
+            'newPw.required' => 'The password field can\'t be blank.',
+            'newPw.min' => 'The password must be at least 4 characters.',
+            'pw_confirmation.same' => 'The password confimation field must match the new password field.'
+        ]);
+        $user = User::findOrFail($id);
+        if (!Hash::check($request->currentPw, $user->password)) {
+            return back()->withErrors(['currentPw' => 'Current password is incorrect']);
+        } else {
+            $newPw = Hash::make($request->newPw);
+            $newConfirmPw =  Hash::make($request->pw_confirmation);
+                $user->password = $newPw;
+                $user->save();
+                if (auth()->user()->type == 'admin') {
+                    return redirect()->route('admin.userList');
+                } else {
+                    return redirect()->route('user.userList');
+                }
+        }
+    }
+    public function forgotPassword()
+    {
+        return view('auth.forgot_password');
+    }
+    public function resetPassword()
+    {
+        return view('auth.reset_password');
+    }
     public function login()
     {
         return view('auth/login');
@@ -78,9 +115,9 @@ class AuthController extends Controller
         //After authentication or  after user login
         $request->session()->regenerate();
         if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin.postList');//Go to web.php to route with middleware (compact with user()->type)
+            return redirect()->route('admin.postList');
         } else {
-            return redirect()->route('user.postList');//Go to web.php to route with middleware
+            return redirect()->route('user.postList');
         }
     }
 

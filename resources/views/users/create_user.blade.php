@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Login')
+@section('title', 'Register')
 @section('contents') 
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-9">
@@ -8,83 +8,117 @@
               Register
             </div>
             <div class="card-body">
-              <form action="{{ route('confirmRegister') }}" method="POST" enctype="multipart/form-data">
+              <form action="{{ route('confirmRegister')}}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="row align-items-center pt-4 pb-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">Full name</h6>
+                    <label class="mb-0">Full name</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="text" class="form-control form-control-lg" name="name" />
+                    <input type="text" class="form-control" name="name" id="name"/>
+                    @error('name')
+                            <span class="text-red-600">{{$message}}</span>
+                   @enderror
                   </div>
                 </div>
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">Email address</h6>
+                    <label class="mb-0">Email address</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="email" class="form-control form-control-lg" placeholder="example@example.com" name="email" />
+                    <input type="text" class="form-control" name="email" id="email" value="{{ old('email') }}"/>
+                    @error('email')
+                            <span class="text-red-600">{{$message}}</span>
+                   @enderror
                   </div>
                 </div>
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">Password</h6>
+                    <label class="mb-0">Password</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="password" class="form-control form-control-lg" name="password" />
+                    <input type="password" class="form-control" name="pw" id="pw"/>
+                    @error('pw')
+                            <span class="text-red-600">{{$message}}</span>
+                   @enderror
                   </div>
                 </div>
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">Confirm Password</h6>
+                    <label class="mb-0">Confirm Password</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="password" class="form-control form-control-lg" name="password" />
+                    <input type="password" class="form-control" name="pw_confirmation" id="pw_confirmation"/>
                   </div>
                 </div>
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">Type</h6>
+                    <label class="mb-0">Type</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <select name="type" id="" class="form-select">
-                      <option value="0">Admin</option>
-                      <option value="1">User</option>
-                    </select>
+    @auth
+        <!-- Check if the authenticated user is an admin -->
+        @if(auth()->user()->type=='admin')
+            <select name="type" id="type" class="form-select">
+                <option value="" selected>Select Type</option>
+                <option value="0">Admin</option>
+                <option value="1">User</option>
+            </select>
+        @elseif(auth()->user()->type=='user')
+            <select name="type" id="type" class="form-select">
+                <option value="" selected>Select Type</option>
+                <option value="1">User</option>
+            </select>
+        @else
+            <!-- Handle other roles or show a default message -->
+            <p>Unknown role</p>
+        @endif
+    @else
+        <!-- Show this if the user is not authenticated -->
+        <p>Please log in to see your role.</p>
+    @endauth
+</div>
+                </div>
+                <div class="row align-items-center py-3">
+                  <div class="col-md-3 ps-5">
+                    <label class="mb-0">Phone</label>
+                  </div>
+                  <div class="col-md-9 pe-5">
+                    <input type="phone" class="form-control" name="phone" id="phone"/>
+                    @error('phone')
+                            <span class="text-red-600">{{$message}}</span>
+                    @enderror
+                    
                   </div>
                 </div>
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">Phone</h6>
+                    <label class="mb-0">DOB</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="phone" class="form-control form-control-lg" name="phone" />
+                    <input class="form-control" id="dob" type="date" name="dob" />
                   </div>
                 </div>
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">DOB</h6>
+                    <label class="mb-0">Address</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input class="form-control form-control-lg" id="dd" type="date" name="date" />
+                    <input type="text" class="form-control" name="address" id="address"/>
+                    @error('address')
+                            <span class="text-red-600">{{$message}}</span>
+                   @enderror
                   </div>
                 </div>
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">Address</h6>
+                    <label class="mb-0">Profile</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="phone" class="form-control form-control-lg" name="address" />
-                  </div>
-                </div>
-                <div class="row align-items-center py-3">
-                  <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">Profile</h6>
-                  </div>
-                  <div class="col-md-9 pe-5">
-                    <input class="form-control form-control-lg" id="formFileLg" type="file" name="profile" />
-                    <div class="small text-muted mt-2">Upload your CV/Resume or any other relevant file. Max file
-                      size 50 MB</div>
+                    <input type="file" class="form-control" id="profile" name="profile" />
+                    @error('profile')
+                            <span class="text-red-600">{{$message}}</span>
+                   @enderror
                   </div>
                 </div>
                 <!-- Button -->

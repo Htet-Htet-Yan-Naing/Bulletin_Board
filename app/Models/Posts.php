@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Posts extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     protected $fillable = [
         'title',
         'description',
@@ -17,8 +16,7 @@ class Posts extends Model
         'updated_user_id',
         'deleted_user_id',
         'created_at',
-        'updated_at',
-        'deleted_at'
+        'updated_at'
     ];
     public function user()
     {

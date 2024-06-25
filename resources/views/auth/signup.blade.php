@@ -42,7 +42,6 @@
                             <span class="text-red-600">{{ $message }}</span>
                     @enderror
                   </div>
-                 
                 </div>
                 
                  <!-- Password Confirmation -->

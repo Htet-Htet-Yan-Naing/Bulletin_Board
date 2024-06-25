@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Posts;
 use App\Exports\PostsExport;
+use App\Models\User;
 use Illuminate\Http\Request;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,18 +19,15 @@ class PostsController extends Controller
 {
     public function adminPostList()
     {
-        $posts = Posts::where('deleted_at', null)
-            ->latest()
-            ->paginate(6);
+        $posts = Posts::latest()->paginate(6);
         return view('posts.post_list', compact('posts'));
     }
     public function userPostList()
     {
         $userId = auth()->id();
         $posts = Posts::where('create_user_id', $userId)
-            ->where('deleted_at', null)
-            ->latest()
-            ->paginate(6);
+                ->latest()
+                ->paginate(6);
         return view('posts.post_list', compact('posts'));
     }
 
@@ -52,14 +50,6 @@ class PostsController extends Controller
                 'description.max' => '255 characters is the maximum allowed',
             ]
         );
-        $existingPost = Posts::withTrashed()
-            ->where('title', $request->title)
-            ->first();
-        if ($existingPost) {
-            if (!$existingPost->deleted_at) {
-                return redirect()->back()->withErrors(['title' => 'The title has already been taken.']);
-            }
-        }
         $title = $request->title;
         $description = $request->description;
         $create_user_id = auth()->id();
@@ -79,20 +69,6 @@ class PostsController extends Controller
             'title.max' => '255 characters is the maximum allowed',
             'description.max' => '255 characters is the maximum allowed'
         ]);
-        $existingPost = Posts::withTrashed()
-            ->where('title', $request->title)
-            ->first();
-        if ($existingPost) {
-            if ($existingPost->deleted_at) {
-                $existingPost->title = $validatedData['title'];
-                $existingPost->description = $validatedData['description'];
-                $existingPost->create_user_id = auth()->id();
-                $existingPost->updated_user_id = auth()->id();
-                $existingPost->deleted_at = null;
-                $existingPost->save();
-                $request->session()->flash('success', 'Post updated successfully!');
-            }
-        } else {
             $post = Posts::create([
                 'title' => $validatedData['title'],
                 'description' => $validatedData['description'],
@@ -104,11 +80,11 @@ class PostsController extends Controller
             $post->save();
             $request->session()->flash('success', 'Post created successfully!');
 
-        }
+        //}
         if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin.postList');//Go to web.php to route with middleware (compact with user()->type)
+            return redirect()->route('admin.postList');
         } else {
-            return redirect()->route('user.postList');//Go to web.php to route with middleware
+            return redirect()->route('user.postList');
         }
     }
     public function edit(string $id)
@@ -116,7 +92,7 @@ class PostsController extends Controller
         $posts = Posts::findOrFail($id);
         return view('posts.edit_post', compact('posts'));
     }
-    public function confirmEdit(\Illuminate\Http\Request $request, $id)
+    public function confirmEdit(Request $request, $id)
     {
         $post = $request;
         $toggleStatus = $post->toggle_switch;
@@ -143,14 +119,7 @@ class PostsController extends Controller
     public function destroy(Request $request, $id)
     {
         $post = Posts::findOrFail($id);
-        DB::table('posts')
-            ->where('id', $id)
-            ->update(
-                array(
-                    'deleted_user_id' => auth()->user()->id,
-                    'deleted_at' => \Carbon\Carbon::now()
-                )
-            );
+        $deleted = Posts::destroy($id);
         $request->session()->flash('success', 'Post deleted successfully!');
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.postList');
@@ -165,7 +134,7 @@ class PostsController extends Controller
                 'search' => 'required',
             ],
             [
-                'search.required' => 'Type somthing to search',
+                'search.required' => 'Type something to search',
             ]
         );
         if (auth()->user()->type == 'admin') {
@@ -176,7 +145,7 @@ class PostsController extends Controller
                     $query->where('title', 'like', "%$search%")
                         ->orWhere('description', 'like', "%$search%");
                 })
-                    ->where('deleted_at', null)
+                    //->where('deleted_at', null)
                     ->paginate(6);
                 return view('posts.post_list', compact('posts'));
             }
@@ -189,7 +158,7 @@ class PostsController extends Controller
                         ->orWhere('description', 'like', "%$search%");
                 })
                     ->where('create_user_id', $userId)
-                    ->where('deleted_at', null)
+                   // ->where('deleted_at', null)
                     ->paginate(6);
                 return view('posts.post_list', compact('posts'));
             }
@@ -205,10 +174,9 @@ class PostsController extends Controller
             $posts = Posts::where('title', 'like', '%' . $search . '%')
                 ->where('create_user_id', auth()->user()->id)
                 ->orWhere('description', 'like', '%' . $search . '%')
-                ->whereNull('deleted_at')
+                //->whereNull('deleted_at')
                 ->where('create_user_id', auth()->user()->id)
                 ->paginate(5);
-
             return new StreamedResponse(function () use ($posts) {
                 $handle = fopen('php://output', 'w');
                 fputcsv($handle, ['ID', 'Post Title', 'Post Description', 'Posted User', 'Posted Date']);
@@ -221,13 +189,12 @@ class PostsController extends Controller
                 'Content-Disposition' => 'attachment; filename="posts.csv"',
             ]);
         }
-
     }
     public function upload(Request $request)
     {
         return view('posts.upload_csv');
     }
-    public function uploadCSV(Request $request)
+      public function uploadCSV(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'csvfile' => 'required|file',
@@ -236,33 +203,20 @@ class PostsController extends Controller
         if ($file_type !== 'csv') {
             return redirect()->back()->with('error', 'File must be csv type.')->withInput();
         }
-        // Retrieve the uploaded file
         $file = $request->file('csvfile');
         try {
-            // Parse the CSV file using league/csv
-            $csv = Reader::createFromPath($file->getRealPath(), 'r');
-            $csv->setHeaderOffset(0); // Set the header offset
-
-            // Get the header and check its length
+            $csv = Reader::createFromPath($file->getRealPath());
+            $csv->setHeaderOffset(0); 
             $header = $csv->getHeader();
-
-            // Check if the header has exactly 3 columns
             if (count($header) !== 3) {
                 dd($header);
                 return redirect()->back()->with('error', 'CSV must have exactly 3 columns.')->withInput();
             }
-
-            // Get the records
             $records = Statement::create()->process($csv);
-
-            // Validate each row
             foreach ($records as $record) {
                 if (count($record) !== 3) {
-                    dd("Not equal to 3");
                     return redirect()->back()->with('error', 'Each row in the CSV must have exactly 3 columns.')->withInput();
                 }
-
-                // Create a new postlist entry
                 Posts::create([
                     'title' => $record['title'],
                     'description' => $record['description'],
@@ -273,7 +227,6 @@ class PostsController extends Controller
                     'updated_at' => Carbon::now(),
                 ]);
             }
-
             return redirect()->route('user.postList')->with('success', 'CSV data uploaded successfully.');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'There was an error processing the CSV file.')->withInput();

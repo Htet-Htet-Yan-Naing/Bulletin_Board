@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Login')
+@section('title', 'Upload CSV File')
 @section('contents') 
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-6">
@@ -17,7 +17,7 @@
                 @csrf
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
-                    <h6 class="mb-0">CSV file:</h6>
+                    <label class="mb-0">CSV file:</label>
                   </div>
                   <div class="col-md-9 pe-5">
                     <input class="form-control form-control-lg" id="formFileLg" type="file" name="csvfile" />

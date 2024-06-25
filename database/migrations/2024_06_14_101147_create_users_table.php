@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('email')->unique();
             $table->text('password');
-            $table->string('profile',255);
-            $table->string('type',1);
+            $table->string('profile',255)->default('img/profile.png');
+            $table->string('type',1)->default('1');
             $table->string('phone',20)->nullable();
             $table->string('address',255)->nullable();
             $table->date('dob')->nullable();
@@ -26,9 +26,8 @@ return new class extends Migration
             $table->unsignedBigInteger('create_user_id');
             $table->unsignedBigInteger('updated_user_id');
             $table->integer('deleted_user_id')->nullable();
-            $table->datetime('created_at');
-            $table->datetime('updated_at');
-            $table->datetime('deleted_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

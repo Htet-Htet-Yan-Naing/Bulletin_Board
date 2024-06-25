@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Login')
+@section('title', 'Edit Confirm Post')
 @section('contents')   
      <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-6">
@@ -36,7 +36,7 @@
                 <div class="row d-flex justify-content-center align-content-center">
                   <div class="col-sm-6">
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-5">Confirm</button>
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-5">Clear</button>
+                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-5" onclick="window.history.back();">Cancel</button>
                   </div>
                 </div>
               </form>

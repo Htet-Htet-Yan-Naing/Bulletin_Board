@@ -8,19 +8,19 @@
 @section('contents')
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-xl-12">
-    <div class="card" style="border-radius: 15px;">
+    <div class="card">
       <div class="card-header bg-success p-3 text-white">
         Post List
       </div>
       <div class="card-body">
         <div class="float-end">
           <div class="container py-5">
-            <label class=""> Keyword: </label>
+            <label class="form-control-lg"> Keyword: </label>
             <form action="{{ route('searchPost', ['search' => request('search')]) }}" method="get" class="d-inline" style="position:relative;">
               @csrf
               <input class="search-btn p-2" type="text" name="search" value="{{ request('search') }}" placeholder="Type Something" style="border:1px solid black;border-radius:8px;">
               @error('search')
-                <span class="text-red-600" style="position:absolute;top:30px;left:0;">{{$message}}</span>
+                <span class="text-red-600 alert alert-danger mt-2 mb-2" style="position:absolute;top:30px;left:0;">{{$message}}</span>
               @enderror
               <button type="submit" class="btn btn-success btn-lg">Search</button>
             </form>
@@ -30,7 +30,7 @@
             </form>
             <form action="{{ route('posts.upload')}}" method="get" class="d-inline">
               @csrf
-              <input type="hidden" name="search" value="{{ request('search') }}">
+              <!--<input type="hidden" name="search" value="{{ request('search') }}">-->
               <button type="submit" class="btn btn-success btn-lg">Upload</button>
             </form>
             <form action="{{ route('posts.download')}}" method="get" class="d-inline">
@@ -56,7 +56,7 @@
           @foreach($posts as $rs)
         <tr>
         <td class="align-middle" style="width:250px;">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#postDetailModal" data-id="{{ $rs->id }}" data-title="{{ $rs->title }}" data-description="{{ $rs->description }}" data-status="{{$rs->status}}" data-createdDate="{{$rs->created_at->format('Y-m-d') }}" data-updatedDate="{{ $rs->created_at->format('Y-m-d') }}" data-createdUser="{{ $rs->user->type }}" data-updatedUser="{{ $rs->user->type }}" id="post-detail-link">{{ $rs->title }}
+        <a href="#" data-bs-toggle="modal" data-bs-target="#postDetailModal" data-id="{{ $rs->id }}" data-title="{{ $rs->title }}" data-description="{{ $rs->description }}" data-status="{{$rs->status}}" data-createdDate="{{$rs->created_at->format('Y-m-d') }}" data-updatedDate="{{ $rs->created_at->format('Y-m-d') }}" data-createdUser="{{ $rs->user->name }}" data-updatedUser="{{ $rs->user->name }}" id="post-detail-link">{{ $rs->title }}
         </a>
         </td>
         <td class="align-middle" style="width:400px;">{{ $rs->description }}</td>
@@ -90,11 +90,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete the post?</p>
-        <p><strong>ID:</strong> <span id="postId"></span></p>
-        <p><strong>Title:</strong> <span id="postTitle"></span></p>
-        <p><strong>Description:</strong> <span id="postDescription"></span></p>
-        <p><strong>Status:</strong> <span id="postStatus"></span></p>
+        <p style="color:red;" class="mb-2">Are you sure you want to delete post?</p>
+        <p class="row mb-2"><strong class="col-md-3">ID:</strong> <span id="postId" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Title:</strong> <span id="postTitle" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Description:</strong> <span id="postDescription" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Status:</strong> <span id="postStatus" class="col-md-9"></span></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -117,14 +117,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p><strong>ID:</strong> <span id="postId" style="color:red;"></span></p>
-        <p><strong>Title:</strong> <span id="postTitle" style="color:red;"></span></p>
-        <p><strong>Description:</strong> <span id="postDescription" style="color:red;"></span></p>
-        <p><strong>Status:</strong> <span id="postStatus" style="color:red;"></span></p>
-        <p><strong>Created Date:</strong> <span id="postCreateDate" style="color:red;"></span>
-        <p><strong>Updated Date:</strong> <span id="postUpdateDate" style="color:red;"></span>
-        <p><strong>Created User:</strong> <span id="postCreateUser" style="color:red;"></span>
-        <p><strong>Updated User:</strong> <span id="postUpdateUser" style="color:red;"></span>
+        <p class="row mb-2"><strong class="col-md-4">ID:</strong> <span id="postId" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Title:</strong> <span id="postTitle" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Description:</strong> <span id="postDescription" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Status:</strong> <span id="postStatus" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Created Date:</strong> <span id="postCreateDate" class="col-md-8"></span>
+        <p class="row mb-2"><strong class="col-md-4">Updated Date:</strong> <span id="postUpdateDate" class="col-md-8"></span>
+        <p class="row mb-2"><strong class="col-md-4">Created User:</strong> <span id="postCreateUser" class="col-md-8"></span>
+        <p class="row mb-2"><strong class="col-md-4">Updated User:</strong> <span id="postUpdateUser" class="col-md-8"></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -140,6 +140,7 @@
     const postId = button.getAttribute('data-id');
     const postTitle = button.getAttribute('data-title');
     const postDescription = button.getAttribute('data-description');
+    
     const postStatus = button.getAttribute('data-status');
     const modalTitle = deleteModal.querySelector('.modal-title');
     const modalBodyId = deleteModal.querySelector('#postId');

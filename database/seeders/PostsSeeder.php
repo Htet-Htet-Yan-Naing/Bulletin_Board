@@ -64,7 +64,25 @@ class PostsSeeder extends Seeder
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                     
-                ]
+                ],
+                [
+                    'title' => "Tutorial1",
+                    'description' => 'Tutorial1 result',
+                    'status' => 1,
+                    'create_user_id' => 2,
+                    'updated_user_id' => 2,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ],
+                [
+                    'title' => "Final Exam",
+                    'description' => 'Final Exam result',
+                    'status' => 1,
+                    'create_user_id' => 3,
+                    'updated_user_id' => 3,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ],
             ]
         );
     }
