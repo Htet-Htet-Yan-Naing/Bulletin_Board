@@ -88,7 +88,7 @@
         <td class="align-middle">{{ $rs->dob }}</td>
         <td class="align-middle">{{ $rs->address }}</td>
         <td class="align-middle">
-        <a href="{{ route('profile', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>
+        <!--<a href="{{ route('profile', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>-->
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email=" {{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address=" {{ $rs->address }}">
         Delete
         </button>

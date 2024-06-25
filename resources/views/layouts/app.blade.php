@@ -13,6 +13,17 @@
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <style>
+     body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+    }
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+   
     .nav-link {
       padding: 0;
     }
@@ -89,7 +100,7 @@
         <div class="dropdown">
         <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"></button>
         <ul class="dropdown-menu dropdown-menu-left">
-          <li><a class="dropdown-item" href="{{ route('editProfile', auth()->user()->id) }}">Profile</a></li>
+          <li><a class="dropdown-item" href="{{ route('profile', auth()->user()->id) }}">Profile</a></li>
           <li><a class="dropdown-item" href="{{ url('/logout') }}">Logout</a></li>
         </ul>
         </div>
@@ -106,11 +117,13 @@
     </div>
   </nav>
   <!-- Navigation bar end -->
+  <main>
   <section>
     <div class="container mt-5 mb-5">
       <div>@yield('contents')</div>
     </div>
   </section>
+  </main>
   <!-- Footer start -->
   <footer class="bg-light text-success pt-3 pb-3">
   <div class="container-fluid">

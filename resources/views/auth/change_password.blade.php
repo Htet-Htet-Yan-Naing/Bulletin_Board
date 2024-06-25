@@ -3,7 +3,7 @@
  @section('contents')
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-7">
-          <div class="card" style="border-radius: 15px;">
+          <div class="card">
             <div class="card-header bg-success p-3 text-white">
               Change Password
             </div>
