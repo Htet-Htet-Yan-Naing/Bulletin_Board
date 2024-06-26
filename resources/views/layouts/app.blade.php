@@ -65,6 +65,9 @@
   <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand text-success" href="#">Bulletin_Board</a>
+      @guest         
+      <a class="nav-link text-success ms-3" href="{{ route('postlist') }}">Posts</a>
+    @endguest
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
         <span class="navbar-toggler-icon"></span>
       </button>

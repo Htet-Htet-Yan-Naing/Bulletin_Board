@@ -2,6 +2,7 @@
 
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Models\Posts;
 use Illuminate\Http\Request;
@@ -9,6 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail; 
+use Illuminate\Support\Str;
+use DB;
+use Carbon\Carbon; 
 
 class AuthController extends Controller
 {
@@ -60,6 +65,45 @@ class AuthController extends Controller
             return redirect()->route('login');
         }
     }
+  
+    public function login()
+    {
+        return view('auth/login');
+    }
+
+    //Login action
+    public function loginAction(Request $request)
+    {
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ], [
+            'email.required' => 'Email can\'t be blank.',
+            'email.email' => 'Email format is invalid',
+            'password.required' => 'Password can\'t be blank.'
+        ]);
+        //check login or not
+        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed')
+            ]);
+        }
+        //After authentication or  after user login
+        $request->session()->regenerate();
+        if (auth()->user()->type == 'admin') {
+            return redirect()->route('admin.postList');
+        } else {
+            return redirect()->route('user.postList');
+        }
+    }
+    //Logout action
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        return redirect('/login');
+    }
+
     public function changePassword(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -80,52 +124,70 @@ class AuthController extends Controller
             return back()->withErrors(['currentPw' => 'Current password is incorrect']);
         } else {
             $newPw = Hash::make($request->newPw);
-            $newConfirmPw =  Hash::make($request->pw_confirmation);
-                $user->password = $newPw;
-                $user->save();
-                if (auth()->user()->type == 'admin') {
-                    return redirect()->route('admin.userList');
-                } else {
-                    return redirect()->route('user.userList');
-                }
+            $newConfirmPw = Hash::make($request->pw_confirmation);
+            $user->password = $newPw;
+            $user->save();
+            if (auth()->user()->type == 'admin') {
+                return redirect()->route('admin.userList');
+            } else {
+                return redirect()->route('user.userList');
+            }
         }
     }
-    public function forgotPassword()
+    public function showForgetPasswordForm(Request $request)
     {
-        return view('auth.forgot_password');
+        return view('auth.forgetPassword');
     }
-    public function resetPassword()
+    public function submitForgetPasswordForm(Request $request)
     {
-        return view('auth.reset_password');
+        $request->session()->put('reset_password_email', $request->email);
+        $user = User::where('email', $request->email)->first();
+        $name = $user->name;
+        if (!$user) {
+                return back()->with('success', 'Email not found');
+        }
+        $token = Str::random(64);
+  
+        DB::table('password_reset_tokens')->insert([
+            'email' => $request->email, 
+            'token' => $token, 
+            'created_at' => Carbon::now()
+          ]);
+          Mail::send('email.forgetPassword', ['token' => $token,'name' => $name], function($message) use($request){
+            $message->to($request->email);
+            $message->subject('Reset Password');
+        });
+        return back()->with('success', 'Email sent with password reset instructions.');
     }
-    public function login()
+    public function showResetPasswordForm(Request $request,$token)
     {
-        return view('auth/login');
+        return view('auth.resetPassword',  ['token' => $token]);
     }
+   
+    public function submitResetPasswordForm(Request $request)
+    {
+        $request->validate([
+            'password' => 'required',
+            'password_confirmation' => 'required'
+        ]);
+        $email = $request->session()->get('reset_password_email');
+        $updatePassword = DB::table('password_reset_tokens')
+                            ->where([
+                              'email' =>  $email, 
+                              'token' => $request->token
+                            ])
+                            ->first();
 
-    //Login action
-    public function loginAction(Request $request)
-    {
-        //check login or not
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed')
-            ]);
+        if(!$updatePassword){
+            dd($updatePassword);
+            return back()->withInput()->with('success', 'Invalid token!');
         }
-        //After authentication or  after user login
-        $request->session()->regenerate();
-        if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin.postList');
-        } else {
-            return redirect()->route('user.postList');
-        }
-    }
 
-    //Logout action
-    public function logout(Request $request)
-    {
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        return redirect('/login');
+        $user = User::where('email', $email)
+                    ->update(['password' => Hash::make($request->password)]);
+
+        DB::table('password_reset_tokens')->where(['email'=> $email])->delete();
+        
+        return redirect()->route('login')->with('success', 'Password has been reset');
     }
 }

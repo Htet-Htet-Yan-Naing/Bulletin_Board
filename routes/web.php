@@ -6,6 +6,10 @@ use App\Http\Controllers\PostsController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function () {
+    return view('auth.login');
+});
+
 Route::controller(AuthController::class)->group(function () {
     Route::get('signup', 'signup')->name('signup');
     Route::post('signup', 'signupSave')->name('signup.save');
@@ -33,14 +37,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/{id}',  [UserController::class, 'profile'])->name("profile");
     Route::get('/editProfile/{id}',  [UserController::class, 'editProfile'])->name("editProfile");
     Route::post('/updateProfile/{id}',  [UserController::class, 'updateProfile'])->name("updateProfile");
-     //Change Password AuthController
      Route::get('/change_password/{id}', [AuthController::class, 'changePassword'])->name('change_password');
-     //Update Password
      Route::put('/update_password/{id}', [AuthController::class, 'updatePassword'])->name('update_password');
-     //Forgot Password
-     Route::get('/forgot_password',  [AuthController::class, 'forgotPassword'])->name('auth.forgot_password');
-     //Reset Password
-     Route::get('/reset_password',  [AuthController::class, 'resetPassword'])->name('auth.reset_password');
 });
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/adminPostList', [PostsController::class, 'adminPostList'])->name('admin.postList');
@@ -52,3 +50,8 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
     Route::get('/user/userList', [UserController::class, 'userListUser'])->name('user.userList');
 });
 
+Route::get('forget-password', [AuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
+Route::get('reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::post('reset-password', [AuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
+Route::get('post/post-list', [PostsController::class, 'postlist'])->name('postlist');

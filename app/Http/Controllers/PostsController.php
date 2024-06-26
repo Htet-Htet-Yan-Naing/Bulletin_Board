@@ -17,6 +17,12 @@ use Exception;
 
 class PostsController extends Controller
 {
+    public function postlist()
+    {
+        $posts = Posts::where('status',1)
+        ->latest()->paginate(6);
+        return view('posts.post_list', compact('posts'));
+    }
     public function adminPostList()
     {
         $posts = Posts::latest()->paginate(6);
