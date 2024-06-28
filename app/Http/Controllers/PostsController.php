@@ -6,7 +6,7 @@ use App\Models\Posts;
 use App\Exports\PostsExport;
 use App\Models\User;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -123,7 +123,7 @@ class PostsController extends Controller
         $post->create_user_id = auth()->id();
         $post->updated_user_id = auth()->id();
         $post->save();
-        $request->session()->flash('success', 'Post created successfully!');
+        $request->session()->put('success', 'Post created successfully!');
 
         //}
         if (auth()->user()->type == 'admin') {
@@ -154,7 +154,7 @@ class PostsController extends Controller
             $post->status = 0;
         }
         $post->update($request->all());
-        $request->session()->flash('success', 'Post updated successfully!');
+        $request->session()->put('success', 'Post updated successfully!');
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.postList');
         } else {
@@ -165,7 +165,7 @@ class PostsController extends Controller
     {
         $post = Posts::findOrFail($id);
         $deleted = Posts::destroy($id);
-        $request->session()->flash('success', 'Post deleted successfully!');
+        $request->session()->put('success', 'Post deleted successfully!');
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.postList');
         } else {

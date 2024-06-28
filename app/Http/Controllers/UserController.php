@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
-use DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 class UserController extends Controller
 {
@@ -36,7 +37,7 @@ class UserController extends Controller
             ->update(
                 array(
                     'deleted_user_id' => auth()->user()->id,
-                    'deleted_at' => \Carbon\Carbon::now()
+                    'deleted_at' => Carbon::now()
                 )
             );
         $create_user_id = $id;
@@ -44,7 +45,7 @@ class UserController extends Controller
         $posts = Posts::where('create_user_id', $create_user_id)->get();
         // Delete all found posts
          $deleted = Posts::where('create_user_id', $create_user_id)->delete();
-        $request->session()->flash('success', 'User deleted successfully!');
+        $request->session()->put('success', 'User deleted successfully!');
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.userList');
         } else {
@@ -127,7 +128,7 @@ class UserController extends Controller
                 $existingUser->deleted_at = null;
                 $existingUser->deleted_user_id = null;
                 $existingUser->save();
-                $request->session()->flash('success', 'User Created successfully!');
+                $request->session()->put('success', 'User Created successfully!');
             }
         } else {
             $type = $request->type;
@@ -146,7 +147,7 @@ class UserController extends Controller
             $user->create_user_id = auth()->id();
             $user->updated_user_id = auth()->id();
             $user->save();
-            $request->session()->flash('success', 'User created successfully!');
+            $request->session()->put('success', 'User created successfully!');
 
         }
         if (auth()->user()->type == 'admin') {
@@ -188,7 +189,7 @@ class UserController extends Controller
             $user->profile = $imagePath;
         }
         $user->update($request->all());
-        $request->session()->flash('success', 'User updated successfully!');
+        $request->session()->put('success', 'User updated successfully!');
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.userList');
         } else {
