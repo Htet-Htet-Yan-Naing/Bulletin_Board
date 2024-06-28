@@ -1,57 +1,57 @@
 @extends('layouts.app')
 @section('title', 'User List')
 @section('contents') 
-@if(Session::has('success'))
-  <div class="alert alert-success" role="alert">
-    {{ Session::get('success') }}
-  </div>
-@endif
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-xl-12">
     <div class="card" style="border-radius: 15px;">
       <div class="card-header bg-success p-3 text-white">
         User List
       </div>
+      @if(Session::has('success'))
+      <div class="alert alert-success" role="alert" id="success-alert">
+      {{ Session::get('success') }}
+      </div>
+      @endif
       <div class="card-body">
-      <div class="container">
-  <div class="col-md-10 m-atuo">
-  <div class="row mb-4">
-  <form action="{{ route('searchUser') }}" method="get" class="form-horizontal row">
-          @csrf
-    <div class="col ms-2">
-        <label class=""> Name: </label>
-        <input class="search-btn p-2" type="text" name="name" value="{{ request('name') }}" style="border:1px solid black;border-radius:8px;">
-        @error('name')
-          <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
-        @enderror
-      </div>
-    <div class="col ms-4">
-        <label class=""> Email: </label>
-        <input class="search-btn p-2" type="email" name="email" value="{{ request('email') }}" style="border:1px solid black;border-radius:8px;">
-        @error('email')
-          <div class="alert alert-danger mt-1  mb-0">{{ $message }}</div>
-        @enderror
-      </div>
-    <div class="col ms-4">
-        <label class=""> From: </label>
-        <input class="search-btn p-2" type="date" name="start_date" value="{{ request('start_date') }}" style="border:1px solid black;border-radius:8px;">
-        @error('start_date')
-          <div class="alert alert-danger mt-1  mb-0">{{ $message }}</div>
-        @enderror
-      </div>
-    <div class="col">
-        <label class=""> To: </label>
-        <input class="search-btn p-2" type="date" name="end_date" value="{{ request('end_date') }}" style="border:1px solid black;border-radius:8px;">
-        @error('end_date')
-          <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
-        @enderror
-      </div>
-    <div class="col mt-3">
-          <button type="submit" class="btn btn-success btn-lg">Search</button>
-    </form>
-    </div>
-  </div>
-</div>
+        <div class="container">
+          <div class="col-md-10 m-atuo">
+            <div class="row mb-4">
+              <form action="{{ route('searchUser') }}" method="get" class="form-horizontal row">
+                @csrf
+                <div class="col ms-2">
+                  <label class=""> Name: </label>
+                  <input class="search-btn p-2" type="text" name="name" value="{{ request('name') }}" style="border:1px solid black;border-radius:8px;">
+                  @error('name')
+            <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
+          @enderror
+                </div>
+                <div class="col ms-4">
+                  <label class=""> Email: </label>
+                  <input class="search-btn p-2" type="email" name="email" value="{{ request('email') }}" style="border:1px solid black;border-radius:8px;">
+                  @error('email')
+            <div class="alert alert-danger mt-1  mb-0">{{ $message }}</div>
+          @enderror
+                </div>
+                <div class="col ms-4">
+                  <label class=""> From: </label>
+                  <input class="search-btn p-2" type="date" name="start_date" value="{{ request('start_date') }}" style="border:1px solid black;border-radius:8px;">
+                  @error('start_date')
+            <div class="alert alert-danger mt-1  mb-0">{{ $message }}</div>
+          @enderror
+                </div>
+                <div class="col">
+                  <label class=""> To: </label>
+                  <input class="search-btn p-2" type="date" name="end_date" value="{{ request('end_date') }}" style="border:1px solid black;border-radius:8px;">
+                  @error('end_date')
+            <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
+          @enderror
+                </div>
+                <div class="col mt-3">
+                  <button type="submit" class="btn btn-success btn-lg">Search</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
       <table class="table table-hover table-striped">
         <thead class="table-primary">
@@ -68,33 +68,26 @@
         </thead>
         <tbody>
           @if($users->count() > 0)
-          @foreach($users as $rs)
-        <tr>
-        <td class="align-middle">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" 
-            data-id="{{ $rs->id }}" data-name="{{ $rs->name }}"
-            data-type="{{ $rs->type }}" data-email="{{ $rs->email }}"
-            data-phone="{{ $rs->phone }}" 
-            data-dob="{{ $rs->dob }}" data-address="{{ $rs->address }}"
-            data-created-at="{{ $rs->created_at }}" data-created-user="{{$rs->creator->name}}"
-            data-updated-at="{{ $rs->updated_at }}" data-updated-user="{{$rs->updateBy->name}}"
-             id="user-detail-link">{{ $rs->name }}
+        @foreach($users as $rs)
+      <tr>
+      <td class="align-middle">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email="{{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address="{{ $rs->address }}" data-created-at="{{ $rs->created_at }}" data-created-user="{{$rs->creator->name}}" data-updated-at="{{ $rs->updated_at }}" data-updated-user="{{$rs->updateBy->name}}" id="user-detail-link">{{ $rs->name }}
         </a>
-        </td>
-        <td class="align-middle">{{ $rs->email }}</td>
-        <td class="align-middle">{{ $rs->creator->name }}</td>
-        <td class="align-middle">{{ $rs->type}}</td>
-        <td class="align-middle">{{ $rs->phone }}</td>
-        <td class="align-middle">{{ $rs->dob }}</td>
-        <td class="align-middle">{{ $rs->address }}</td>
-        <td class="align-middle">
+      </td>
+      <td class="align-middle">{{ $rs->email }}</td>
+      <td class="align-middle">{{ $rs->creator->name }}</td>
+      <td class="align-middle">{{ $rs->type}}</td>
+      <td class="align-middle">{{ $rs->phone }}</td>
+      <td class="align-middle">{{ $rs->dob }}</td>
+      <td class="align-middle">{{ $rs->address }}</td>
+      <td class="align-middle">
         <!--<a href="{{ route('profile', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>-->
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email=" {{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address=" {{ $rs->address }}">
         Delete
         </button>
-        </td>
-        </tr>
-      @endforeach
+      </td>
+      </tr>
+    @endforeach
       @else
       <tr>
       <td class="text-center" colspan="8">Product not found</td>
@@ -233,6 +226,19 @@
       modalBodyUpdatedUser.textContent = userUpdated;
     });
   }); 
+  
+  document.addEventListener("DOMContentLoaded", function() {
+        // Get the alert element
+        var alertElement = document.getElementById('success-alert');
+        
+        // If the alert element exists
+        if (alertElement) {
+            // Set a timeout to remove the element after 5 seconds
+            setTimeout(function() {
+                alertElement.remove(); // Remove the alert element
+            }, 5000); // 5000 milliseconds = 5 seconds
+        }
+    });
 </script>
 
 @endsection

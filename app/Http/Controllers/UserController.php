@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Posts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,7 +39,11 @@ class UserController extends Controller
                     'deleted_at' => \Carbon\Carbon::now()
                 )
             );
-        $deleted = User::destroy($id);
+        $create_user_id = $id;
+        // Find all posts created by the user with the given user_id
+        $posts = Posts::where('create_user_id', $create_user_id)->get();
+        // Delete all found posts
+         $deleted = Posts::where('create_user_id', $create_user_id)->delete();
         $request->session()->flash('success', 'User deleted successfully!');
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.userList');
@@ -111,6 +116,9 @@ class UserController extends Controller
             ->first();
         if ($existingUser) {
             if ($existingUser->deleted_at) {
+                $existingUser->name = $validatedData['name'];
+                $existingUser->email = $validatedData['email'];
+                $existingUser->password = Hash::make($validatedData['pw']);
                 $existingUser->phone = $request->input('phone');
                 $existingUser->address = $request->input('address');
                 $existingUser->dob = $request->input('dob');

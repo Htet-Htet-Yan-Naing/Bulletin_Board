@@ -1,10 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Post list')
-@if(Session::has('success'))
-  <div class="alert alert-success" role="alert">
-    {{ Session::get('success') }}
-  </div>
-@endif
+
 @section('contents')
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-xl-12">
@@ -12,6 +8,11 @@
       <div class="card-header bg-success p-3 text-white">
         Post List
       </div>
+      @if(Session::has('success'))
+      <div class="alert alert-success" role="alert" id="success-alert">
+      {{ Session::get('success') }}
+      </div>
+    @endif
       <div class="card-body">
         <div class="float-end">
           <div class="container py-5">
@@ -20,8 +21,8 @@
               @csrf
               <input class="search-btn p-2" type="text" name="search" value="{{ request('search') }}" placeholder="Type Something" style="border:1px solid black;border-radius:8px;">
               @error('search')
-                <span class="text-red-600 alert alert-danger mt-2 mb-2" style="position:absolute;top:30px;left:0;">{{$message}}</span>
-              @enderror
+          <span class="text-red-600 alert alert-danger mt-2 mb-2" style="position:absolute;top:30px;left:0;">{{$message}}</span>
+        @enderror
               <button type="submit" class="btn btn-success btn-lg">Search</button>
             </form>
             <form action="{{ route('createPost') }}" method="get" class="d-inline">
@@ -41,6 +42,13 @@
           </div>
         </div>
         <div class="container py-5">
+          <label for="pagination">Page size</label>
+          <select id="pagination" class="pagination-selector">
+            <option>Select</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+          </select>
           <table class="table table-hover table-striped">
             <thead class="table-primary">
               <tr>
@@ -75,7 +83,9 @@
       @endif
             </tbody>
           </table>
-          {!! $posts->links() !!}
+          <div id="pagination-container">
+            {!! $posts->links() !!}
+          </div>
         </div>
       </div>
     </div>
@@ -140,7 +150,7 @@
     const postId = button.getAttribute('data-id');
     const postTitle = button.getAttribute('data-title');
     const postDescription = button.getAttribute('data-description');
-    
+
     const postStatus = button.getAttribute('data-status');
     const modalTitle = deleteModal.querySelector('.modal-title');
     const modalBodyId = deleteModal.querySelector('#postId');
@@ -167,7 +177,6 @@
       const postUpdateDate = link.getAttribute('data-updatedDate');
       const postCreateUser = link.getAttribute('data-createdUser');
       const postUpdateUser = link.getAttribute('data-updatedUser');
-      // Update modal content
       const modalTitle = postDetailModal.querySelector('.modal-title');
       const modalBodyId = postDetailModal.querySelector('#postId');
       const modalBodyTitle = postDetailModal.querySelector('#postTitle');
@@ -188,6 +197,24 @@
       modalBodyStatus.textContent = postStatus == 1 ? 'Active' : 'Inactive';
 
     });
-  }); 
+  });
+  document.getElementById('pagination').addEventListener('change', function () {
+    var pageSize = this.value;
+    var route = "{{ route('postlist') }}"; // Replace with correct route name
+    window.location.href = route + '?page_size=' + pageSize;
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+        // Get the alert element
+        var alertElement = document.getElementById('success-alert');
+        
+        // If the alert element exists
+        if (alertElement) {
+            // Set a timeout to remove the element after 5 seconds
+            setTimeout(function() {
+                alertElement.remove(); // Remove the alert element
+            }, 5000); // 5000 milliseconds = 5 seconds
+        }
+    });
 </script>
 @endsection

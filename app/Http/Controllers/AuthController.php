@@ -83,18 +83,35 @@ class AuthController extends Controller
             'password.required' => 'Password can\'t be blank.'
         ]);
         //check login or not
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed')
-            ]);
+        //if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        //    throw ValidationException::withMessages([
+        //        'email' => trans('auth.failed')
+        //    ]);
+        //}
+          //After authentication or  after user login
+        //$request->session()->regenerate();
+        //if (auth()->user()->type == 'admin') {
+        //    return redirect()->route('admin.postList');
+        //} else {
+        //    return redirect()->route('user.postList');
+        //}
+        $user = User::where('email', $validatedData['email'])->first();
+       if($user){
+        if (Auth::attempt($request->only('email', 'password'))){
+            $request->session()->regenerate();
+            if (auth()->user()->type == 'admin') {
+                return redirect()->route('admin.postList');
+            } else {
+                return redirect()->route('user.postList');
+            }
         }
-        //After authentication or  after user login
-        $request->session()->regenerate();
-        if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin.postList');
-        } else {
-            return redirect()->route('user.postList');
+        else{
+            return redirect()->back()->with('success', 'Incorrect password');
         }
+    }
+    else{
+            return redirect()->back()->with('success', 'Email  does\'t exit.');
+    }
     }
     //Logout action
     public function logout(Request $request)

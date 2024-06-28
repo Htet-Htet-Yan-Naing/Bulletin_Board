@@ -23,7 +23,16 @@
       flex: 1;
       padding: 20px;
     }
-   
+    .header,.footer{
+    z-index: 999;
+    width: 100%;
+    padding: 10px 0 10px;
+    box-shadow: rgba(70, 70, 70, 0.1) 1.95px 1.95px 2.6px;
+    background-color: #FFFFFF;
+}
+.header{
+  position: fixed;
+}
     .nav-link {
       padding: 0;
     }
@@ -61,11 +70,17 @@
 
 <body>
   <!-- Navigation bar start -->
-
-  <nav class="navbar navbar-expand-sm navbar-light bg-light">
+  <nav class="navbar navbar-expand-sm navbar-light header" style="background-color:#FFFFFF;">
     <div class="container-fluid">
-      <a class="navbar-brand text-success" href="#">Bulletin_Board</a>
-      @guest         
+    @auth
+        @if(auth()->user()->type == 'admin')
+        <a class="navbar-brand text-success" href="{{ route('admin.postList') }}">Bulletin_Board</a>
+    @else
+    <a class="navbar-brand text-success" href="{{ route('user.postList') }}">Bulletin_Board</a>
+  @endif
+      @endauth
+      @guest
+      <a class="navbar-brand text-success" href="{{ route('postlist') }}">Bulletin_Board</a>
       <a class="nav-link text-success ms-3" href="{{ route('postlist') }}">Posts</a>
     @endguest
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
@@ -120,7 +135,7 @@
     </div>
   </nav>
   <!-- Navigation bar end -->
-  <main>
+  <main style="background-color:#F1FBFC;">
   <section>
     <div class="container mt-5 mb-5">
       <div>@yield('contents')</div>
@@ -128,7 +143,7 @@
   </section>
   </main>
   <!-- Footer start -->
-  <footer class="bg-light text-success pt-3 pb-3">
+  <footer class="footer text-success">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">

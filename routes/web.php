@@ -10,6 +10,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+
 Route::controller(AuthController::class)->group(function () {
     Route::get('signup', 'signup')->name('signup');
     Route::post('signup', 'signupSave')->name('signup.save');
@@ -41,12 +42,13 @@ Route::middleware(['auth'])->group(function () {
      Route::put('/update_password/{id}', [AuthController::class, 'updatePassword'])->name('update_password');
 });
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
-    Route::get('/adminPostList', [PostsController::class, 'adminPostList'])->name('admin.postList');
+    Route::get('/adminPostList', [PostsController::class, 'postlist'])->name('admin.postList');
     Route::get('/admin/userList', [UserController::class, 'userListAdmin'])->name('admin.userList');
+    
 });
  
 Route::middleware(['auth', 'user-access:user'])->group(function () {
-    Route::get('/userPostList', [PostsController::class, 'userPostList'])->name('user.postList');
+    Route::get('/userPostList', [PostsController::class, 'postlist'])->name('user.postList');
     Route::get('/user/userList', [UserController::class, 'userListUser'])->name('user.userList');
 });
 

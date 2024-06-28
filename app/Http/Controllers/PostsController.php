@@ -17,25 +17,64 @@ use Exception;
 
 class PostsController extends Controller
 {
-    public function postlist()
+
+    public function postlist(Request $request)
     {
-        $posts = Posts::where('status',1)
-        ->latest()->paginate(6);
+        $pageSize = $request->input('page_size', 5); // Default page size is 6
+        $posts = Posts::where('status', 1)->latest()->paginate($pageSize); // Assuming your model is named Post
         return view('posts.post_list', compact('posts'));
+        if (auth()->user()->type == "admin") {
+            $pageSize = $request->input('page_size', 5); // Default page size is 6
+            $posts = Posts::latest()->paginate($pageSize); // Assuming your model is named Post
+            return view('posts.post_list', compact('posts'));
+        } elseif (auth()->user()->type == "admin") {
+            $userId = auth()->id();
+            $pageSize = $request->input('page_size', 5); // Default page size is 6
+            $posts = Posts::where('create_user_id', $userId)->latest()->paginate($pageSize); // Assuming your model is named Post
+            return view('posts.post_list', compact('posts'));
+        }
+        //else{
+        //    $pageSize = $request->input('page_size', 5); // Default page size is 6
+        //$posts = Posts::where('status',1)->latest()->paginate($pageSize); // Assuming your model is named Post
+        //return view('posts.post_list', compact('posts'));
+        //}
     }
-    public function adminPostList()
-    {
-        $posts = Posts::latest()->paginate(6);
-        return view('posts.post_list', compact('posts'));
-    }
-    public function userPostList()
-    {
-        $userId = auth()->id();
-        $posts = Posts::where('create_user_id', $userId)
-                ->latest()
-                ->paginate(6);
-        return view('posts.post_list', compact('posts'));
-    }
+    //    public function adminPostList(Request $request)
+//    {
+////
+////        $pageSize = $request->input('page_size',6); // Default page size is 6
+////      //  dd($pageSize);
+////      
+////    $posts = Posts::latest()->paginate($pageSize);
+////    return view('posts.post_list', compact('posts'));
+//        //$posts = Posts::latest()->paginate(5);
+//        ////dd($request->page_size);
+//        //return view('posts.post_list', compact('posts'));
+//        //dd($request->page_size);
+//
+//    $pageSize = $request->input('page_size', 5); // Default page size is 6
+//    $posts = Posts::latest()->paginate($pageSize); // Assuming your model is named Post
+//    return view('posts.post_list', compact('posts'));
+//    }
+//    public function userPostList(Request $request)
+//    {
+//        //dd("user");
+//        //$userId = auth()->id();
+//        //$pageSize = $request->input('page_size', 6); // Default page size is 6
+//        //dd($pageSize);
+//        //$posts = Posts::where('create_user_id', $userId)
+//        //->latest()->paginate($pageSize);
+//        //return view('posts.post_list', compact('posts'));
+//        //$userId = auth()->id();
+//        //$posts = Posts::where('create_user_id', $userId)
+//        //        ->latest()
+//        //        ->paginate(5);
+//        //return view('posts.post_list', compact('posts'));
+//        $userId = auth()->id();
+//        $pageSize = $request->input('page_size', 5); // Default page size is 6
+//        $posts = Posts::where('create_user_id', $userId)->latest()->paginate($pageSize); // Assuming your model is named Post
+//        return view('posts.post_list', compact('posts'));
+//    }
 
     public function createPost(Request $request)
     {
@@ -75,16 +114,16 @@ class PostsController extends Controller
             'title.max' => '255 characters is the maximum allowed',
             'description.max' => '255 characters is the maximum allowed'
         ]);
-            $post = Posts::create([
-                'title' => $validatedData['title'],
-                'description' => $validatedData['description'],
-                'create_user_id' => 1,
-                'updated_user_id' => 1
-            ]);
-            $post->create_user_id = auth()->id();
-            $post->updated_user_id = auth()->id();
-            $post->save();
-            $request->session()->flash('success', 'Post created successfully!');
+        $post = Posts::create([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'create_user_id' => 1,
+            'updated_user_id' => 1
+        ]);
+        $post->create_user_id = auth()->id();
+        $post->updated_user_id = auth()->id();
+        $post->save();
+        $request->session()->flash('success', 'Post created successfully!');
 
         //}
         if (auth()->user()->type == 'admin') {
@@ -164,43 +203,38 @@ class PostsController extends Controller
                         ->orWhere('description', 'like', "%$search%");
                 })
                     ->where('create_user_id', $userId)
-                   // ->where('deleted_at', null)
+                    // ->where('deleted_at', null)
                     ->paginate(6);
                 return view('posts.post_list', compact('posts'));
             }
         }
     }
-
     public function download(Request $request)
     {
-        if (auth()->user()->type == 'admin') {
-            return Excel::download(new PostsExport, 'posts.csv', \Maatwebsite\Excel\Excel::CSV);
-        } elseif (auth()->user()->type == 'user') {
-            $search = $request->input('search');
-            $posts = Posts::where('title', 'like', '%' . $search . '%')
-                ->where('create_user_id', auth()->user()->id)
-                ->orWhere('description', 'like', '%' . $search . '%')
-                //->whereNull('deleted_at')
-                ->where('create_user_id', auth()->user()->id)
-                ->paginate(5);
-            return new StreamedResponse(function () use ($posts) {
-                $handle = fopen('php://output', 'w');
-                fputcsv($handle, ['ID', 'Post Title', 'Post Description', 'Posted User', 'Posted Date']);
-                foreach ($posts as $post) {
-                    fputcsv($handle, [$post->id, $post->title, $post->description, $post->user->type, $post->created_at]);
-                }
-                fclose($handle);
-            }, 200, [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="posts.csv"',
-            ]);
-        }
+        $search = $request->input('search');
+        $posts = Posts::where('title', 'like', '%' . $search . '%')
+            ->where('create_user_id', auth()->user()->id)
+            ->orWhere('description', 'like', '%' . $search . '%')
+            //->whereNull('deleted_at')
+            ->where('create_user_id', auth()->user()->id)
+            ->paginate(5);
+        return new StreamedResponse(function () use ($posts) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['ID', 'Post Title', 'Post Description', 'Posted User', 'Posted Date']);
+            foreach ($posts as $post) {
+                fputcsv($handle, [$post->id, $post->title, $post->description, $post->user->type, $post->created_at]);
+            }
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="posts.csv"',
+        ]);
     }
     public function upload(Request $request)
     {
         return view('posts.upload_csv');
     }
-      public function uploadCSV(Request $request)
+    public function uploadCSV(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'csvfile' => 'required|file',
@@ -211,8 +245,19 @@ class PostsController extends Controller
         }
         $file = $request->file('csvfile');
         try {
-            $csv = Reader::createFromPath($file->getRealPath());
-            $csv->setHeaderOffset(0); 
+            //Read the file content
+            $content = file_get_contents($file->getRealPath());
+
+            // Normalize line endings to Unix style
+            $content = str_replace(["\r\n", "\r"], "\n", $content);
+
+            // Write the normalized content back to a temporary file
+            $tempPath = sys_get_temp_dir() . '/' . uniqid() . '.csv';
+            file_put_contents($tempPath, $content);
+
+            // Parse the CSV file using league/csv
+            $csv = Reader::createFromPath($tempPath, 'r');
+            $csv->setHeaderOffset(0);
             $header = $csv->getHeader();
             if (count($header) !== 3) {
                 dd($header);
@@ -233,7 +278,11 @@ class PostsController extends Controller
                     'updated_at' => Carbon::now(),
                 ]);
             }
-            return redirect()->route('user.postList')->with('success', 'CSV data uploaded successfully.');
+            if (auth()->user()->type == 'admin') {
+                return redirect()->route('admin.postList')->with('success', 'CSV data uploaded successfully.');
+            } else {
+                return redirect()->route('user.postList')->with('success', 'CSV data uploaded successfully.');
+            }
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'There was an error processing the CSV file.')->withInput();
         }
