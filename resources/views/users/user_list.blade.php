@@ -1,107 +1,138 @@
 @extends('layouts.app')
 @section('title', 'User List')
 @section('contents') 
-<div class="row d-flex justify-content-center align-items-center h-100">
-  <div class="col-xl-12">
-    <div class="card" style="border-radius: 15px;">
-      <div class="card-header bg-success p-3 text-white">
-        User List
-      </div>
-      @if(Session::has('success'))
-      <div class="alert alert-success" role="alert" id="success-alert">
-      {{ Session::get('success') }}
-      </div>
-      @endif
-      <div class="card-body">
-        <div class="container">
-          <div class="col-md-10 m-atuo">
-            <div class="row mb-4">
-              <form action="{{ route('searchUser') }}" method="get" class="form-horizontal row">
-                @csrf
-                <div class="col ms-2">
-                  <label class=""> Name: </label>
-                  <input class="search-btn p-2" type="text" name="name" value="{{ request('name') }}" style="border:1px solid black;border-radius:8px;">
-                  @error('name')
-            <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
-          @enderror
-                </div>
-                <div class="col ms-4">
-                  <label class=""> Email: </label>
-                  <input class="search-btn p-2" type="email" name="email" value="{{ request('email') }}" style="border:1px solid black;border-radius:8px;">
-                  @error('email')
-            <div class="alert alert-danger mt-1  mb-0">{{ $message }}</div>
-          @enderror
-                </div>
-                <div class="col ms-4">
-                  <label class=""> From: </label>
-                  <input class="search-btn p-2" type="date" name="start_date" value="{{ request('start_date') }}" style="border:1px solid black;border-radius:8px;">
-                  @error('start_date')
-            <div class="alert alert-danger mt-1  mb-0">{{ $message }}</div>
-          @enderror
-                </div>
-                <div class="col">
-                  <label class=""> To: </label>
-                  <input class="search-btn p-2" type="date" name="end_date" value="{{ request('end_date') }}" style="border:1px solid black;border-radius:8px;">
-                  @error('end_date')
-            <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
-          @enderror
-                </div>
-                <div class="col mt-3">
-                  <button type="submit" class="btn btn-success btn-lg">Search</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <table class="table table-hover table-striped">
-        <thead class="table-primary">
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Created User</th>
-            <th>Type</th>
-            <th>Phone</th>
-            <th>Date of Birth</th>
-            <th>Address</th>
-            <th>Operation</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if($users->count() > 0)
-        @foreach($users as $rs)
-      <tr>
-      <td class="align-middle">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email="{{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address="{{ $rs->address }}" data-created-at="{{ $rs->created_at }}" data-created-user="{{$rs->creator->name}}" data-updated-at="{{ $rs->updated_at }}" data-updated-user="{{$rs->updateBy->name}}" id="user-detail-link">{{ $rs->name }}
-        </a>
-      </td>
-      <td class="align-middle">{{ $rs->email }}</td>
-      <td class="align-middle">{{ $rs->creator->name }}</td>
-      <td class="align-middle">{{ $rs->type}}</td>
-      <td class="align-middle">{{ $rs->phone }}</td>
-      <td class="align-middle">{{ $rs->dob }}</td>
-      <td class="align-middle">{{ $rs->address }}</td>
-      <td class="align-middle">
-        <!--<a href="{{ route('profile', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>-->
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email=" {{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address=" {{ $rs->address }}">
-        Delete
-        </button>
-      </td>
-      </tr>
-    @endforeach
-      @else
-      <tr>
-      <td class="text-center" colspan="8">Product not found</td>
-      </tr>
-    @endif
-        </tbody>
-      </table>
-      {!! $users->links() !!}
-    </div>
+@if(Session::has('create'))
+  <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
+    {{ Session::get('create') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
+@endif
+<div class="row d-flex justify-content-center align-items-center h-100">
+  <div class="col-md-12">
+ <!-- User Search Container start -->
+ <!-- Search Row Start -->
+<div class="user-search-container">
+  <form action="{{ route('searchUser') }}" method="get" class="form-horizontal row mb-3">
+    @csrf
+
+    <!-- Page Size Select -->
+    <div class="col-md-2">
+      <label class="form-label txtColor">Page size:</label>
+      <select name="pageSize" class="form-control pagination-selector" onchange="this.form.submit()">
+        <option value="4" {{ request()->input('pageSize') == 4 ? 'selected' : '' }}>4</option>
+        <option value="5" {{ request()->input('pageSize') == 5 ? 'selected' : '' }}>5</option>
+        <option value="10" {{ request()->input('pageSize') == 10 ? 'selected' : '' }}>10</option>
+        <option value="20" {{ request()->input('pageSize') == 20 ? 'selected' : '' }}>20</option>
+      </select>
+    </div>
+
+    <!-- Name -->
+    <div class="col-md-2">
+      <label class="form-label txtColor">Name:</label>
+      <input class="form-control" type="text" name="name" value="{{ request('name') }}" style="border-radius: 8px;">
+      @error('name')
+        <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
+      @enderror
+    </div>
+
+    <!-- Email -->
+    <div class="col-md-2">
+      <label class="form-label txtColor">Email:</label>
+      <input class="form-control" type="email" name="email" value="{{ request('email') }}" style="border-radius: 8px;">
+      @error('email')
+        <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
+      @enderror
+    </div>
+
+    <!-- From Date -->
+    <div class="col-md-2">
+      <label class="form-label txtColor">From:</label>
+      <input class="form-control" type="date" name="start_date" value="{{ request('start_date') }}" style="border-radius: 8px;">
+      @error('start_date')
+        <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
+      @enderror
+    </div>
+
+    <!-- To Date -->
+    <div class="col-md-2">
+      <label class="form-label txtColor">To:</label>
+      <input class="form-control" type="date" name="end_date" value="{{ request('end_date') }}" style="border-radius: 8px;">
+      @error('end_date')
+        <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
+      @enderror
+    </div>
+
+    <!-- Search Button -->
+    <div class="col-md-2 user-search-div">
+      <button type="submit" class="btn btnColor user-search-btn" style="width:100%;">Search</button>
+    </div>
+
+  </form>
+</div>
+<!-- Search Row End -->
+
+ <!-- User Search Contaienr end -->
+
+
+
+<!-- User Table start -->
+<table class="table">
+  <thead class="txtColor">
+    <tr class="thead">
+      <th class="profile-head">Profile</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Created User</th>
+      <th>Type</th>
+      <th>Phone</th>
+      <th>Date of Birth</th>
+      <th>Address</th>
+      <th>Operation</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if($users->count() > 0)
+    @foreach($users as $rs)
+    <tr class="row-des-color grow-on-hover">
+      <td class="align-middle rounded-content" style="border-bottom:1px solid #EBEBEB;">
+      <div class="icon">
+      <img src="../{{ $rs->profile}}" class="profile-img" alt="Profile">
+      </div>
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email="{{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address="{{ $rs->address }}" data-created-at="{{ $rs->created_at }}" data-created-user="{{$rs->creator->name}}" data-updated-at="{{ $rs->updated_at }}" data-updated-user="{{$rs->updateBy->name}}" id="user-detail-link">{{ $rs->name }}
+      </a>
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->email }}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->creator->name }}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->type}}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->phone }}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->dob }}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->address }}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      <button type="button" class="user-trash" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email=" {{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address=" {{ $rs->address }}">
+      <img src="../img/trash.png" class="img-trash">
+      </button>
+      </td>
+    </tr>
+  @endforeach
+  @else
+  <tr>
+    <td class="text-center" colspan="8">Product not found</td>
+  </tr>
+@endif
+  </tbody>
+</table>
+<!-- User Table end -->
+<div class="pagination-container textColor" style="padding-bottom:0;">
+  {{ $users->appends(request()->query())->links() }}
 </div>
 </div>
 </div>
-<!-- Delete Confirmation Modal -->
+</div>
+
+
+<!-- Delete Confirmation Modal start-->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -110,7 +141,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p style="color:red;">Are you sure to delete user?</p>
+        <p class="text-danger pb-4">Are you sure to delete user?</p>
         <p class="row mb-2"><strong class="col-md-3">ID: </strong> <span id="userId" class="col-md-9"></span></p>
         <p class="row mb-2"><strong class="col-md-3">Name:</strong> <span id="userName" class="col-md-9"></span></p>
         <p class="row mb-2"><strong class="col-md-3">Type:</strong> <span id="userType" class="col-md-9"></span></p>
@@ -130,7 +161,8 @@
     </div>
   </div>
 </div>
-<!-- End Delete Confirmation Modal -->
+<!-- End Delete Confirmation Modal end -->
+
 <!-- User Detail Modal start-->
 <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -159,6 +191,25 @@
 </div>
 <!-- Post Detail Modal end-->
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var successAlert = document.getElementById('success-alert');
+    if (successAlert) {
+      setTimeout(function () {
+        successAlert.remove();
+        location.reload();
+      }, 1000);
+    }
+    //// Get the alert element
+    //var alertElement = document.getElementById('success-alert');
+    //
+    //// If the alert element exists
+    //if (alertElement) {
+    //    // Set a timeout to remove the element after 5 seconds
+    //    setTimeout(function() {
+    //        alertElement.remove(); // Remove the alert element
+    //    }, 5000); // 5000 milliseconds = 5 seconds
+    //}
+  });
   const deleteModal = document.getElementById('deleteModal');
   deleteModal.addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget;
@@ -226,19 +277,5 @@
       modalBodyUpdatedUser.textContent = userUpdated;
     });
   }); 
-  
-  document.addEventListener("DOMContentLoaded", function() {
-        // Get the alert element
-        var alertElement = document.getElementById('success-alert');
-        
-        // If the alert element exists
-        if (alertElement) {
-            // Set a timeout to remove the element after 5 seconds
-            setTimeout(function() {
-                alertElement.remove(); // Remove the alert element
-            }, 5000); // 5000 milliseconds = 5 seconds
-        }
-    });
 </script>
-
 @endsection

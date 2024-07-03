@@ -3,8 +3,8 @@
 @section('contents')
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-xl-7">
-    <div class="card">
-      <div class="card-header bg-success p-3 text-white">
+    <div class="card-custom">
+      <div class="card-header-custom p-3 txtColor">
         Reset Password
       </div>
       <div class="card-body">
@@ -34,12 +34,14 @@
           <!-- Submit button -->
           <div class="row d-flex justify-content-center align-content-center">
             <div class="col-sm-4">
-              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block col-sm-12">Update password</button>
+              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-sm-12">Update password</button>
             </div>
           </div>
         </form>
       </div>
+
     </div>
+    
   </div>
 </div>
 @endsection

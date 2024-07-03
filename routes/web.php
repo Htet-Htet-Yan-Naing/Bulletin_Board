@@ -27,7 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/register', [UserController::class, 'register'])->name('register');
     Route::post('/confirmRegister',  [UserController::class, 'confirmRegister'])->name("confirmRegister");
     Route::post('/userSave', [UserController::class, 'userSave'])->name("user.save");
-    Route::get('/edit/{id}', [PostsController::class, 'edit'])->name("edit");
+    Route::post('/edit/{id}', [PostsController::class, 'edit'])->name("edit");
     Route::post('/confirmEdit/{id}', [PostsController::class, 'confirmEdit'])->name("confirmEdit");
     Route::post('/update/{id}', [PostsController::class, 'update'])->name("update"); 
     Route::delete('/postlists/{id}/destroy', [PostsController::class, 'destroy'])->name('post.destroy');
@@ -57,3 +57,4 @@ Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm
 Route::get('reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
 Route::post('reset-password', [AuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 Route::get('post/post-list', [PostsController::class, 'postlist'])->name('postlist');
+Route::get('posts', [PostsController::class, 'posts'])->name('posts');

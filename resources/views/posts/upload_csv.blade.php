@@ -3,8 +3,8 @@
 @section('contents') 
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-6">
-          <div class="card">
-            <div class="card-header bg-success p-3 text-white">
+          <div class="card-custom">
+            <div class="card-header-custom p-3 txtColor">
               Upload CSV File
             </div>
             @if(Session::has('error'))

@@ -3,8 +3,8 @@
 @section('contents') 
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-xl-9">
-          <div class="card" style="border-radius: 15px;">
-            <div class="card-header bg-success p-3 text-white">
+          <div class="card-custom" style="border-radius: 15px;">
+            <div class="card-header-custom p-3 txtColor">
               Register
             </div>
             <div class="card-body">
@@ -124,7 +124,7 @@
                 <!-- Button -->
                 <div class="row d-flex justify-content-center align-content-center">
                   <div class="col-sm-6">
-                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-4">Register</button>
+                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-sm-4">Register</button>
                     <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
                   </div>
                 </div>

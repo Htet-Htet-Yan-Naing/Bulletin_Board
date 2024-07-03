@@ -4,8 +4,8 @@
 @section('contents')
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-xl-7">
-    <div class="card">
-      <div class="card-header bg-success p-3 text-white">
+    <div class="card-custom">
+      <div class="card-header-custom p-3 txtColo">
         Forgot Password?
       </div>
       @if(Session::has('success'))
@@ -29,7 +29,7 @@
          
           <div class="row d-flex justify-content-center align-content-center">
             <div class="col-sm-4">
-              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block col-sm-12">Reset Password</button>
+              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-sm-12">Reset Password</button>
             </div>
           </div>
         </form>
