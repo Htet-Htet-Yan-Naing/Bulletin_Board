@@ -142,6 +142,15 @@ class PostsController extends Controller
     }
     public function confirmEdit(Request $request, $id)
     {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required|max:255',
+        ], [
+            'title.required' => 'The title field can\'t be blank.',
+            'description.required' => 'The description field can\'t be blank.',
+            'title.max' => '255 characters is the maximum allowed',
+            'description.max' => '255 characters is the maximum allowed'
+        ]);
         $post = $request;
         $toggleStatus = $post->toggle_switch;
         $request->session()->flash('toggleStatus', $toggleStatus);
@@ -150,6 +159,15 @@ class PostsController extends Controller
 
     public function update(Request $request, string $id)
     {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required|max:255',
+        ], [
+            'title.required' => 'The title field can\'t be blank.',
+            'description.required' => 'The description field can\'t be blank.',
+            'title.max' => '255 characters is the maximum allowed',
+            'description.max' => '255 characters is the maximum allowed'
+        ]);
         $post = Posts::findOrFail($id);
         //$toggleStatus = $post->toggle_switch;
         $toggleStatus =  $request->session()->get('toggleStatus');
