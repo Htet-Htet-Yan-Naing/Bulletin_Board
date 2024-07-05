@@ -22,7 +22,7 @@
                     <textarea class="form-control" rows="5" id="comment" name="description">{{ $posts->description }}</textarea>
                   </div>
                 </div>
-
+                <!-- Status -->
                 <div class="row form-inline">
                   <div class="d-flex">
                     <label class="form-check-label col-md-3" for="flexSwitchCheckDefault">Status</label>

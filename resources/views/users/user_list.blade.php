@@ -14,8 +14,7 @@
 <div class="user-search-container">
   <form action="{{ route('searchUser') }}" method="get" class="form-horizontal row mb-3">
     @csrf
-
-    <!-- Page Size Select -->
+    <!-- Page Size -->
     <div class="col-md-2">
       <label class="form-label txtColor">Page size:</label>
       <select name="pageSize" class="form-control pagination-selector" onchange="this.form.submit()">
@@ -25,7 +24,6 @@
         <option value="20" {{ request()->input('pageSize') == 20 ? 'selected' : '' }}>20</option>
       </select>
     </div>
-
     <!-- Name -->
     <div class="col-md-2">
       <label class="form-label txtColor">Name:</label>
@@ -34,7 +32,6 @@
         <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
       @enderror
     </div>
-
     <!-- Email -->
     <div class="col-md-2">
       <label class="form-label txtColor">Email:</label>
@@ -43,7 +40,6 @@
         <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
       @enderror
     </div>
-
     <!-- From Date -->
     <div class="col-md-2">
       <label class="form-label txtColor">From:</label>
@@ -52,7 +48,6 @@
         <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
       @enderror
     </div>
-
     <!-- To Date -->
     <div class="col-md-2">
       <label class="form-label txtColor">To:</label>
@@ -61,20 +56,14 @@
         <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
       @enderror
     </div>
-
     <!-- Search Button -->
     <div class="col-md-2 user-search-div">
       <button type="submit" class="btn btnColor user-search-btn" style="width:100%;">Search</button>
     </div>
-
   </form>
 </div>
 <!-- Search Row End -->
-
- <!-- User Search Contaienr end -->
-
-
-
+<!-- User Search Contaienr end -->
 <!-- User Table start -->
 <table class="table">
   <thead class="txtColor">
@@ -96,14 +85,14 @@
     <tr class="row-des-color grow-on-hover">
       <td class="align-middle rounded-content" style="border-bottom:1px solid #EBEBEB;">
       <div class="icon">
-      <img src="../{{ $rs->profile}}" class="profile-img" alt="Profile">
+      <img src="../{{$rs->profile}}" class="profile-img" alt="Profile">
       </div>
       </td>
       <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
       <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email="{{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address="{{ $rs->address }}" data-created-at="{{ $rs->created_at }}" data-created-user="{{$rs->creator->name}}" data-updated-at="{{ $rs->updated_at }}" data-updated-user="{{$rs->updateBy->name}}" id="user-detail-link">{{ $rs->name }}
       </a>
       </td>
-      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->email }}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{$rs->email}}</td>
       <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->creator->name }}</td>
       <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->type}}</td>
       <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->phone }}</td>
@@ -130,8 +119,6 @@
 </div>
 </div>
 </div>
-
-
 <!-- Delete Confirmation Modal start-->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -162,7 +149,6 @@
   </div>
 </div>
 <!-- End Delete Confirmation Modal end -->
-
 <!-- User Detail Modal start-->
 <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -199,16 +185,6 @@
         location.reload();
       }, 1000);
     }
-    //// Get the alert element
-    //var alertElement = document.getElementById('success-alert');
-    //
-    //// If the alert element exists
-    //if (alertElement) {
-    //    // Set a timeout to remove the element after 5 seconds
-    //    setTimeout(function() {
-    //        alertElement.remove(); // Remove the alert element
-    //    }, 5000); // 5000 milliseconds = 5 seconds
-    //}
   });
   const deleteModal = document.getElementById('deleteModal');
   deleteModal.addEventListener('show.bs.modal', function (event) {

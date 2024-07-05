@@ -5,7 +5,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>@yield('title')</title>
-  <!-- Fonts -->
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -24,48 +23,35 @@
     <div class="container-fluid">
       @auth
       @if(auth()->user()->type == 'admin')
-      <a class="navbar-brand" href="{{ route('admin.postList') }}" style="color:#1A5276;font-weight:bold;">Bulletin_Board</a>
+      <a class="navbar-brand nav-link" href="{{ route('admin.postList') }}" style="color:#1A5276;font-weight:bold;">Bulletin_Board</a>
     @else
-      <a class="navbar-brand" href="{{ route('user.postList') }}" style="color:#1A5276;font-weight:bold;">Bulletin_Board</a>
+      <a class="navbar-brand nav-link" href="{{ route('user.postList') }}" style="color:#1A5276;font-weight:bold;">Bulletin_Board</a>
     @endif
     @endauth
       @guest
-      <a class="navbar-brand" href="{{ route('posts') }}" style="color:#1A5276;font-weight:bold;">Bulletin_Board</a>
-      <a class="ms-3 txtColor" href="{{ route('posts') }}">Posts</a>
+      <a class="navbar-brand nav-link pt-2 pb-2" href="{{ route('posts') }}" style="color:#1A5276;font-weight:bold;">Bulletin_Board</a>
+      <a class="ms-3 txtColor nav-link {{ request()->routeIs('posts') ? 'nav-active' : '' }}" href="{{ route('posts') }}">Posts</a>
     @endguest
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="mynavbar">
         <ul class="navbar-nav me-auto">
-
-
-
-
           @auth
         <li class="nav-item">
         @if(auth()->user()->type == 'admin')
-      <a class="txtColor" href="{{ route('admin.userList') }}">Users</a>
+      <a href="{{ route('admin.userList') }}" class="txtColor link {{ request()->routeIs('admin.userList') ? 'nav-active' : '' }}">Users</a>
     @else
-    <a class="txtColor" href="{{ route('user.userList') }}">Users</a>
+    <a href="{{ route('user.userList') }}" class="txtColor link {{ request()->routeIs('user.userList') ? 'nav-active' : '' }}">Users</a>
   @endif
         </li>
       @endauth
-
-
-
-
-
-
-
-
-
           @auth
         <li class="nav-item">
         @if(auth()->user()->type == 'admin')
-      <a class="ms-3 txtColor" href="{{ route('admin.postList') }}">Posts</a>
+      <a href="{{ route('admin.postList') }}" class="ms-3 txtColor link {{ request()->routeIs('admin.postList') ? 'nav-active' : '' }}" >Posts</a>
     @else
-    <a class="ms-3 txtColor" href="{{ route('user.postList') }}">Posts</a>
+    <a href="{{ route('user.postList') }}" class="ms-3 txtColor link {{ request()->routeIs('user.postList') ? 'nav-active' : '' }}">Posts</a>
   @endif
         </li>
       @endauth
@@ -73,26 +59,24 @@
         <!-- Displayed if the user is authenticated start-->
         @auth
       <form class="d-flex align-items-center">
-        <a class="ms-3 txtColor" href="{{ route('register') }}">Create User</a>
-        <a class="ms-3 txtColor" href="#">{{ auth()->user()->name }}</a>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill-gear txtColor" viewBox="0 0 16 16">
-        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
-        </svg>
+        <a class="ms-3 txtColor nav-link {{ request()->routeIs('register') ? 'nav-active' : '' }}" href="{{ route('register') }}">Create User</a>
+        <a class="ms-3 txtColor profile-name nav-link {{ request()->routeIs('profile') ? 'nav-active' : '' }}" href="#">{{ auth()->user()->name }}</a>
+        <div class="icon" style="width:27px;height:27px;margin-left:5px;">
+        <img src="../{{auth()->user()->profile}}" class="profile-img" alt="Profile">
+        </div>
         <div class="dropdown">
         <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"></button>
         <ul class="dropdown-menu dropdown-menu-left">
-          <li><a class="dropdown-item ms-3 txtColor" href="{{ route('profile', auth()->user()->id) }}">Profile</a></li>
-          <li><a class="dropdown-item ms-3 txtColor" href="{{ url('/logout') }}">Logout</a></li>
+          <li><a class="dropdown-item ms-3 pb-2 txtColor nav-link" href="{{ route('profile', auth()->user()->id) }}">Profile</a></li>
+          <li><a class="dropdown-item ms-3 pb-2 txtColor nav-link" href="{{ url('/logout') }}">Logout</a></li>
         </ul>
         </div>
       </form>
     @endauth
         <!-- Displayed if the user is authenticated end-->
-
         <!-- Displayed if the user is not authenticated start-->
-        @guest  
-        <a class="ms-0 txtColor" href="{{ route('login') }}">Login</a>
-      <a class="ms-3 txtColor" href="{{ route('signup') }}">Sign up</a>
+        @guest          <a class="ms-0 txtColor navbar-link nav-link {{ request()->routeIs('login') ? 'nav-active' : '' }}" href="{{ route('login') }}">Login</a>
+      <a class="ms-3 txtColor navbar-link nav-link {{ request()->routeIs('signup') ? 'nav-active' : '' }}" href="{{ route('signup') }}">Sign up</a>
     @endguest
         <!-- Displayed if the user is not authenticated end-->
       </div>
@@ -124,7 +108,78 @@
     </div>
   </footer>
   <!-- Footer end -->
+  <!--<script>
+// Add active class to the current button (highlight it)
 
+  var header = document.getElementById("nav");
+var btns = header.getElementsByClassName("navbar-link");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function() {
+    
+  var current = document.getElementsByClassName("navbar-active");
+  current[0].className = current[0].className.replace(" navbar-active", "");
+  this.className += " navbar-active";
+
+  });
+
+}
+
+
+
+</script>-->
+<!--<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var header = document.getElementsByClassName("navbar-link");
+    var btns = header.getElementsByClassName("nav");
+
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function() {
+            // Remove active class from current active element
+            var current = header.getElementsByClassName("navbar-active");
+            if (current.length > 0) {
+                current[0].classList.remove("navbar-active");
+            }
+            // Add active class to clicked element
+            this.classList.add(" navbar-active");
+        });
+    }
+});
+</script>-->
+<!--<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Add active class to the current button (highlight it)
+var header = document.getElementById("myDIV");
+var btns = document.getElementsByClassName("link");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function() {
+  var current = document.getElementsByClassName("active");
+  current[0].className = current[0].className.replace(" active", "");
+  this.className += " active";
+  });
+}
+});
+</script>-->
+<script>
+//document.addEventListener('DOMContentLoaded', function() {
+//    // Get the current path of the URL
+//    var currentPath = window.location.pathname;
+//
+//    // Find all navigation links
+//    //var navLinks = document.querySelectorAll('.nav-item a');
+//    var link=this.getElementsByClassName('link');
+//    // Loop through each navigation link
+//    //navLinks.forEach(function(link) {
+//        // Check if the link's href matches the current path
+//        if (link.getAttribute('href') === currentPath) {
+//            // Add 'active' class to the link
+//            link.classList.add('active');
+//        } else {
+//            // Remove 'active' class if it's not the current path
+//            link.classList.remove('active');
+//        }
+//    //});
+//});
+</script>
 </body>
 
 </html>

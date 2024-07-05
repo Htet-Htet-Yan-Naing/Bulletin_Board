@@ -1,17 +1,13 @@
 @extends('layouts.app')
 @section('title', 'Post list')
 @section('contents')
-
 @if(Session::has('create'))
   <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
     {{ Session::get('create') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 @endif
-
-
 <div class="mb-4">
-
   <!-- Page size -->
   <form action="{{ route('searchPost', ['search' => request('search')]) }}" method="get" class="d-inline" style="position:relative;">
     @csrf
@@ -26,8 +22,7 @@
   </form>
   <!-- Page size -->
 
-
-  <!-- Search by title and description -->
+  <!-- Search by title and description start-->
   <form action="{{ route('searchPost', ['search' => request('search')]) }}" method="get" class="d-inline" style="position:relative;">
     @csrf
     <label class="search txtColor"> Keyword: </label>
@@ -37,8 +32,7 @@
   @enderror
     <button type="submit" class="btn btnColor">Search</button>
   </form>
-  <!-- Search by title and description -->
-
+  <!-- Search by title and description end-->
 
   <!-- Create -->
   <form action="{{ route('createPost') }}" method="get" class="d-inline">
@@ -55,7 +49,6 @@
   </form>
   <!-- Upload -->
 
-
   <!-- Download -->
   <form action="{{ route('posts.download')}}" method="get" class="d-inline">
     @csrf
@@ -63,8 +56,6 @@
     <button type="submit" class="btn btnColor">Download</button>
   </form>
   <!-- Download -->
-
-
 </div>
 </div>
 
@@ -126,6 +117,7 @@
         </a>
         </span>
 
+        @auth
         <div class="mt-2">
         <form action="{{ route('edit', $rs->id)}}"  method="post" class="d-inline">
         @csrf
@@ -144,7 +136,7 @@
         </button>
         </form>
         </div>
-
+        @endauth
 
 
 

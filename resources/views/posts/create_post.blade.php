@@ -10,6 +10,7 @@
       <div class="card-body">
         <form action="{{ route('confirmPost') }}" method="get">
           @csrf
+           <!-- Title -->
           <div class="mb-3 mt-3 row d-flex">
             <label for="email" class="control-label col-sm-3">Title:</label>
             <div class="col-sm-9">
@@ -19,6 +20,7 @@
         @enderror
             </div>
           </div>
+           <!-- Description -->
           <div class="mb-3 row d-flex">
             <label for="pwd" class="control-label col-sm-3">Description:</label>
             <div class="col-sm-9">

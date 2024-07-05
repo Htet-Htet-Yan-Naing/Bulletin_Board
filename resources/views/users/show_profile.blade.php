@@ -1,8 +1,5 @@
-
-
 @extends('layouts.app')
 @section('title', 'Profile')
-
 @section('contents') 
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-xl-8">
@@ -13,7 +10,6 @@
       <div class="card-body">
         <form method="GET">
           @csrf
-          
           <div class="row">
             <!-- Profile Image Column -->
             <div class="col-md-4">
@@ -23,7 +19,6 @@
                 </div>
               </div>
             </div>
-            
             <!-- Profile Details Column -->
             <div class="col-md-8">
               <div class="row align-items-center py-3">
@@ -66,7 +61,6 @@
                   <label class="control-label col-sm-12" name="address">{{ $user->address }}</label>
                 </div>
               </div>
-              
               <!-- Edit Profile Button -->
               <div class="row align-items-center py-3">
                 <div class="col-md-12 text-start">
@@ -75,7 +69,6 @@
               </div>
             </div>
           </div>
-          
         </form>
       </div>
     </div>

@@ -10,8 +10,8 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-
 Route::controller(AuthController::class)->group(function () {
+    Route::get('/searchPost', [PostsController::class, 'searchPost'])->name("searchPost");
     Route::get('signup', 'signup')->name('signup');
     Route::post('signup', 'signupSave')->name('signup.save');
     Route::get('login', 'login')->name('login');
@@ -21,12 +21,22 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/createPost', [PostsController::class, 'createPost'])->name("createPost");
     Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
-    Route::get('/searchPost', [PostsController::class, 'searchPost'])->name("searchPost");
-    Route::get('/searchUser', [UserController::class, 'searchUser'])->name("searchUser");
     Route::post('/postSave', [PostsController::class, 'postSave'])->name("post.save");
+   
+    Route::get('/searchUser', [UserController::class, 'searchUser'])->name("searchUser");
     Route::get('/register', [UserController::class, 'register'])->name('register');
+    Route::post('/register', [UserController::class, 'register'])->name('register');
+    Route::get('/confirmRegister',  [UserController::class, 'confirmRegister'])->name("confirmRegister");
     Route::post('/confirmRegister',  [UserController::class, 'confirmRegister'])->name("confirmRegister");
+
+//    Route::get('/register', [UserController::class, 'register'])->name('register');
+//Route::post('/register', [UserController::class, 'register']);
+//Route::get('/confirmRegister', [UserController::class, 'confirmRegister'])->name('confirmRegister');
+//Route::post('/confirmRegister', [UserController::class, 'confirmRegister'])->name('user.save');
+
+
     Route::post('/userSave', [UserController::class, 'userSave'])->name("user.save");
+
     Route::post('/edit/{id}', [PostsController::class, 'edit'])->name("edit");
     Route::post('/confirmEdit/{id}', [PostsController::class, 'confirmEdit'])->name("confirmEdit");
     Route::post('/update/{id}', [PostsController::class, 'update'])->name("update"); 

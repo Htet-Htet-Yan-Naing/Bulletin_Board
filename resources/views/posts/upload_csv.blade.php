@@ -15,6 +15,7 @@
             <div class="card-body">
               <form action="{{ route('posts.uploadCSV') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                 <!-- CSV File -->
                 <div class="row align-items-center py-3">
                   <div class="col-md-3 ps-5">
                     <label class="mb-0">CSV file:</label>

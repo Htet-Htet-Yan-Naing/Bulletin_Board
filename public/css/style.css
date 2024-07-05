@@ -7,19 +7,21 @@ html {
 
 body {
     display: flex;
-    flex-direction: column;
+   
     margin: 0;
     padding-bottom: 60px;
     font-family: "IBM Plex Sans", sans-serif;
     font-size: 16px;
     font-weight: 400;
     min-height: 100vh;
+    background-color: red;
 }
 /* Custom Card*/
 .card-custom{
     background-color:#FFFFFF;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
     border-radius:10px;
+    /*background-color:red;margin-top:25%;transform: translateY(-25%);*/
     }
     .card-header-custom{
        background-color:#f1fbfc;
@@ -43,6 +45,7 @@ a {
 }
 
 main {
+   
     flex: 1;
     background-color: #f1fbfc;
 }
@@ -64,9 +67,16 @@ main {
     background-color: transparent;
     color: #000000;
 }
-
-a:hover {
-    color: #000000;
+.navbar-link{
+    border: 1px solid transparent;
+    padding: 7px;
+    border-radius: 10px;
+}
+.nav-active {
+    background-color: rgba(221, 231, 232, 0.65);
+    border: 1px solid #f1fbfc;
+    padding: 7px;
+    border-radius: 10px;
 }
 
 .header {
@@ -198,7 +208,9 @@ a:hover {
     height: 100%;
     object-fit: cover;
 }
-
+.profile-name{
+    cursor: context-menu;
+}
 .user-name {
     font-size: 13px;
 }

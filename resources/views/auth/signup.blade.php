@@ -20,7 +20,6 @@
                             <span class="text-red-600">{{$message}}</span>
                    @enderror
                 </div>
-                 
                 </div>
                 <!-- Email address -->
                 <div class="mb-3 row d-flex">
@@ -31,7 +30,6 @@
                             <span class="text-red-600">{{$message}}</span>
                    @enderror
                   </div>
-                  
                 </div>
                 <!-- Password -->
                 <div class="mb-3 row d-flex">
@@ -43,7 +41,6 @@
                     @enderror
                   </div>
                 </div>
-                
                  <!-- Password Confirmation -->
                  <div class="mb-3 row d-flex">
                   <label for="pw_confirmation" class="control-label col-sm-4">Password_confirmation:</label>

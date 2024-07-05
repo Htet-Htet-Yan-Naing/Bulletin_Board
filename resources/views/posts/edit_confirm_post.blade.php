@@ -26,9 +26,6 @@
                   <div class="d-flex">
                     <label class="form-check-label col-md-3" for="flexSwitchCheckDefault">Status</label>
                     <div class="col-sm-9 form-switch">
-                   <!--<input type="hidden" name="toggleStatus" value="{{$toggleStatus}}">-->
-                   <!--<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" @if($toggleStatus == 1) checked @endif>
-                    -->
                       <input type="hidden" name="toggleStatus" value="{{ session('toggleStatus') }}">
                       <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" @if(session('toggleStatus') == 1) checked @endif>
                     </div>

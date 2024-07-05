@@ -42,33 +42,45 @@ class PostsController extends Controller
 
     public function searchPost(Request $request)
     {
-        if (auth()->user()->type == 'admin') {
+        if (auth()->check()) {
+            if (auth()->user()->type == 'admin') {
+                $pageSize = $request->input('pageSize', 4);
+                $search = strtolower($request->input('search'));
+                $posts = Posts::where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%$search%")
+                        ->orWhere('description', 'like', "%$search%");
+                })
+                    ->latest()
+                    ->paginate($pageSize);
+                return view('posts.post_list', compact('posts'));
+            } else {
+                $pageSize = $request->input('pageSize', 4);
+                $userId = auth()->user()->id;
+                $search = strtolower($request->input('search'));
+                $posts = Posts::where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%$search%")
+                        ->orWhere('description', 'like', "%$search%");
+                })
+                    ->where('create_user_id', $userId)
+                    ->latest()
+                    ->paginate($pageSize);
+                return view('posts.post_list', compact('posts'));
+            }
+        }
+        else{
             $pageSize = $request->input('pageSize', 4);
             $search = strtolower($request->input('search'));
+            
             $posts = Posts::where(function ($query) use ($search) {
                 $query->where('title', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
             })
+                ->where('status', 1)
                 ->latest()
                 ->paginate($pageSize);
-            //$posts->appends(['pageSize' => $pageSize]);
+            
             return view('posts.post_list', compact('posts'));
         }
-            else {
-                $pageSize = $request->input('pageSize', 4);
-                $userId = auth()->user()->id;
-                $search = strtolower($request->input('search'));
-                //if ($search != '') {
-                    $posts = Posts::where(function ($query) use ($search) {
-                        $query->where('title', 'like', "%$search%")
-                            ->orWhere('description', 'like', "%$search%");
-                    })
-                        ->where('create_user_id', $userId)
-                        ->latest()
-                        ->paginate($pageSize);
-                        //$posts->appends(['pageSize' => $pageSize]); 
-                        return view('posts.post_list', compact('posts'));
-            }
         }
 
     public function createPost(Request $request)
@@ -77,6 +89,16 @@ class PostsController extends Controller
     }
     public function confirmPost(Request $request)
     {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255|unique:posts',
+            'description' => 'required|max:255',
+        ], [
+            'title.required' => 'The title field can\'t be blank.',
+            'title.unique' => 'The title has already been taken.',
+            'description.required' => 'The description field can\'t be blank.',
+            'title.max' => '255 characters is the maximum allowed',
+            'description.max' => '255 characters is the maximum allowed'
+        ]);
         $title = $request->title;
         $description = $request->description;
         $create_user_id = auth()->id();
@@ -97,19 +119,15 @@ class PostsController extends Controller
             'description.max' => '255 characters is the maximum allowed'
         ]);
         $post = Posts::create([
-            'title' => $validatedData['title'],
-            'description' => $validatedData['description'],
+            'title' => $request->title,
+            'description' => $request->description,
             'create_user_id' => 1,
             'updated_user_id' => 1
         ]);
         $post->create_user_id = auth()->id();
         $post->updated_user_id = auth()->id();
         $post->save();
-        
-     
        $request->session()->flash('create', 'Post created successfully!');
-
-        //}
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.postList');
         } else {
@@ -118,6 +136,7 @@ class PostsController extends Controller
     }
     public function edit(string $id)
     {
+        
         $posts = Posts::findOrFail($id);
         return view('posts.edit_post', compact('posts'));
     }
@@ -249,17 +268,10 @@ class PostsController extends Controller
         }
         $file = $request->file('csvfile');
         try {
-            //Read the file content
             $content = file_get_contents($file->getRealPath());
-
-            // Normalize line endings to Unix style
             $content = str_replace(["\r\n", "\r"], "\n", $content);
-
-            // Write the normalized content back to a temporary file
             $tempPath = sys_get_temp_dir() . '/' . uniqid() . '.csv';
             file_put_contents($tempPath, $content);
-
-            // Parse the CSV file using league/csv
             $csv = Reader::createFromPath($tempPath, 'r');
             $csv->setHeaderOffset(0);
             $header = $csv->getHeader();
@@ -284,10 +296,8 @@ class PostsController extends Controller
             }
             $request->session()->flash('create', 'CSV data uploaded successfully.');
             if (auth()->user()->type == 'admin') {
-               
                 return redirect()->route('admin.postList');
             } else {
-               
                 return redirect()->route('user.postList');  }
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'There was an error processing the CSV file.')->withInput();

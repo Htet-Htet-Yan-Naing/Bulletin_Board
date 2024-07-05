@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('title', 'Forgot Password?')
-
 @section('contents')
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-xl-7">
@@ -16,7 +15,6 @@
       <div class="card-body">
         <form action="{{ route('forget.password.post') }}" method="post">
           @csrf
-           
           <div class="mb-3 mt-3 row d-flex">
             <label for="current-pw" class="control-label col-sm-4">Email:</label>
             <div class="col-sm-8">
@@ -26,7 +24,6 @@
         @enderror
             </div>
           </div>
-         
           <div class="row d-flex justify-content-center align-content-center">
             <div class="col-sm-4">
               <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-sm-12">Reset Password</button>
