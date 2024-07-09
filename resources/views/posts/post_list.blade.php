@@ -16,7 +16,7 @@
     <select name="pageSize" class="pagination-selector" onchange="this.form.submit()">
       <option value="4" {{ request()->input('pageSize') == 4 ? 'selected' : '' }}>4</option>
       <option value="5" {{ request()->input('pageSize') == 5 ? 'selected' : '' }}>5</option>
-      <option value="10" {{ request()->input('pageSize') == 10 ? 'selected' : '' }}>10</option>
+      <option value="8" {{ request()->input('pageSize') == 8 ? 'selected' : '' }}>8</option>
       <option value="20" {{ request()->input('pageSize') == 20 ? 'selected' : '' }}>20</option>
     </select>
   </form>
@@ -58,32 +58,6 @@
   <!-- Download -->
 </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- Posts row start -->
 <div>
   <div class="row mb-2">
@@ -137,19 +111,6 @@
         </form>
         </div>
         @endauth
-
-
-
-
-
-
-
-
-
-
-
-
-
       </div>
       </div>
       </div>
@@ -195,9 +156,6 @@
   </div>
 </div>
 <!-- Delete Confirmation Modal end-->
-
-
-
 <!-- Post Detail Modal start-->
 <div class="modal fade" id="postDetailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
   <div class="modal-dialog">

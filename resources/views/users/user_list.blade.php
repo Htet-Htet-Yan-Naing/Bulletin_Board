@@ -18,10 +18,10 @@
     <div class="col-md-2">
       <label class="form-label txtColor">Page size:</label>
       <select name="pageSize" class="form-control pagination-selector" onchange="this.form.submit()">
-        <option value="4" {{ request()->input('pageSize') == 4 ? 'selected' : '' }}>4</option>
-        <option value="5" {{ request()->input('pageSize') == 5 ? 'selected' : '' }}>5</option>
+        <option value="8" {{ request()->input('pageSize') == 8 ? 'selected' : '' }}>8</option>
         <option value="10" {{ request()->input('pageSize') == 10 ? 'selected' : '' }}>10</option>
         <option value="20" {{ request()->input('pageSize') == 20 ? 'selected' : '' }}>20</option>
+        <option value="30" {{ request()->input('pageSize') == 30 ? 'selected' : '' }}>30</option>
       </select>
     </div>
     <!-- Name -->
@@ -82,8 +82,8 @@
   <tbody>
     @if($users->count() > 0)
     @foreach($users as $rs)
-    <tr class="row-des-color grow-on-hover">
-      <td class="align-middle rounded-content" style="border-bottom:1px solid #EBEBEB;">
+    <tr class="row-des-color grow-on-hover" style="">
+      <td class="align-middle rounded-content" style="border-bottom:1px solid #EBEBEB;padding:5px;">
       <div class="icon">
       <img src="../{{$rs->profile}}" class="profile-img" alt="Profile">
       </div>
@@ -113,7 +113,7 @@
   </tbody>
 </table>
 <!-- User Table end -->
-<div class="pagination-container textColor" style="padding-bottom:0;">
+<div class="pagination-container textColor">
   {{ $users->appends(request()->query())->links() }}
 </div>
 </div>
@@ -183,7 +183,7 @@
       setTimeout(function () {
         successAlert.remove();
         location.reload();
-      }, 1000);
+      }, 4000);
     }
   });
   const deleteModal = document.getElementById('deleteModal');

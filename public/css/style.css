@@ -6,15 +6,20 @@ html {
 }
 
 body {
+    font-size:14px;
     display: flex;
-   
     margin: 0;
     padding-bottom: 60px;
     font-family: "IBM Plex Sans", sans-serif;
-    font-size: 16px;
     font-weight: 400;
     min-height: 100vh;
     background-color: red;
+}
+.table>:not(caption)>*>* {
+    padding: .2rem .5rem;
+    background-color: var(--bs-table-bg);
+    border-bottom-width: 1px;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
 }
 /* Custom Card*/
 .card-custom{
@@ -45,7 +50,6 @@ a {
 }
 
 main {
-   
     flex: 1;
     background-color: #f1fbfc;
 }
@@ -110,7 +114,7 @@ main {
 }
 
 .main-sec {
-    padding: 80px 0 80px;
+    padding: 69px 0 20px;
 }
 
 .footer {
@@ -196,8 +200,8 @@ main {
 }
 
 .icon {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     overflow: hidden;
     flex-shrink: 0;
     border-radius: 50%;
@@ -315,7 +319,9 @@ td {
 }
 
 .table {
-    padding: 20px 20px 35px;
+    margin-bottom:8px;
+    font-size:14px;
+    padding: 10px 20px 0px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
     background-color: white;
     border-collapse: separate;

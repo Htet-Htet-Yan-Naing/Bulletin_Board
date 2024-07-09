@@ -8,7 +8,7 @@
         Forgot Password?
       </div>
       @if(Session::has('success'))
-      <div class="alert alert-success" role="alert" style="width:100%;">
+      <div class="alert alert-success" role="alert" style="width:100%;" id="success-alert">
         {{ Session::get('success') }}
       </div>
     @endif
@@ -34,5 +34,16 @@
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var successAlert = document.getElementById('success-alert');
+    if (successAlert) {
+      setTimeout(function () {
+        successAlert.remove();
+        location.reload();
+      }, 4000);
+    }
+  });
+  </script>
 @endsection
 

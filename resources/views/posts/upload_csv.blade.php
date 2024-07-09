@@ -1,14 +1,14 @@
 @extends('layouts.app')
 @section('title', 'Upload CSV File')
 @section('contents') 
-      <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100" style="margin-top:3rem;">
         <div class="col-xl-6">
           <div class="card-custom">
             <div class="card-header-custom p-3 txtColor">
               Upload CSV File
             </div>
             @if(Session::has('error'))
-            <div class="alert alert-success" role="alert">
+            <div class="alert alert-success" role="alert" id="success-alert">
               {{ Session::get('error') }}
             </div>
             @endif
@@ -21,7 +21,7 @@
                     <label class="mb-0">CSV file:</label>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input class="form-control form-control-lg" id="formFileLg" type="file" name="csvfile" />
+                    <input class="form-control form-control-lg" id="csvfile" type="file" name="csvfile" />
                       @error('csvfile')
                         <span class="text-red-600">{{$message}}</span>
                       @enderror
@@ -31,7 +31,7 @@
                 <div class="row d-flex justify-content-center align-content-center">
                   <div class="col-sm-6">
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-4">Upload</button>
-                    <button type="clear" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
+                    <button type="reset" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
                   </div>
                 </div>
               </form>
@@ -39,4 +39,15 @@
           </div>
         </div>
       </div>
+      <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var successAlert = document.getElementById('success-alert');
+    if (successAlert) {
+      setTimeout(function () {
+        successAlert.remove();
+        location.reload();
+      }, 4000);
+    }
+  });
+  </script>
 @endsection

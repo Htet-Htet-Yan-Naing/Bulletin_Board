@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Session;
+use App\Services\UserService;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\Posts;
 use Illuminate\Http\Request;
@@ -17,166 +19,61 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    public function userListAdmin()
+    protected $userService;
+
+    public function __construct(UserService $userService)
     {
-        $users = User::latest()->paginate(4);
+        $this->userService = $userService;
+
+    }
+
+    public function userListAdmin(UserService $userService)
+    {
+        $users = $this->userService->userListAdmin();
         return view('users.user_list', compact('users'));
     }
+
+
     public function userListUser()
     {
-        $userId = auth()->user()->id;
-        $users = User::where('create_user_id', $userId)
-            ->latest()
-            ->paginate(4);
+        $users = $this->userService->userListUser();
         return view('users.user_list', compact('users'));
     }
+
 
     public function deleteUser(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-        DB::table('users')
-            ->where('id', $id)
-            ->update(
-                array(
-                    'deleted_user_id' => auth()->user()->id,
-                    'deleted_at' => Carbon::now()
-                )
-            );
-        $create_user_id = $id;
-        $posts = Posts::where('create_user_id', $create_user_id)->get();
-        $deleted = Posts::where('create_user_id', $create_user_id)->delete();
-
-        $request->session()->flash('create', 'User deleted successfully!');
+        $this->userService->deleteUser($request, $id);
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.userList');
         } else {
             return redirect()->route('user.userList');
         }
     }
+
+
     public function register(Request $request)
     {
         return view('users.create_user');
     }
     public function confirmRegister(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|unique:users',
-            'email' => 'required|email|max:255',
-            'pw' => 'required|min:4|confirmed',
-            'profile' => 'required',
-        ], [
-            'name.required' => 'Name can\'t be blank.',
-            'email.required' => 'Email can\'t be blank.',
-            'email.email' => 'Email format is invalid',
-            'email.unique' => 'The email has already been taken.',
-            'name.unique' => 'The name has already been taken.',
-            'pw.required' => 'The password field can\'t be blank.',
-            'pw.min' => 'The password must be at least 4 characters.',
-            'pw.confirmed' => 'Password confirmation does not match.',
-            'profile.required' => 'Profile image is required.',
-        ]);
-        $email = $validatedData['email'];
-       
-        $existingemail = User::withTrashed()
-        ->where('email', $email )->first();
-        if ($existingemail) {
-            if ($existingemail->deleted_at) {
-                if ($request->hasFile('profile')) {
-                    $file = $request->file('profile');
-                    $fileName = time() . '.' . $file->extension();
-                    $file->move(public_path('img'), $fileName);
-                    Session::put('profile', 'img/' . $fileName);
-                }
-                $user = $request;
-                return view('users.create_user_confirm', compact('user'));
-            } else {
-                return redirect()->back()->with(['error' => 'The email has already exist.']);
-            }
-        } else {
-            if ($request->hasFile('profile')) {
-                $file = $request->file('profile');
-                $fileName = time() . '.' . $file->extension();
-                $file->move(public_path('img'), $fileName);
-                Session::put('profile', 'img/' . $fileName);
-            }
-            $user = $request;
-            return view('users.create_user_confirm', compact('user'));
-        }
+        return $this->userService->confirmRegister($request);
     }
-
 
     public function userSave(Request $request)
     {
-        $profile = Session::get('profile');
-        $existingemail = User::withTrashed()
-            ->where('email', $request->email)->first();
-
-        if ($existingemail) {
-            if ($existingemail->deleted_at) {
-                $existingemail->restore();
-                $existingemail->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => $request->pw,
-                    'profile' => $profile,
-                    'phone' => $request->phone,
-                    'type' => $request->type,
-                    'address' => $request->address,
-                    'dob' => $request->dob,
-                    'create_user_id' => auth()->user()->id,
-                    'updated_user_id' => auth()->user()->id,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]);
-                Session::flash('create', 'Register Successfully');
-            }
-        } else {
-            if (auth()->user()->type == 'admin') {
-                User::create([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'profile' => $profile,
-                    'type' => $request->type,                 
-                    'phone' => $request->phone,
-                    'address' => $request->address,
-                    'dob' => $request->dob,
-                    'create_user_id' => auth()->user()->id,
-                    'updated_user_id' => auth()->user()->id,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]);
-                Session::flash('create', 'Register Successfully.');
-                return redirect()->route('admin.userList');
-            } else {
-                User::create([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'profile' => $profile,
-                    'phone' => $request->phone,
-                    'address' => $request->address,
-                    'type' => $request->type,
-                    'dob' => $request->dob,
-                    'create_user_id' => auth()->user()->id,
-                    'updated_user_id' => auth()->user()->id,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-
-                ]);
-                Session::flash('create', 'Register Successfully.');
-                return redirect()->route('user.userList');
-            }
-        }
+        $this->userService->userSave($request);
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.userList');
         } else {
             return redirect()->route('user.userList');
         }
     }
+
     public function profile(string $id)
     {
-        $user = User::findOrFail($id);
+        $user = $this->userService->profile($id);
         $imageName = $user->profile;
         $imagePath = $imageName;
         return view('users.show_profile', compact('user', 'imagePath'));
@@ -184,28 +81,15 @@ class UserController extends Controller
 
     public function editProfile(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = $this->userService->editProfile($id);
         $imageName = $user->profile;
         $imagePath = $imageName;
         return view('users.edit_profile', compact('user', 'imagePath'));
     }
+
     public function updateProfile(Request $request, string $id)
     {
-        $user = User::findOrFail($id);
-        $newProfile = $request->file('newProfile');
-        if ($newProfile) {
-            if ($user->profile) {
-                Storage::delete($user->profile);
-            }
-            $user = $request;
-            $imageName = time() . '.' . $newProfile->extension();
-            $success = $request->newProfile->move(public_path('img'), $imageName);
-            $imagePath = 'img/' . $imageName;
-            $user = User::findOrFail($id);
-            $user->profile = $imagePath;
-        }
-        $user->update($request->all());
-        $request->session()->flash('create', 'User updated successfully!');
+        $this->userService->updateProfile($request, $id);
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.userList');
         } else {
@@ -214,73 +98,8 @@ class UserController extends Controller
     }
     public function searchUser(Request $request)
     {
-        if (auth()->user()->type == 'admin') {
-            $pageSize = $request->input('pageSize', 4);
-            $userId = auth()->id();
-            $start_date = $request->input('start_date');
-            $end_date = $request->input('end_date');
-            $end_date_inclusive = Carbon::parse($end_date)->endOfDay();
-            $searchName = strtolower($request->input('name'));
-            $searchEmail = strtolower($request->input('email'));
-            $startDate = Carbon::parse($start_date)->startOfDay();
-            $endDate = Carbon::parse($end_date)->endOfDay();
-            $usersQuery = User::query();
-            if (!empty($searchName)) {
-                $usersQuery->where(function ($query) use ($searchName) {
-                    $query->where('name', 'like', "%$searchName%");
-                });
-            }
-            if (!empty($searchEmail)) {
-                $usersQuery->where(function ($query) use ($searchEmail) {
-                    $query->where('email', 'like', "%$searchEmail%");
-                });
-            }
-            if (!empty($start_date) && !empty($end_date)) {
-                $usersQuery->whereBetween('created_at', [$start_date, $end_date_inclusive]);
-            } elseif (!empty($start_date)) {
-                $usersQuery->whereDate('created_at', '=', $start_date);
-            } elseif (!empty($end_date)) {
-                $usersQuery->whereDate('created_at', '=', $end_date);
-            }
-            $users = $usersQuery->whereNull('deleted_at')
-                ->latest()
-                ->paginate($pageSize);
-            return view('users.user_list', compact('users'));
-        } else {
-            $pageSize = $request->input('pageSize', 4);
-            $userId = auth()->id();
-            $start_date = $request->input('start_date');
-            $end_date = $request->input('end_date');
-            $end_date_inclusive = Carbon::parse($end_date)->endOfDay();
-            $searchName = strtolower($request->input('name'));
-            $searchEmail = strtolower($request->input('email'));
-            $startDate = Carbon::parse($start_date)->startOfDay();
-            $endDate = Carbon::parse($end_date)->endOfDay();
-            $usersQuery = User::query();
-
-            if (!empty($searchName)) {
-                $usersQuery->where(function ($query) use ($searchName) {
-                    $query->where('name', 'like', "%$searchName%");
-                });
-            }
-            if (!empty($searchEmail)) {
-                $usersQuery->where(function ($query) use ($searchEmail) {
-                    $query->where('email', 'like', "%$searchEmail%");
-                });
-            }
-            if (!empty($start_date) && !empty($end_date)) {
-                $usersQuery->whereBetween('created_at', [$start_date, $end_date_inclusive]);
-            } elseif (!empty($start_date)) {
-                $usersQuery->whereDate('created_at', '=', $start_date);
-            } elseif (!empty($end_date)) {
-                $usersQuery->whereDate('created_at', '=', $end_date);
-            }
-            $users = $usersQuery->whereNull('deleted_at')
-                ->where('create_user_id', $userId)
-                ->latest()
-                ->paginate($pageSize);
-            return view('users.user_list', compact('users'));
-        }
+        $users = $this->userService->searchUser($request);
+        return view('users.user_list', compact('users'));
     }
 }
 

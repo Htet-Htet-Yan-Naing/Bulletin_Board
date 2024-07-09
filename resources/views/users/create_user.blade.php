@@ -9,7 +9,7 @@
                 Register
             </div>
             <div class="card-body">
-                <form action="{{route('confirmRegister')}}" method="post" enctype="multipart/form-data">
+                <form action="{{route('confirmRegister')}}" method="post" enctype="multipart/form-data" novalidate>
                 @csrf
                     <div class="row">
                         <!-- Left Column -->
@@ -41,6 +41,9 @@
                             <!-- Confirm Password -->
                             <div class="mb-3">
                                 <input type="password" class="form-control" placeholder="Confirm Password" id="pw_confirmation" name="pw_confirmation" value="{{ old('pw_confirmation') }}"/>
+                                @error('pw_confirmation')
+                                    <span class="text-danger">{{$message}}</span>
+                                @enderror
                             </div>
                         </div>
 
@@ -52,13 +55,13 @@
                                 <div>
                                     @if(auth()->user()->type=='admin')
                                     <select name="type" id="type" class="form-select">
-                                        <option value="" selected>Select Type</option>
+                                        <option value="1" selected>Select Type</option>
                                         <option value="0">Admin</option>
                                         <option value="1">User</option>
                                     </select>
                                     @elseif(auth()->user()->type=='user')
                                     <select name="type" id="type" class="form-select">
-                                        <option value="" selected>Select Type</option>
+                                        <option value="1" selected>Select Type</option>
                                         <option value="1">User</option>
                                     </select>
                                     @else
@@ -67,7 +70,6 @@
                                 </div>
                             </div>
                             @endauth
-
                             <!-- Phone -->
                             <div class="mb-3">
                                 <input type="phone" class="form-control" placeholder="Phone" id="phone" name="phone" value="{{ old('phone') }}"/>
@@ -75,24 +77,19 @@
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
                             </div>
-
                             <!-- DOB -->
                             <div class="mb-3">
                                 <input class="form-control" placeholder="DOB" id="dob" type="date" name="dob" value="{{ old('dob') }}"/>
                             </div>
-
                             <!-- Address -->
                             <div class="mb-3">
                                 <input type="text" class="form-control" placeholder="Address" id="address" name="address" value="{{ old('address') }}"/>
                                 @error('address')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
-                            </div>
-
-                            
+                            </div> 
                         </div>
                     </div>
-                    
                     <!-- Profile -->
                     <div class="mb-3 col-md-12">
                                 <input type="file" class="form-control" placeholder="profile" id="profile" name="profile"/>
