@@ -5,7 +5,7 @@
 @section('contents')
 
 
-<div class="row justify-content-center align-items-center h-100">
+<div class="row justify-content-center align-items-center h-100 mt">
     <div class="col-lg-6">
         <div class="card-custom" style="border-radius: 15px;">
             <div class="card-header-custom p-3 txtColor">

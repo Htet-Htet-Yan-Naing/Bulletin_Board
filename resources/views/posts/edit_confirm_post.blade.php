@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Edit Confirm Post')
 @section('contents')   
-     <div class="row d-flex justify-content-center align-items-center h-100">
+     <div class="row d-flex justify-content-center align-items-center h-100 mt">
         <div class="col-xl-6">
           <div class="card-custom">
             <div class="card-header-custom p-3 txtColor">

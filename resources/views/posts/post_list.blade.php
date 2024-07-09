@@ -7,7 +7,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 @endif
-<div class="mb-4">
+<div class="mb-4 mt">
   <!-- Page size -->
   <form action="{{ route('searchPost', ['search' => request('search')]) }}" method="get" class="d-inline" style="position:relative;">
     @csrf
