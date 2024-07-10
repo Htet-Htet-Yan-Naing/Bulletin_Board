@@ -16,36 +16,18 @@ use Carbon\Carbon;
 
 class UserService
 {
-
   public function userListAdmin()
   {
-    $users = User::latest()->paginate(8);
-    return $users;
+    return User::getUserListAdmin();
   }
   public function userListUser()
   {
-    $userId = auth()->user()->id;
-    $users = User::where('create_user_id', $userId)
-      ->latest()
-      ->paginate(8);
-    return $users;
+    return User::getUserListUser();
   }
 
   public function deleteUser($request, $id)
   {
-    $user = User::findOrFail($id);
-    DB::table('users')
-      ->where('id', $id)
-      ->update(
-        array(
-          'deleted_user_id' => auth()->user()->id,
-          'deleted_at' => Carbon::now()
-        )
-      );
-    $create_user_id = $id;
-    $posts = Posts::where('create_user_id', $create_user_id)->get();
-    $deleted = Posts::where('create_user_id', $create_user_id)->delete();
-
+    User::deleteUser($request, $id);
     $request->session()->flash('create', 'User deleted successfully!');
   }
   public function register(Request $request)
@@ -73,11 +55,8 @@ class UserService
     
     $email = $request->email;
     $name = $request->name;
-    $existingUser = User::withTrashed()
-      ->where('email', $email)
-      ->first();
+    $existingUser = User::userExist($request);
     if ($existingUser) {
-     
       if ($existingUser->deleted_at) {
         if ($request->hasFile('profile')) {
           $file = $request->file('profile');
@@ -105,80 +84,36 @@ class UserService
   public function userSave(Request $request)
   {
     $profile = Session::get('profile');
-    $existingemail = User::withTrashed()
-      ->where('email', $request->email)
-      ->first();
-
+    $existingemail = User::userExist($request);
     if ($existingemail) {
       if ($existingemail->deleted_at) {
-        $existingemail->restore();
-        $existingemail->update([
-          'name' => $request->name,
-          'email' => $request->email,
-          'password' => Hash::make($request->pw),
-          'profile' => $profile,
-          'phone' => $request->phone,
-          'type' => $request->type,
-          'address' => $request->address,
-          'dob' => $request->dob,
-          'create_user_id' => auth()->user()->id,
-          'updated_user_id' => auth()->user()->id,
-          'created_at' => Carbon::now(),
-          'updated_at' => Carbon::now()
-        ]);
+        User::saveExistingUser($existingemail,$request,$profile);
         Session::flash('create', 'Register Successfully');
       }
     } else {
       if (auth()->user()->type == 'admin') {
-        User::create([
-          'name' => $request->name,
-          'email' => $request->email,
-          'password' => Hash::make($request->pw),
-          'profile' => $profile,
-          'type' => $request->type,
-          'phone' => $request->phone,
-          'address' => $request->address,
-          'dob' => $request->dob,
-          'create_user_id' => auth()->user()->id,
-          'updated_user_id' => auth()->user()->id,
-          'created_at' => Carbon::now(),
-          'updated_at' => Carbon::now()
-        ]);
+        User::saveUser($request, $profile);
         Session::flash('create', 'Register Successfully.');
       } else {
-        User::create([
-          'name' => $request->name,
-          'email' => $request->email,
-          'password' => Hash::make($request->pw),
-          'profile' => $profile,
-          'phone' => $request->phone,
-          'address' => $request->address,
-          'type' => $request->type,
-          'dob' => $request->dob,
-          'create_user_id' => auth()->user()->id,
-          'updated_user_id' => auth()->user()->id,
-          'created_at' => Carbon::now(),
-          'updated_at' => Carbon::now()
-
-        ]);
+        User::saveUser($request, $profile);
         Session::flash('create', 'Register Successfully.');
       }
     }
   }
   public function profile(string $id)
   {
-    $user = User::findOrFail($id);
+    $user = User::findUser($id);
     return $user;
   }
 
   public function editProfile($id)
   {
-    $user = User::findOrFail($id);
+    $user = User::findUser($id);
     return $user;
   }
   public function updateProfile(Request $request, string $id)
   {
-    $user = User::findOrFail($id);
+    $user = User::findUser($id);
     $newProfile = $request->file('newProfile');
     if ($newProfile) {
       if ($user->profile) {
@@ -188,80 +123,40 @@ class UserService
       $imageName = time() . '.' . $newProfile->extension();
       $success = $request->newProfile->move(public_path('img'), $imageName);
       $imagePath = 'img/' . $imageName;
-      $user = User::findOrFail($id);
+      $user = User::findUser($id);
       $user->profile = $imagePath;
     }
-    $user->update($request->all());
+    User::updateProfile($request,$user);
     $request->session()->flash('create', 'User updated successfully!');
   }
   public function searchUser(Request $request)
   {
-    if (auth()->user()->type == 'admin') {
       $pageSize = $request->input('pageSize', 8);
+      $users = User::searchUser($pageSize);
       $userId = auth()->id();
       $start_date = $request->input('start_date');
       $end_date = $request->input('end_date');
       $end_date_inclusive = Carbon::parse($end_date)->endOfDay();
       $searchName = strtolower($request->input('name'));
       $searchEmail = strtolower($request->input('email'));
-      $startDate = Carbon::parse($start_date)->startOfDay();
-      $endDate = Carbon::parse($end_date)->endOfDay();
-      $usersQuery = User::query();
       if (!empty($searchName)) {
-        $usersQuery->where(function ($query) use ($searchName) {
-          $query->where('name', 'like', "%$searchName%");
-        });
+        $users=User::searchByName($searchName,$pageSize);
+        return $users;
       }
       if (!empty($searchEmail)) {
-        $usersQuery->where(function ($query) use ($searchEmail) {
-          $query->where('email', 'like', "%$searchEmail%");
-        });
+        $users=User::searchByEmail($searchEmail,$pageSize);
+        return $users;
       }
       if (!empty($start_date) && !empty($end_date)) {
-        $usersQuery->whereBetween('created_at', [$start_date, $end_date_inclusive]);
+        $users=User::searchByDateBetween($start_date,$end_date_inclusive,$pageSize);
+        return $users;
       } elseif (!empty($start_date)) {
-        $usersQuery->whereDate('created_at', '=', $start_date);
+        $users=User::searchByStartDate($start_date,$pageSize);
+        return $users;
       } elseif (!empty($end_date)) {
-        $usersQuery->whereDate('created_at', '=', $end_date);
+        $users=User::searchByEndDate($end_date,$pageSize);
+        return $users;
       }
-      $users = $usersQuery->whereNull('deleted_at')
-        ->latest()
-        ->paginate($pageSize);
       return $users;
-    } else {
-      $pageSize = $request->input('pageSize', 8);
-      $userId = auth()->id();
-      $start_date = $request->input('start_date');
-      $end_date = $request->input('end_date');
-      $end_date_inclusive = Carbon::parse($end_date)->endOfDay();
-      $searchName = strtolower($request->input('name'));
-      $searchEmail = strtolower($request->input('email'));
-      $startDate = Carbon::parse($start_date)->startOfDay();
-      $endDate = Carbon::parse($end_date)->endOfDay();
-      $usersQuery = User::query();
-
-      if (!empty($searchName)) {
-        $usersQuery->where(function ($query) use ($searchName) {
-          $query->where('name', 'like', "%$searchName%");
-        });
-      }
-      if (!empty($searchEmail)) {
-        $usersQuery->where(function ($query) use ($searchEmail) {
-          $query->where('email', 'like', "%$searchEmail%");
-        });
-      }
-      if (!empty($start_date) && !empty($end_date)) {
-        $usersQuery->whereBetween('created_at', [$start_date, $end_date_inclusive]);
-      } elseif (!empty($start_date)) {
-        $usersQuery->whereDate('created_at', '=', $start_date);
-      } elseif (!empty($end_date)) {
-        $usersQuery->whereDate('created_at', '=', $end_date);
-      }
-      $users = $usersQuery->whereNull('deleted_at')
-        ->where('create_user_id', $userId)
-        ->latest()
-        ->paginate($pageSize);
-      return $users;
-    }
   }
 }

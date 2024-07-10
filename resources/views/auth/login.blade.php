@@ -7,11 +7,41 @@
       <div class="card-header-custom p-3 txtColor">
         Login
       </div>
-      @if(Session::has('success'))
-      <div class="alert alert-success" role="alert" style="width:100%;" id="success-alert">
-      {{ Session::get('success') }}
-      </div>
-    @endif
+    @if(Session::has('success'))
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.success({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('success') }}`
+    });
+    });
+  </script>
+   @elseif(Session::has('error'))
+   <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    iziToast.error({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('error') }}`
+    });
+  </script>
+@endif 
       <div class="card-body text-center">
         <form action="{{ route('login.action') }}" method="post" novalidate>
           @csrf
@@ -21,22 +51,20 @@
             <div class="col-md-8 text-md-start">
               <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" value="{{ old('email') }}">
               @error('email')
-                <span class="text-red-600 text-md-start">{{$message}}</span>
+                <span class="text-danger text-md-start">{{$message}}</span>
               @enderror
             </div>
           </div>
-       
             <!-- Password input -->
             <div class="mb-3 mt-3 row justify-content-center align-items-center">
               <label for="password" class="control-label col-md-2 text-md-end">Password:</label>
               <div class="col-md-8 text-md-start">
                 <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" value="{{ old('password') }}">
                 @error('password')
-                  <span class="text-red-600">{{$message}}</span>
+                  <span class="text-danger">{{$message}}</span>
                 @enderror
               </div>
             </div>
-
             <div class="row mb-3">
               <div class="col-md-3"></div>
               <div class="col-md-4 d-flex ">
@@ -78,15 +106,4 @@
     </div>
   </div>
 </div>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var successAlert = document.getElementById('success-alert');
-    if (successAlert) {
-      setTimeout(function () {
-        successAlert.remove();
-        location.reload();
-      }, 4000);
-    }
-  });
-  </script>
 @endsection

@@ -8,19 +8,49 @@
         Forgot Password?
       </div>
       @if(Session::has('success'))
-      <div class="alert alert-success" role="alert" style="width:100%;" id="success-alert">
-        {{ Session::get('success') }}
-      </div>
-    @endif
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.success({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('success') }}`
+    });
+    });
+  </script>
+   @elseif(Session::has('error'))
+   <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    iziToast.error({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('error') }}`
+    });
+  </script>
+@endif 
       <div class="card-body">
         <form action="{{ route('forget.password.post') }}" method="post">
           @csrf
           <div class="mb-3 mt-3 row d-flex">
             <label for="current-pw" class="control-label col-sm-4">Email:</label>
             <div class="col-sm-8">
-              <input type="email" class="form-control" id="email" name="email" required>
+              <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
               @error('email')
-          <span class="text-red-600">{{$message}}</span>
+          <span class="text-danger">{{$message}}</span>
         @enderror
             </div>
           </div>
@@ -34,16 +64,5 @@
     </div>
   </div>
 </div>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var successAlert = document.getElementById('success-alert');
-    if (successAlert) {
-      setTimeout(function () {
-        successAlert.remove();
-        location.reload();
-      }, 4000);
-    }
-  });
-  </script>
 @endsection
 

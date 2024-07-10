@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('title', 'User List')
 @section('contents') 
-@if(Session::has('create'))
+<!--@if(Session::has('create'))
   <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
     {{ Session::get('create') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
-@endif
-<div class="row d-flex justify-content-center align-items-center h-100">
+@endif-->
+<div class="row d-flex justify-content-center align-items-center h-100 mb">
   <div class="col-md-12">
  <!-- User Search Container start -->
  <!-- Search Row Start -->
@@ -36,17 +36,12 @@
     <div class="col-md-2">
       <label class="form-label txtColor">Email:</label>
       <input class="form-control" type="email" name="email" value="{{ request('email') }}" style="border-radius: 8px;">
-      @error('email')
-        <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
-      @enderror
+     
     </div>
     <!-- From Date -->
     <div class="col-md-2">
       <label class="form-label txtColor">From:</label>
       <input class="form-control" type="date" name="start_date" value="{{ request('start_date') }}" style="border-radius: 8px;">
-      @error('start_date')
-        <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
-      @enderror
     </div>
     <!-- To Date -->
     <div class="col-md-2">
@@ -82,7 +77,7 @@
   <tbody>
     @if($users->count() > 0)
     @foreach($users as $rs)
-    <tr class="row-des-color grow-on-hover" style="">
+    <tr class="row-des-color grow-on-hover">
       <td class="align-middle rounded-content" style="border-bottom:1px solid #EBEBEB;padding:5px;">
       <div class="icon">
       <img src="../{{$rs->profile}}" class="profile-img" alt="Profile">
@@ -107,7 +102,7 @@
   @endforeach
   @else
   <tr>
-    <td class="text-center" colspan="8">Product not found</td>
+    <td class="text-center pt-3 pb-3" colspan="9">No User Data</td>
   </tr>
 @endif
   </tbody>
@@ -176,16 +171,35 @@
   </div>
 </div>
 <!-- Post Detail Modal end-->
+@if(Session::has('create'))
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.success({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('create') }}`
+    });
+    });
+  </script>
+@endif 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var successAlert = document.getElementById('success-alert');
-    if (successAlert) {
-      setTimeout(function () {
-        successAlert.remove();
-        location.reload();
-      }, 4000);
-    }
-  });
+  //document.addEventListener("DOMContentLoaded", function () {
+  //  var successAlert = document.getElementById('success-alert');
+  //  if (successAlert) {
+  //    setTimeout(function () {
+  //      successAlert.remove();
+  //      location.reload();
+  //    }, 4000);
+  //  }
+  //});
   const deleteModal = document.getElementById('deleteModal');
   deleteModal.addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget;

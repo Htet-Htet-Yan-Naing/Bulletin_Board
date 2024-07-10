@@ -36,47 +36,27 @@ class AuthController extends Controller
     {
         return view('auth/login');
     }
-
-    //Login action
     public function loginAction(Request $request)
     {
         $user=$this->authService->loginAction($request);
        if($user){
-           // dd($user->email);
         if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-                //'email' => trans('auth.failed')
-                return redirect()->back()->with('success', 'Incorrect password');
+                return redirect()->back()->with('error', 'Incorrect password')->withInput();
         }
-        //$request->session()->regenerate();
         if (auth()->user()->type == 'admin') {
             return redirect()->route('admin.postList');
         } else {
             return redirect()->route('user.postList');
         }
-        //if (Auth::attempt($request->only('email', 'password'))){
-        //   // dd($user->password);
-        //    $request->session()->regenerate();
-        //    if (auth()->user()->type == 'admin') {
-        //        return redirect()->route('admin.postList');
-        //    } else {
-        //        return redirect()->route('user.postList');
-        //    }
         }
-    //    else{
-    //        return redirect()->back()->with('success', 'Incorrect password');
-    //   }
-    //}
     else{
-            return redirect()->back()->with('success', 'Email  does\'t exit.');
+            return redirect()->back()->with('error', 'Email  does\'t exit.')->withInput();
     }
     }
     
-    //Logout action
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        return redirect('/login');
+        return $this->authService->logout($request);
     }
 
     public function changePassword(Request $request, $id)
@@ -86,13 +66,7 @@ class AuthController extends Controller
     }
     public function updatePassword(Request $request, $id)
     {
-        $this->authService->updatePassword($request,$id);
-        if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin.userList');
-        } else {
-            return redirect()->route('user.userList');
-        }
-       
+        return $this->authService->updatePassword($request,$id);
     }
     public function showForgetPasswordForm(Request $request)
     {
@@ -100,8 +74,12 @@ class AuthController extends Controller
     }
     public function submitForgetPasswordForm(Request $request)
     {
-        $this->authService->submitForgetPasswordForm($request);
-        return back()->with('success', 'Email sent with password reset instructions.');
+        $user=$this->authService->submitForgetPasswordForm($request);
+        if (!$user) {
+            return redirect()->back()->withInput()->with('error','Email not found')->withInput();
+        }else{
+            return redirect()->back()->with('success', 'Email sent with password reset instructions.');
+        }
     }
     public function showResetPasswordForm(Request $request,$token)
     {
@@ -110,7 +88,11 @@ class AuthController extends Controller
    
     public function submitResetPasswordForm(Request $request)
     {
-        $this->authService->submitResetPasswordForm($request);
-        return redirect()->route('login')->with('success', 'Password has been reset');
+        $user=$this->authService->submitResetPasswordForm($request);
+        if (!$user) {
+            return back()->withInput()->with('error', 'Invalid token!');
+        }else{
+            return redirect()->route('login')->with('success', 'Password has been reset');
+        }
     }
 }

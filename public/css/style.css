@@ -13,10 +13,12 @@ body {
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 400;
     min-height: 100vh;
-    background-color: red;
 }
 .mt{
     margin-top:21px;
+}
+.mb{
+    margin-bottom:60px;
 }
 .table>:not(caption)>*>* {
     padding: .2rem .5rem;
@@ -117,7 +119,7 @@ main {
 }
 
 .main-sec {
-    padding: 69px 0 20px;
+    padding: 69px 0 80px;
 }
 
 .footer {
@@ -181,7 +183,18 @@ main {
     padding: 0;
 }
 
-.badge span {
+.badge .active-span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 25px;
+    padding-bottom: 3px;
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+}
+.badge .inactive-span {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -192,7 +205,6 @@ main {
     color: #fed85d;
     border-radius: 5px;
 }
-
 .text1 {
     font-size: 14px;
     font-weight: 600;
@@ -322,7 +334,6 @@ td {
 }
 
 .table {
-    margin-bottom:8px;
     font-size:14px;
     padding: 10px 20px 0px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
