@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 class Posts extends Model
 {
     use HasFactory;
@@ -43,18 +44,28 @@ class Posts extends Model
         return $posts;
     }
   }
-    //public static function creatCSVPost($request)
-    //{
-    //    Posts::create([
-    //        'title' => $record['title'],
-    //        'description' => $record['description'],
-    //        'status' => $record['status'],
-    //        'create_user_id' => Auth::id(),
-    //        'updated_user_id' => Auth::id(),
-    //        'created_at' => Carbon::now(),
-    //        'updated_at' => Carbon::now(),
-    //    ]);
-    //}
+    public static function creatCSVPost($records)
+    {
+        foreach ($records as $record) {
+            if (count($record) !== 3) {
+                //dd("Header is not equal to three");
+                //return ['error' => 'Each row in the CSV must have exactly 3 columns.'];
+                return redirect()->back()->with('error', 'Each row in the CSV must have exactly 3 columns.')->withInput();
+            }
+
+            //Posts::savePost($records);
+            // Create or update posts based on CSV data
+            Posts::create([
+                'title' => $record['title'],
+                'description' => $record['description'],
+                'status' => $record['status'],
+                'create_user_id' => auth()->id(),
+                'updated_user_id' => auth()->id(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+    }
     public static function searchPost($request,$pageSize,$search)
     {
         if (auth()->check()) {

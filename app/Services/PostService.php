@@ -246,26 +246,26 @@ class PostService
 
                 }
             }
-            foreach ($records as $record) {
-
-                if (count($record) !== 3) {
-                    //dd("Header is not equal to three");
-                    //return ['error' => 'Each row in the CSV must have exactly 3 columns.'];
-                    return redirect()->back()->with('error', 'Each row in the CSV must have exactly 3 columns.')->withInput();
-                }
-
-                //Posts::savePost($request);
-                // Create or update posts based on CSV data
-                Posts::create([
-                    'title' => $record['title'],
-                    'description' => $record['description'],
-                    'status' => $record['status'],
-                    'create_user_id' => Auth::id(),
-                    'updated_user_id' => Auth::id(),
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
-            }
+            Posts::creatCSVPost($records);
+//            foreach ($records as $record) {
+//                if (count($record) !== 3) {
+//                    //dd("Header is not equal to three");
+//                    //return ['error' => 'Each row in the CSV must have exactly 3 columns.'];
+//                    return redirect()->back()->with('error', 'Each row in the CSV must have exactly 3 columns.')->withInput();
+//                }
+//
+//                //Posts::savePost($records);
+//                // Create or update posts based on CSV data
+//                Posts::create([
+//                    'title' => $record['title'],
+//                    'description' => $record['description'],
+//                    'status' => $record['status'],
+//                    'create_user_id' => Auth::id(),
+//                    'updated_user_id' => Auth::id(),
+//                    'created_at' => Carbon::now(),
+//                    'updated_at' => Carbon::now(),
+//                ]);
+//            }
 
             $request->session()->flash('create', 'CSV data uploaded successfully.');
             if (auth()->user()->type == 'admin') {
