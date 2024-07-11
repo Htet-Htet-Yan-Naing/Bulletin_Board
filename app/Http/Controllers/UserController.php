@@ -1,21 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Support\Facades\Session;
 use App\Services\UserService;
-use App\Http\Requests\UserRequest;
-use App\Models\User;
-use App\Models\Posts;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class UserController extends Controller
 {

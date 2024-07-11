@@ -1,21 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Session;
 use App\Services\PostService;
-use App\Models\Posts;
-use App\Exports\PostsExport;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Carbon\Carbon;
-use League\Csv\Reader;
-use League\Csv\Statement;
-use Exception;
-
 
 class PostsController extends Controller
 {

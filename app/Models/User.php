@@ -1,17 +1,14 @@
 <?php
-
 namespace App\Models;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -118,6 +115,7 @@ class User extends Authenticatable
         $name = $request->name;
         $existingUser = User::withTrashed()
             ->where('email', $email)
+            ->orWhere('name', $name)
             ->first();
         return $existingUser;
     }
@@ -133,7 +131,7 @@ class User extends Authenticatable
             'address' => $request->address,
             'dob' => $request->dob,
             'create_user_id' => auth()->user()->id,
-            'updated_user_id' => auth()->user()->id,
+            'updated_user_id'=> auth()->user()->id,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
@@ -155,6 +153,31 @@ class User extends Authenticatable
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
+    }
+    public static function signUpExistingUser($request, $existinguser)
+    {
+        $existinguser->restore();
+        $existinguser->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->pw),
+            'type' => "1",
+            'create_user_id' => 1,
+            'updated_user_id' => 1
+        ]);
+        return $existinguser;
+    }
+    public static function signUpNewUser($request)
+    {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->pw),
+            'type' => "1",
+            'create_user_id' => 1,
+            'updated_user_id' => 1
+        ]);
+        return $user;
     }
     public static function findUser($id)
     {
@@ -180,124 +203,76 @@ class User extends Authenticatable
         }
 
     }
-    public static function searchByName($searchName, $pageSize)
+    public static function searchFilter($pageSize, $name, $email, $start_date, $end_date)
     {
         if (auth()->user()->type == 'admin') {
-            $usersQuery = User::query();
-            $usersQuery->where(function ($query) use ($searchName) {
-                $query->where('name', 'like', "%$searchName%");
-            });
-            $users = $usersQuery->whereNull('deleted_at')
-                ->latest()
-                ->paginate($pageSize);
+            $users = User::
+                whereNull('deleted_at')
+                ->when($name, function ($query, $name) {
+                    return $query->where('name', 'like', '%' . $name . '%');
+                })
+                ->when($email, function ($query) use ($email) {
+                    return $query->where('email', 'like', '%' . $email . '%');
+                })
+                ->when($start_date, function ($query) use ($start_date) {
+                    return $query->whereDate('created_at', '>=', $start_date);
+                })
+                ->when($end_date, function ($query) use ($end_date) {
+                    return $query->whereDate('created_at', '<=', $end_date);
+                })->paginate($pageSize);
             return $users;
         } else {
-            $usersQuery = User::query();
-            $usersQuery->where(function ($query) use ($searchName) {
-                $query->where('name', 'like', "%$searchName%");
-            });
-            $users = $usersQuery->whereNull('deleted_at')
-                ->where('create_user_id', auth()->id())
-                ->latest()
-                ->paginate($pageSize);
+            $users = User::where('create_user_id', auth()->id())
+                ->whereNull('deleted_at')->when($name, function ($query, $name) {
+                    return $query->where('name', 'like', '%' . $name . '%');
+                })
+                ->when($email, function ($query) use ($email) {
+                    return $query->where('email', 'like', '%' . $email . '%');
+                })
+                ->when($start_date, function ($query) use ($start_date) {
+                    return $query->whereDate('created_at', '>=', $start_date);
+                })
+                ->when($end_date, function ($query) use ($end_date) {
+                    return $query->whereDate('created_at', '<=', $end_date);
+                })->paginate($pageSize);
             return $users;
         }
-
     }
-    public static function searchByEmail($searchEmail, $pageSize)
+
+    public static function updatePassword($request, $user)
     {
-        if (auth()->user()->type == 'admin') {
-            $usersQuery = User::query();
-            if (!empty($searchEmail)) {
-                $usersQuery->where(function ($query) use ($searchEmail) {
-                    $query->where('email', 'like', "%$searchEmail%");
-                });
-            }
-            $users = $usersQuery->whereNull('deleted_at')
-                ->latest()
-                ->paginate($pageSize);
-            return $users;
-        } else {
-            $usersQuery = User::query();
-            if (!empty($searchEmail)) {
-                $usersQuery->where(function ($query) use ($searchEmail) {
-                    $query->where('email', 'like', "%$searchEmail%");
-                });
-            }
-            $users = $usersQuery->whereNull('deleted_at')
-                ->where('create_user_id', auth()->id())
-                ->latest()
-                ->paginate($pageSize);
-            return $users;
-        }
-
+        $newPw = Hash::make($request->newPw);
+        //$newConfirmPw = Hash::make($request->pw_confirmation);
+        $user->password = $newPw;
+        $user->save();
     }
 
-    public static function searchByDateBetween($start_date, $end_date_inclusive, $pageSize)
+    public static function addToken($request, $token)
     {
-        if (auth()->user()->type == 'admin') {
-            $usersQuery = User::query();
-            $usersQuery->whereBetween('created_at', [$start_date, $end_date_inclusive]);
-            $users = $usersQuery->whereNull('deleted_at')
-                ->latest()
-                ->paginate($pageSize);
-            return $users;
-        } else {
-            $usersQuery = User::query();
-            $usersQuery->whereBetween('created_at', [$start_date, $end_date_inclusive]);
-            $users = $usersQuery->whereNull('deleted_at')
-                ->where('create_user_id', auth()->id())
-                ->latest()
-                ->paginate($pageSize);
-            return $users;
-        }
+        DB::table('password_reset_tokens')->insert([
+            'email' => $request->email, 
+            'token' => $token, 
+            'created_at' => Carbon::now()
+          ]);
+    }
 
-    }
-    public static function searchByStartDate($start_date, $pageSize)
+    public static function checkToken($request,$email)
     {
-        if (auth()->user()->type == 'admin') {
-            $usersQuery = User::query();
-            if (!empty($start_date)) {
-                $usersQuery->whereDate('created_at', '=', $start_date);
-            }
-            $users = $usersQuery->whereNull('deleted_at')
-                ->latest()
-                ->paginate($pageSize);
-            return $users;
-        } else {
-            $usersQuery = User::query();
-            if (!empty($start_date)) {
-                $usersQuery->whereDate('created_at', '=', $start_date);
-            }
-            $users = $usersQuery->whereNull('deleted_at')
-                ->where('create_user_id', auth()->id())
-                ->latest()
-                ->paginate($pageSize);
-            return $users;
-        }
+        $updatePassword = DB::table('password_reset_tokens')
+                            ->where([
+                              'email' =>  $email, 
+                              'token' => $request->token
+                            ])
+                            ->first();
+        return $updatePassword;
+    }
 
-    }
-    public static function searchByEndDate($end_date, $pageSize)
+    public static function updateResetPassword($request,$email)
     {
-        if (auth()->user()->type == 'admin') {
-            $usersQuery = User::query();
-            if (!empty($end_date)) {
-                $usersQuery->whereDate('created_at', '=', $end_date);
-            }
-            $users = $usersQuery->whereNull('deleted_at')
-                ->latest()
-                ->paginate($pageSize);
-            return $users;
-        }else{
-            $usersQuery = User::query();
-            if (!empty($end_date)) {
-                $usersQuery->whereDate('created_at', '=', $end_date);
-            }
-            $users = $usersQuery->whereNull('deleted_at')
-                ->where('create_user_id', auth()->id())
-                ->latest()
-                ->paginate($pageSize);
-            return $users;
-        }
+        $user = User::where('email', $email)
+        ->update(['password' => Hash::make($request->password)]);
+        DB::table('password_reset_tokens')->where(['email'=> $email])->delete();
+        return $user;
     }
+
 }

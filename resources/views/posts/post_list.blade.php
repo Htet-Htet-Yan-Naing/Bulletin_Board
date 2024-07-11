@@ -1,13 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Post list')
 @section('contents')
-
-<!--@if(Session::has('create'))
-  <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
-    {{ Session::get('create') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-@endif-->
 <div class="mb-4 mt">
   <!-- Page size -->
   <form action="{{ route('searchPost', ['search' => request('search')]) }}" method="get" class="d-inline" style="position:relative;">
@@ -41,7 +34,6 @@
   <!-- Upload -->
   <form action="{{ route('posts.upload')}}" method="get" class="d-inline">
     @csrf
-    <!--<input type="hidden" name="search" value="{{ request('search') }}">-->
     <button type="submit" class="btn btnColor">Upload</button>
   </form>
   <!-- Upload -->
@@ -105,7 +97,6 @@
       </button>
       </form>
       </div>
-
       <div class="mt-2">
       <form action="#" method="POST" class="d-inline">
       @csrf
@@ -143,7 +134,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p style="color:red;" class="mb-2">Are you sure you want to delete post?</p>
+        <p style="color:red;" class="mb-3">Are you sure you want to delete post?</p>
         <p class="row mb-2"><strong class="col-md-3">ID:</strong> <span id="postId" class="col-md-9"></span></p>
         <p class="row mb-2"><strong class="col-md-3">Title:</strong> <span id="postTitle" class="col-md-9"></span></p>
         <p class="row mb-2"><strong class="col-md-3">Description:</strong> <span id="postDescription" class="col-md-9"></span></p>
@@ -170,14 +161,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p class="row mb-2"><strong class="col-md-4">ID:</strong> <span id="postId" class="col-md-8 f-bold"></span></p>
-        <p class="row mb-2"><strong class="col-md-4">Title:</strong> <span id="postTitle" class="col-md-8 f-bold"></span></p>
-        <p class="row mb-2"><strong class="col-md-4">Description:</strong> <span id="postDescription" class="col-md-8 f-bold"></span></p>
-        <p class="row mb-2"><strong class="col-md-4">Status:</strong><span id="postStatus" class="col-md-8 f-bold"></span></p>
-        <p class="row mb-2"><strong class="col-md-4">Created Date:</strong> <span id="postCreateDate" class="col-md-8 f-bold"></span>
-        <p class="row mb-2"><strong class="col-md-4">Updated Date:</strong> <span id="postUpdateDate" class="col-md-8 f-bold"></span>
-        <p class="row mb-2"><strong class="col-md-4">Created User:</strong> <span id="postCreateUser" class="col-md-8 f-bold"></span>
-        <p class="row mb-2"><strong class="col-md-4">Updated User:</strong> <span id="postUpdateUser" class="col-md-8 f-bold"></span>
+        <p class="row mb-2"><strong class="col-md-4">ID:</strong> <span id="postId" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Title:</strong> <span id="postTitle" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Description:</strong> <span id="postDescription" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Status:</strong><span id="postStatus" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Created Date:</strong> <span id="postCreateDate" class="col-md-8"></span>
+        <p class="row mb-2"><strong class="col-md-4">Updated Date:</strong> <span id="postUpdateDate" class="col-md-8"></span>
+        <p class="row mb-2"><strong class="col-md-4">Created User:</strong> <span id="postCreateUser" class="col-md-8"></span>
+        <p class="row mb-2"><strong class="col-md-4">Updated User:</strong> <span id="postUpdateUser" class="col-md-8"></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btnColor" data-bs-dismiss="modal">Close</button>

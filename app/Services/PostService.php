@@ -1,22 +1,11 @@
 <?php
 namespace App\Services;
 
-use App\Http\Requests\UserRequest;
-use Illuminate\Support\Facades\Session;
-use App\Models\User;
 use App\Models\Posts;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use League\Csv\Reader;
-use League\Csv\Statement;
 use Exception;
 
 class PostService
@@ -137,14 +126,11 @@ class PostService
             $search = $request->input('search');
             if ($search) {
                 $posts = Posts::searchPost($request,$pageSize,$search);
-                //$posts = Posts::where('title', 'like', '%' . $search . '%')
-                //    ->orWhere('description', 'like', '%' . $search . '%')
-                //    ->get();
                 return new StreamedResponse(function () use ($posts) {
                     $handle = fopen('php://output', 'w');
-                    fputcsv($handle, ['ID', 'Post Title', 'Post Description', 'Posted User', 'Posted Date']);
+                    fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
                     foreach ($posts as $post) {
-                        fputcsv($handle, [$post->id, $post->title, $post->description, $post->user->type, $post->created_at]);
+                        fputcsv($handle, [$post->id, $post->title, $post->description,$post->status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
                     }
                     fclose($handle);
                 }, 200, [
@@ -155,9 +141,9 @@ class PostService
             $posts = Posts::get();
             return new StreamedResponse(function () use ($posts) {
                 $handle = fopen('php://output', 'w');
-                fputcsv($handle, ['ID', 'Post Title', 'Post Description', 'Posted User', 'Posted Date']);
+                fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
                 foreach ($posts as $post) {
-                    fputcsv($handle, [$post->id, $post->title, $post->description, $post->user->type, $post->created_at]);
+                    fputcsv($handle, [$post->id, $post->title, $post->description,$post->status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
                 }
                 fclose($handle);
             }, 200, [
@@ -168,17 +154,11 @@ class PostService
             $search = $request->input('search');
             if ($search) {
                 $posts = Posts::searchPost($request,$pageSize,$search);
-                //$posts = Posts::where(function ($query) use ($search) {
-                //    $query->where('title', 'like', "%$search%")
-                //        ->orWhere('description', 'like', "%$search%");
-                //})
-                    //->where('create_user_id', auth()->user()->id)
-                    //->get();
                 return new StreamedResponse(function () use ($posts) {
                     $handle = fopen('php://output', 'w');
-                    fputcsv($handle, ['ID', 'Post Title', 'Post Description', 'Posted User', 'Posted Date']);
+                    fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
                     foreach ($posts as $post) {
-                        fputcsv($handle, [$post->id, $post->title, $post->description, $post->user->type, $post->created_at]);
+                        fputcsv($handle, [$post->id, $post->title, $post->description,$post->status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
                     }
                     fclose($handle);
                 }, 200, [
@@ -190,9 +170,9 @@ class PostService
             $posts = Posts::findByCreateUID();
             return new StreamedResponse(function () use ($posts) {
                 $handle = fopen('php://output', 'w');
-                fputcsv($handle, ['ID', 'Post Title', 'Post Description', 'Posted User', 'Posted Date']);
+                fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
                 foreach ($posts as $post) {
-                    fputcsv($handle, [$post->id, $post->title, $post->description, $post->user->type, $post->created_at]);
+                    fputcsv($handle, [$post->id, $post->title, $post->description,$post->status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
                 }
                 fclose($handle);
             }, 200, [
@@ -223,50 +203,22 @@ class PostService
         }
 
         try {
-            // Move the uploaded file to a temporary location
             $file->move(sys_get_temp_dir(), $tempPath);
-
-            // Read the content of the file
             $csv = Reader::createFromPath($tempPath, 'r');
             $csv->setHeaderOffset(0);
             $records = $csv->getRecords();
-            // dd( $records );
             foreach ($records as $record) {
-                // Validate the CSV data structure
                 if (count($record) !== 3) {
                     DB::rollBack();
-                    //return ['error' => 'Each row in the CSV must have exactly 3 columns.'];
                     return redirect()->back()->with('error', 'Each row in the CSV must have exactly 3 columns.')->withInput();
                 }
                 $existingPost = Posts::where('title', $record['title'])->first();
                 if ($existingPost) {
-                    ///dd("Post exist");
-                   // return ['error' => 'Post title already exists:' . $record['title']];
                    return redirect()->back()->with('error', 'Post title already exists:'. $record['title'])->withInput();
 
                 }
             }
             Posts::creatCSVPost($records);
-//            foreach ($records as $record) {
-//                if (count($record) !== 3) {
-//                    //dd("Header is not equal to three");
-//                    //return ['error' => 'Each row in the CSV must have exactly 3 columns.'];
-//                    return redirect()->back()->with('error', 'Each row in the CSV must have exactly 3 columns.')->withInput();
-//                }
-//
-//                //Posts::savePost($records);
-//                // Create or update posts based on CSV data
-//                Posts::create([
-//                    'title' => $record['title'],
-//                    'description' => $record['description'],
-//                    'status' => $record['status'],
-//                    'create_user_id' => Auth::id(),
-//                    'updated_user_id' => Auth::id(),
-//                    'created_at' => Carbon::now(),
-//                    'updated_at' => Carbon::now(),
-//                ]);
-//            }
-
             $request->session()->flash('create', 'CSV data uploaded successfully.');
             if (auth()->user()->type == 'admin') {
                 return redirect()->route('admin.postList');

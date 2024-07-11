@@ -109,7 +109,8 @@
 </table>
 <!-- User Table end -->
 <div class="pagination-container textColor">
-  {{ $users->appends(request()->query())->links() }}
+ 
+  {{$users->links() }}
 </div>
 </div>
 </div>

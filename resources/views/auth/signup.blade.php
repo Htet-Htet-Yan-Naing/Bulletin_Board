@@ -7,6 +7,25 @@
             <div class="card-header-custom p-3 txtColor">
               Sign Up
             </div>
+            @if(Session::has('error'))
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.error({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('error') }}`
+    });
+    });
+  </script>
+@endif 
             <div class="card-body">
               <form action="{{route('signup.save')}}" method="POST" novalidate>
               @csrf
@@ -17,7 +36,7 @@
                   <div class="col-sm-8"> 
                     <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
                     @error('name')
-                            <span class="text-red-600">{{$message}}</span>
+                            <span class="text-danger">{{$message}}</span>
                    @enderror
                 </div>
                 </div>
@@ -27,7 +46,7 @@
                   <div class="col-sm-8">
                     <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}">
                     @error('email')
-                            <span class="text-red-600">{{$message}}</span>
+                            <span class="text-danger">{{$message}}</span>
                    @enderror
                   </div>
                 </div>
@@ -37,7 +56,7 @@
                   <div class="col-sm-8">
                     <input type="password" class="form-control @error('pw') is-invalid @enderror" id="password" name="pw" value="{{ old('pw') }}">
                     @error('pw')
-                            <span class="text-red-600">{{ $message }}</span>
+                            <span class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
                 </div>
@@ -46,9 +65,6 @@
                   <label for="pw_confirmation" class="control-label col-sm-4">Password_confirmation:</label>
                   <div class="col-sm-8">
                     <input type="password" class="form-control" id="pw_confirmation" name="pw_confirmation" value="{{ old('pw_confirmation') }}">
-                    @error('pw_confirmation')
-                                <div class="alert alert-danger mt-1">{{ $message }}</div>
-                    @enderror
                 </div> 
                 </div>
                  <!-- Button -->
@@ -56,7 +72,7 @@
                  <div class="col-sm-4"></div>
                   <div class="col-sm-8">
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-sm-3">Register</button>
-                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-3">Clear</button>
+                    <button type="reset" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-3">Clear</button>
                   </div>
                 </div>
               </form>

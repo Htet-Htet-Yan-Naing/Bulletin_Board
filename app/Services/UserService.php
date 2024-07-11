@@ -1,17 +1,9 @@
 <?php
 namespace App\Services;
-
-use App\Http\Requests\UserRequest;
-use Illuminate\Support\Facades\Session;
 use App\Models\User;
-use App\Models\Posts;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class UserService
@@ -52,7 +44,6 @@ class UserService
       'pw.confirmed' => 'Password confirmation does not match.',
       'profile.required' => 'Profile image is required.',
     ]);
-    
     $email = $request->email;
     $name = $request->name;
     $existingUser = User::userExist($request);
@@ -137,26 +128,9 @@ class UserService
       $start_date = $request->input('start_date');
       $end_date = $request->input('end_date');
       $end_date_inclusive = Carbon::parse($end_date)->endOfDay();
-      $searchName = strtolower($request->input('name'));
-      $searchEmail = strtolower($request->input('email'));
-      if (!empty($searchName)) {
-        $users=User::searchByName($searchName,$pageSize);
-        return $users;
-      }
-      if (!empty($searchEmail)) {
-        $users=User::searchByEmail($searchEmail,$pageSize);
-        return $users;
-      }
-      if (!empty($start_date) && !empty($end_date)) {
-        $users=User::searchByDateBetween($start_date,$end_date_inclusive,$pageSize);
-        return $users;
-      } elseif (!empty($start_date)) {
-        $users=User::searchByStartDate($start_date,$pageSize);
-        return $users;
-      } elseif (!empty($end_date)) {
-        $users=User::searchByEndDate($end_date,$pageSize);
-        return $users;
-      }
+      $name = strtolower($request->input('name'));
+      $email = strtolower($request->input('email'));
+      $users=User::searchFilter($pageSize,$name,$email,$start_date,$end_date);
       return $users;
   }
 }
