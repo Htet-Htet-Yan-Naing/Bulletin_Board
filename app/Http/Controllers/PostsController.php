@@ -71,10 +71,11 @@ class PostsController extends Controller
     public function confirmEdit(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|max:255|unique:posts',
             'description' => 'required|max:255',
         ], [
             'title.required' => 'The title field can\'t be blank.',
+            'title.unique' => 'The title has already be taken.',
             'description.required' => 'The description field can\'t be blank.',
             'title.max' => '255 characters is the maximum allowed',
             'description.max' => '255 characters is the maximum allowed'

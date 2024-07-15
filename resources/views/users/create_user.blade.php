@@ -10,13 +10,13 @@
             </div>
             <div class="card-body">
                 <form action="{{route('confirmRegister')}}" method="post" enctype="multipart/form-data" novalidate>
-                @csrf
+                    @csrf
                     <div class="row">
                         <!-- Left Column -->
                         <div class="col-md-6">
                             <!-- Full name -->
                             <div class="mb-3">
-                                <input type="text" class="form-control" placeholder="Full name" id="name" name="name" value="{{ old('name') }}"/>
+                                <input type="text" class="form-control" placeholder="Full name" id="name" name="name" value="{{ old('name') }}" />
                                 @error('name')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
@@ -32,7 +32,7 @@
 
                             <!-- Password -->
                             <div class="mb-3">
-                                <input type="password" class="form-control" placeholder="Password" id="pw" name="pw" value="{{ old('pw') }}"/>
+                                <input type="password" class="form-control" placeholder="Password" id="pw" name="pw" value="{{ old('pw') }}" />
                                 @error('pw')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
@@ -40,7 +40,7 @@
 
                             <!-- Confirm Password -->
                             <div class="mb-3">
-                                <input type="password" class="form-control" placeholder="Confirm Password" id="pw_confirmation" name="pw_confirmation" value="{{ old('pw_confirmation') }}"/>
+                                <input type="password" class="form-control" placeholder="Confirm Password" id="pw_confirmation" name="pw_confirmation" value="{{ old('pw_confirmation') }}" />
                                 @error('pw_confirmation')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
@@ -51,51 +51,51 @@
                         <div class="col-md-6">
                             <!-- Type (conditionally shown based on authentication) -->
                             @auth
-                            <div class="mb-3">
-                                <div>
-                                    @if(auth()->user()->type=='admin')
-                                    <select name="type" id="type" class="form-select">
-                                        <option value="1" selected>Select Type</option>
-                                        <option value="0">Admin</option>
-                                        <option value="1">User</option>
-                                    </select>
-                                    @elseif(auth()->user()->type=='user')
-                                    <select name="type" id="type" class="form-select">
-                                        <option value="1" selected>Select Type</option>
-                                        <option value="1">User</option>
-                                    </select>
-                                    @else
-                                    <p>Unknown role</p>
-                                    @endif
+                                <div class="mb-3">
+                                    <div>
+                                        @if(auth()->user()->type == 'admin')
+                                            <select name="type" id="type" class="form-select">
+                                                <option value=" " {{ old('type') == ' ' ? 'selected' : '' }} selected>Select Type</option>
+                                                <option value="0" {{ old('type') == '0' ? 'selected' : '' }}>Admin</option>
+                                                <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>User</option>
+                                            </select>
+                                        @elseif(auth()->user()->type == 'user')
+                                            <select name="type" id="type" class="form-select">
+                                                <option value=" " {{ old('type') == ' ' ? 'selected' : '' }} selected>Select Type</option>
+                                                <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>User</option>
+                                            </select>
+                                        @else
+                                            <p>Unknown role</p>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
                             @endauth
                             <!-- Phone -->
                             <div class="mb-3">
-                                <input type="phone" class="form-control" placeholder="Phone" id="phone" name="phone" value="{{ old('phone') }}"/>
+                                <input type="phone" class="form-control" placeholder="Phone" id="phone" name="phone" value="{{ old('phone') }}" />
                                 @error('phone')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
                             </div>
                             <!-- DOB -->
                             <div class="mb-3">
-                                <input class="form-control" placeholder="DOB" id="dob" type="date" name="dob" value="{{ old('dob') }}"/>
+                                <input class="form-control" placeholder="DOB" id="dob" type="date" name="dob" value="{{ old('dob') }}" />
                             </div>
                             <!-- Address -->
                             <div class="mb-3">
-                                <input type="text" class="form-control" placeholder="Address" id="address" name="address" value="{{ old('address') }}"/>
+                                <input type="text" class="form-control" placeholder="Address" id="address" name="address" value="{{ old('address') }}" />
                                 @error('address')
                                     <span class="text-danger">{{$message}}</span>
                                 @enderror
-                            </div> 
+                            </div>
                         </div>
                     </div>
                     <!-- Profile -->
                     <div class="mb-3 col-md-12">
-                                <input type="file" class="form-control" placeholder="profile" id="profile" name="profile"/>
-                                @error('profile')
-                                    <span class="text-danger">{{$message}}</span>
-                                @enderror
+                        <input type="file" class="form-control" placeholder="profile" id="profile" name="profile"/>
+                        @error('profile')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <!-- Button -->

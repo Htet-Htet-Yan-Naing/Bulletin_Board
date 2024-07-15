@@ -36,9 +36,9 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::post('/userSave', [UserController::class, 'userSave'])->name("user.save");
-
+    Route::get('/edit/{id}', [PostsController::class, 'edit']);
     Route::post('/edit/{id}', [PostsController::class, 'edit'])->name("edit");
-    Route::post('/confirmEdit/{id}', [PostsController::class, 'confirmEdit'])->name("confirmEdit");
+    Route::get('/confirmEdit/{id}', [PostsController::class, 'confirmEdit'])->name("confirmEdit");
     Route::post('/update/{id}', [PostsController::class, 'update'])->name("update"); 
     Route::delete('/postlists/{id}/destroy', [PostsController::class, 'destroy'])->name('post.destroy');
     Route::delete('/userlists/{id}/destroy', [UserController::class, 'deleteUser'])->name('user.destroy');

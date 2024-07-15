@@ -107,7 +107,11 @@ class AuthService
     }
     public function updatePassword(Request $request, $id)
     {
-        $validatedData = $request->validate([
+        $user = User::findUser($id);
+        if (!Hash::check($request->currentPw, $user->password)) {
+            return back()->withErrors(['currentPw' => 'Current password is incorrect'])->withInput();
+        } 
+       $request->validate([
             'newPw' => 'required|min:4',
             'pw_confirmation' => 'same:newPw',
         ], [
@@ -115,15 +119,19 @@ class AuthService
             'newPw.min' => 'The password must be at least 4 characters.',
             'pw_confirmation.same' => 'The password confimation field must match the new password field.'
         ]);
-        $user = User::findUser($id);
-        if (!Hash::check($request->currentPw, $user->password)) {
-            return back()->withErrors(['currentPw' => 'Current password is incorrect']);
-        } else {
-            User::updatePassword($request, $user);
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            return redirect()->route('login')->with('success', 'Password updated successfully.');
-        }
+        //$user = User::findUser($id);
+        //if (!Hash::check($request->currentPw, $user->password)) {
+        //    return back()->withErrors(['currentPw' => 'Current password is incorrect'])->withInput();
+        //} else {
+        //    User::updatePassword($request, $user);
+        //    Auth::guard('web')->logout();
+        //    $request->session()->invalidate();
+        //    return redirect()->route('login')->with('success', 'Password updated successfully.')->withInput();
+        //}
+        User::updatePassword($request, $user);
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        return redirect()->route('login')->with('success', 'Password updated successfully.')->withInput();
     }
     public function showForgetPasswordForm(Request $request)
     {
@@ -160,13 +168,13 @@ class AuthService
         ]);
         $email = $request->session()->get('reset_password_email');
 
-        $updatePassword = User::checkToken($request, $email);
-
-
-        if (!$updatePassword) {
-            return -1;
+        $user = User::checkToken($request, $email);
+        if ($user==null) {
+            return $user;
+        }else{
+            $user = User::updateResetPassword($request, $email);
+             return $user;
         }
-        $user = User::updateResetPassword($request, $email);
-        return $user;
+       
     }
 }

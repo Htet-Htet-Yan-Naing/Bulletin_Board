@@ -71,8 +71,9 @@
                 
                 <!-- Remember me Checkbox -->
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
-                  <label class="form-check-label" for="form2Example31"> Remember me </label>
+                  <!--<input class="form-check-input" type="checkbox" value="" id="form2Example31"/>
+                  <label class="form-check-label" for="form2Example31"> Remember me </label>-->
+                  <input type="checkbox" value="lsRememberMe" id="rememberMe"> <label for="rememberMe">Remember me</label>
                 </div>
               </div>
 
@@ -85,7 +86,7 @@
             <!-- Submit button -->
             <div class="mb-3 mt-3 row justify-content-center align-items-center">
               <div class="col-md-2"></div>
-              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-md-8">Log In</button>
+              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-md-8" onclick="lsRememberMe()">Log In</button>
             </div>
 
             <!-- Register buttons -->
@@ -106,4 +107,26 @@
     </div>
   </div>
 </div>
+<script>
+  const rmCheck = document.getElementById("rememberMe"),
+    emailInput = document.getElementById("email");
+
+if (localStorage.checkbox && localStorage.checkbox !== "") {
+  rmCheck.setAttribute("checked", "checked");
+  emailInput.value = localStorage.username;
+} else {
+  rmCheck.removeAttribute("checked");
+  emailInput.value = "";
+}
+
+function lsRememberMe() {
+  if (rmCheck.checked && emailInput.value !== "") {
+    localStorage.username = emailInput.value;
+    localStorage.checkbox = rmCheck.value;
+  } else {
+    localStorage.username = "";
+    localStorage.checkbox = "";
+  }
+}
+</script>
 @endsection

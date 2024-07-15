@@ -36,7 +36,7 @@ class PostService
     public function confirmPost(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required|max:255|unique:posts',
+            'title' => 'required|max:255',
             'description' => 'required|max:255',
         ], [
             'title.required' => 'The title field can\'t be blank.',
@@ -79,6 +79,7 @@ class PostService
             'description' => 'required|max:255',
         ], [
             'title.required' => 'The title field can\'t be blank.',
+            'title.unique' => 'The title has already been taken.',
             'description.required' => 'The description field can\'t be blank.',
             'title.max' => '255 characters is the maximum allowed',
             'description.max' => '255 characters is the maximum allowed'
@@ -92,10 +93,11 @@ class PostService
     public function update(Request $request, string $id)
     {
         $validatedData = $request->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|max:255|unique:posts',
             'description' => 'required|max:255',
         ], [
             'title.required' => 'The title field can\'t be blank.',
+            'title.unique' => 'The title has already been taken.',
             'description.required' => 'The description field can\'t be blank.',
             'title.max' => '255 characters is the maximum allowed',
             'description.max' => '255 characters is the maximum allowed'

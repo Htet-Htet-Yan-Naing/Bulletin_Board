@@ -1,5 +1,6 @@
 <?php
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -109,13 +110,19 @@ class User extends Authenticatable
         $posts = Posts::where('create_user_id', $create_user_id)->get();
         $deleted = Posts::where('create_user_id', $create_user_id)->delete();
     }
-    public static function userExist($request)
+    public static function userExistByEmail($request)
     {
         $email = $request->email;
-        $name = $request->name;
         $existingUser = User::withTrashed()
             ->where('email', $email)
-            ->orWhere('name', $name)
+            ->first();
+        return $existingUser;
+    }
+    public static function userExistByName($request)
+    {
+        $name = $request->name;
+        $existingUser = User::withTrashed()
+            ->where('name', $name)
             ->first();
         return $existingUser;
     }
@@ -131,15 +138,15 @@ class User extends Authenticatable
             'address' => $request->address,
             'dob' => $request->dob,
             'create_user_id' => auth()->user()->id,
-            'updated_user_id'=> auth()->user()->id,
+            'updated_user_id' => auth()->user()->id,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
     }
-    public static function saveExistingUser($existingemail, $request, $profile)
+    public static function saveExistingUser($existinguser, $request, $profile)
     {
-        $existingemail->restore();
-        $existingemail->update([
+        $existinguser->restore();
+        $existinguser->update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->pw),
@@ -250,28 +257,28 @@ class User extends Authenticatable
     public static function addToken($request, $token)
     {
         DB::table('password_reset_tokens')->insert([
-            'email' => $request->email, 
-            'token' => $token, 
+            'email' => $request->email,
+            'token' => $token,
             'created_at' => Carbon::now()
-          ]);
+        ]);
     }
 
-    public static function checkToken($request,$email)
+    public static function checkToken($request, $email)
     {
-        $updatePassword = DB::table('password_reset_tokens')
-                            ->where([
-                              'email' =>  $email, 
-                              'token' => $request->token
-                            ])
-                            ->first();
-        return $updatePassword;
+        $userWhereToken = DB::table('password_reset_tokens')
+            ->where([
+                'email' => $email,
+                'token' => $request->token
+            ])
+            ->first();
+        return $userWhereToken;
     }
 
-    public static function updateResetPassword($request,$email)
+    public static function updateResetPassword($request, $email)
     {
         $user = User::where('email', $email)
-        ->update(['password' => Hash::make($request->password)]);
-        DB::table('password_reset_tokens')->where(['email'=> $email])->delete();
+            ->update(['password' => Hash::make($request->password)]);
+        DB::table('password_reset_tokens')->where(['email' => $email])->delete();
         return $user;
     }
 

@@ -7,6 +7,41 @@
       <div class="card-header-custom p-3 txtColor">
         Reset Password
       </div>
+      @if(Session::has('success'))
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.success({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('success') }}`
+    });
+    });
+  </script>
+   @elseif(Session::has('error'))
+   <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    iziToast.error({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('error') }}`
+    });
+  </script>
+@endif
       <div class="card-body">
         <form action="{{ route('reset.password.post') }}" method="POST">
           @csrf

@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 use App\Services\AuthService;
+use AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     protected $authService;
-
+   
     public function __construct(AuthService $authService)
     {
         $this->authService = $authService;
@@ -29,7 +30,7 @@ class AuthController extends Controller
     {
         $user = $this->authService->loginAction($request);
         if ($user) {
-            if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            if (!Auth::attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with('error', 'Incorrect password')->withInput();
             }
             if (auth()->user()->type == 'admin') {
@@ -37,9 +38,12 @@ class AuthController extends Controller
             } else {
                 return redirect()->route('user.postList');
             }
+            
+
         } else {
             return redirect()->back()->with('error', 'Email  does\'t exit.')->withInput();
         }
+        //return redirect()->back()->withInput($request->only('email', 'remember'));
     }
 
     public function logout(Request $request)
@@ -77,8 +81,8 @@ class AuthController extends Controller
     public function submitResetPasswordForm(Request $request)
     {
         $user = $this->authService->submitResetPasswordForm($request);
-        if (!$user) {
-            return back()->withInput()->with('error', 'Invalid token!');
+        if ($user==null) {
+            return redirect()->back()->with('error', 'Invalid token!')->withInput();
         } else {
             return redirect()->route('login')->with('success', 'Password has been reset');
         }

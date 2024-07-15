@@ -8,7 +8,7 @@
         Profile Edit
       </div>
       <div class="card-body">
-      <form method="POST" action="{{ route('updateProfile', $user->id) }}" enctype="multipart/form-data">
+      <form method="POST" action="{{ route('updateProfile', $user->id) }}" enctype="multipart/form-data" id="myForm">
       @csrf
       <div class="row">
         <!-- Left column --> 
@@ -20,7 +20,7 @@
               <label class="mb-0">Full name</label>
             </div>
             <div class="col-md-8">
-              <input type="text" class="form-control" value="{{ $user->name }}" name="name"/>
+              <input type="text" class="form-control" value="{{ $user->name }}" name="name" id="name"/>
             </div>
           </div>
 
@@ -29,7 +29,7 @@
               <label class="mb-0">Email address</label>
             </div>
             <div class="col-md-8">
-              <input type="email" class="form-control" placeholder="example@example.com" value="{{ $user->email }}" name="email"/>
+              <input type="email" class="form-control" placeholder="example@example.com" value="{{ $user->email }}" name="email" id="email"/>
             </div>
           </div>
 
@@ -39,6 +39,7 @@
             </div>
             <div class="col-md-8">
                     <select name="type" id="type" class="form-select">
+                       <option value=" " {{ $user->type == '' ? 'selected' : '' }}>Select</option>
                        <option value="0" {{ $user->type == 'admin' ? 'selected' : '' }}>Admin</option>
                        <option value="1" {{ $user->type == 'user' ? 'selected' : '' }}>User</option>
                     </select>
@@ -65,7 +66,7 @@
               <label class="mb-0">Phone</label>
             </div>
             <div class="col-md-8">
-              <input type="phone" class="form-control" value="{{ $user->phone }}" name="phone"/>
+              <input type="phone" class="form-control" value="{{ $user->phone }}" name="phone" id="phone"/>
             </div>
           </div>
          
@@ -76,7 +77,7 @@
               <label class="mb-0">Date of Birth</label>
             </div>
             <div class="col-md-8">
-              <input class="form-control" id="dd" type="date" name="date" value="{{ $user->dob }}" name="dob"/>
+              <input class="form-control" type="date" value="{{ $user->dob }}" name="dob" id="dob"/>
             </div>
           </div>
 
@@ -85,7 +86,7 @@
               <label class="mb-0">Address</label>
             </div>
             <div class="col-md-8">
-              <input type="phone" class="form-control" value="{{ $user->address }}" name="address"/>
+              <input class="form-control" type="text" value="{{ $user->address }}" name="address" id="addr"/>
             </div>
           </div>
 
@@ -101,7 +102,7 @@
                     <label class="mb-0">New Profile</label>
                   </div>
                   <div class="col-md-8">
-                    <input type="file" class="form-control" id="newProfile" name="newProfile" />
+                    <input type="file" class="form-control" id="newProfile" name="newProfile"/>
                     @error('newProfile')
                             <span class="text-danger">{{$message}}</span>
                    @enderror
@@ -117,7 +118,7 @@
 
               <div class="">
                 <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-md-4">Edit</button>
-                <button type="reset" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-md-4">Clear</button>
+                <button type="button" onclick="resetBtn()" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-md-4">Clear</button>
               </div>
               <br>
               
@@ -135,4 +136,15 @@
     </div>
   </div>
 </div>
+<script>
+  function resetBtn() {
+        document.getElementById('name').value = " ";
+        document.getElementById('email').value = " ";
+        document.getElementById('phone').value = " ";
+        document.getElementById('dob').value = " ";
+        document.getElementById('addr').value = " ";
+        document.getElementById('type').value = " ";
+        document.getElementById('newProfile').value = '';
+    }
+</script>
 @endsection

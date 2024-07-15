@@ -46,40 +46,66 @@ class UserService
     ]);
     $email = $request->email;
     $name = $request->name;
-    $existingUser = User::userExist($request);
-    if ($existingUser) {
-      if ($existingUser->deleted_at) {
+    $existingUserByEmail = User::userExistByEmail($request);
+    $existingUserByName = User::userExistByName($request);
+    // dd($existingUser->name);
+    if ($existingUserByName) {
+      //dd($existingUserByName);
+
+      if ($existingUserByName->deleted_at) {
         if ($request->hasFile('profile')) {
           $file = $request->file('profile');
-          $fileName = time() . '.' . $file->extension();
-          $file->move(public_path('img'), $fileName);
-          Session::put('profile', 'img/' . $fileName);
+          $user = $request;
         }
-      $user = $request;
-      return view('users.create_user_confirm', compact('user'));
-      }
-      else{
-        return redirect()->back()->withErrors(['email' => 'The email has already been taken.']);
+      } else {
+        //return redirect()->back()->with('name', 'The name has already been taken.')->withInput();
+        return redirect()->back()->withErrors(['name' => 'The name has already been taken.'])->withInput();
       }
     }
-    if ($request->hasFile('profile')) {
-          $file = $request->file('profile');
-          $fileName = time() . '.' . $file->extension();
-          $file->move(public_path('img'), $fileName);
+
+      if ($existingUserByEmail) {
+        //dd($existingUser->email);
+        if ($existingUserByEmail->deleted_at) {
+          if ($request->hasFile('profile')) {
+            $file = $request->file('profile');
+            $user = $request;
+          } 
+        }else {
+          return redirect()->back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
+        }
+      }
+        if ($request->hasFile('profile')) {
+          $fileName = time() . '.' . $request->file('profile')->getClientOriginalExtension();
+          $request->profile->move(public_path('img'), $fileName);
+          //$file->move(public_path('img'), $fileName);
           Session::put('profile', 'img/' . $fileName);
         }
-    $user = $request;
-    return view('users.create_user_confirm', compact('user'));
+        $user = $request;
+        return view('users.create_user_confirm', compact('user'));
+      
+    
   }
-
   public function userSave(Request $request)
   {
     $profile = Session::get('profile');
-    $existingemail = User::userExist($request);
-    if ($existingemail) {
-      if ($existingemail->deleted_at) {
-        User::saveExistingUser($existingemail,$request,$profile);
-        Session::flash('create', 'Register Successfully');
+    $existingemail = User::userExistByEmail($request);
+    $existingname = User::userExistByName($request);
+    if ($existingemail||$existingname) {
+      if ($existingemail) {
+        if ($existingemail->deleted_at) {
+          User::saveExistingUser($existingemail, $request, $profile);
+          Session::flash('create', 'Register Successfully');
+        } else {
+          return redirect()->back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
+        }
+      }
+      if ($existingname) {
+        if ($existingname->deleted_at) {
+          User::saveExistingUser($existingname, $request, $profile);
+          Session::flash('create', 'Register Successfully');
+        } else {
+          return redirect()->back()->withErrors(['name' => 'The name has already been taken.'])->withInput();
+        }
       }
     } else {
       if (auth()->user()->type == 'admin') {
