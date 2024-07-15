@@ -46,25 +46,22 @@ class UserService
     ]);
     $email = $request->email;
     $name = $request->name;
+    
     $existingUserByEmail = User::userExistByEmail($request);
     $existingUserByName = User::userExistByName($request);
-    // dd($existingUser->name);
-    if ($existingUserByName) {
-      //dd($existingUserByName);
 
+    if ($existingUserByName) {
       if ($existingUserByName->deleted_at) {
         if ($request->hasFile('profile')) {
           $file = $request->file('profile');
           $user = $request;
         }
       } else {
-        //return redirect()->back()->with('name', 'The name has already been taken.')->withInput();
         return redirect()->back()->withErrors(['name' => 'The name has already been taken.'])->withInput();
       }
     }
 
       if ($existingUserByEmail) {
-        //dd($existingUser->email);
         if ($existingUserByEmail->deleted_at) {
           if ($request->hasFile('profile')) {
             $file = $request->file('profile');
@@ -73,6 +70,10 @@ class UserService
         }else {
           return redirect()->back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
         }
+
+
+
+
       }
         if ($request->hasFile('profile')) {
           $fileName = time() . '.' . $request->file('profile')->getClientOriginalExtension();

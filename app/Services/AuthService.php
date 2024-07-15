@@ -35,6 +35,8 @@ class AuthService
     }
     public function signupSave(Request $request)
     {
+
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -50,46 +52,88 @@ class AuthService
             'pw.confirmed' => 'Password confirmation does not match.',
         ]);
         if (Auth::check()) {
-            $existingUser = User::userExist($request);
-            if ($existingUser) {
-                if ($existingUser->deleted_at) {
-                    $user = User::signUpExistingUser($request, $existingUser);
+            $existingUserByEmail = User::userExistByEmail($request);
+            $existingUserByName = User::userExistByName($request);
+            //dd($existingUserByName->name);
+            if ($existingUserByName) {
+                if ($existingUserByName->deleted_at) {
+                    $user = User::signUpExistingUser($request, $existingUserByName);
                     $user->create_user_id = auth()->id();
                     $user->updated_user_id = auth()->id();
                     $user->save();
                     Session::flash('success', 'Sign up Successfully.');
                     return redirect()->route('login');
                 } else {
-                    Session::flash('error', 'This user already exists');
-                    return redirect()->back()->withInput();
+                    return redirect()->back()->withErrors(['name' => 'The name has already been taken.'])->withInput();
                 }
             }
-            $user = User::signUpNewUser($request);
-            $user->create_user_id = auth()->id();
-            $user->updated_user_id = auth()->id();
-            $user->save();
-            Session::flash('success', 'Sign up Successfully.');
-            return redirect()->route('login');
-        } else {
-            $existingUser = User::userExist($request);
-            if ($existingUser) {
-                if ($existingUser->deleted_at) {
-                    $user=User::signUpExistingUser($request, $existingUser);
-                    $user->create_user_id =  $user->id;
-                    $user->updated_user_id =  $user->id;
+
+            if ($existingUserByEmail) {
+                if ($existingUserByEmail->deleted_at) {
+                    $user = User::signUpExistingUser($request, $existingUserByEmail);
+                    $user->create_user_id = auth()->id();
+                    $user->updated_user_id = auth()->id();
                     $user->save();
                     Session::flash('success', 'Sign up Successfully.');
                     return redirect()->route('login');
                 } else {
-                    Session::flash('error', 'This user already exists');
-                    return redirect()->back()->withInput();
+                    return redirect()->back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
                 }
+                //$existingUser = User::userExist($request);
+                //if ($existingUser) {
+                //    if ($existingUser->deleted_at) {
+                //        $user = User::signUpExistingUser($request, $existingUser);
+                //        $user->create_user_id = auth()->id();
+                //        $user->updated_user_id = auth()->id();
+                //        $user->save();
+                //        Session::flash('success', 'Sign up Successfully.');
+                //        return redirect()->route('login');
+                //    } else {
+                //        Session::flash('error', 'This user already exists');
+                //        return redirect()->back()->withInput();
+                //    }
+                //}
+
+
+                if (!$existingUserByName && !$existingUserByEmail) {
+                    $user = User::signUpNewUser($request);
+                    $user->create_user_id = auth()->id();
+                    $user->updated_user_id = auth()->id();
+                    $user->save();
+                    Session::flash('success', 'Sign up Successfully.');
+                    return redirect()->route('login');
+                }
+
+
+
+
+
+            } 
+            
+            
+            else {
+                $existingUser = User::userExist($request);
+                if ($existingUser) {
+                    if ($existingUser->deleted_at) {
+                        $user = User::signUpExistingUser($request, $existingUser);
+                        $user->create_user_id = $user->id;
+                        $user->updated_user_id = $user->id;
+                        $user->save();
+                        Session::flash('success', 'Sign up Successfully.');
+                        return redirect()->route('login');
+                    } else {
+                        Session::flash('error', 'This user already exists');
+                        return redirect()->back()->withInput();
+                    }
+                }
+                $user = User::signUpNewUser($request);
+                $user->create_user_id = $user->id;
+                $user->updated_user_id = $user->id;
+                $user->save();
+                Session::flash('success', 'Sign up Successfully.');
+
             }
-            $user = User::signUpNewUser($request);
-            $user->create_user_id = $user->id;
-            $user->updated_user_id = $user->id;
-            $user->save();
-            Session::flash('success', 'Sign up Successfully.');
+
 
         }
     }
