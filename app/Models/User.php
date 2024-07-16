@@ -145,34 +145,61 @@ class User extends Authenticatable
     }
     public static function saveExistingUser($existinguser, $request, $profile)
     {
-        $existinguser->restore();
-        $existinguser->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->pw),
-            'profile' => $profile,
-            'phone' => $request->phone,
-            'type' => $request->type,
-            'address' => $request->address,
-            'dob' => $request->dob,
-            'create_user_id' => auth()->user()->id,
-            'updated_user_id' => auth()->user()->id,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        ]);
+        try {
+            DB::transaction(function () use ($existinguser, $request, $profile) {
+                $existinguser->restore();
+                $existinguser->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->pw),
+                    'profile' => $profile,
+                    'phone' => $request->phone,
+                    'type' => $request->type,
+                    'address' => $request->address,
+                    'dob' => $request->dob,
+                    'create_user_id' => auth()->user()->id,
+                    'updated_user_id' => auth()->user()->id,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
+
+            $request->session()->flash('create', 'User created successfully');
+            });
+        }catch(\Illuminate\Database\QueryException $e){
+            //dd("heee");
+            $request->session()->flash('error', 'Register unsuccessful!');
+            //return view('users.create_user');
+           // return redirect()->route('register');
+        }
     }
     public static function signUpExistingUser($request, $existinguser)
     {
-        $existinguser->restore();
-        $existinguser->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->pw),
-            'type' => "1",
-            'create_user_id' => 1,
-            'updated_user_id' => 1
-        ]);
-        return $existinguser;
+        try {
+            DB::transaction(function () use ( $request,$existinguser) {
+                $existinguser->restore();
+                $existinguser->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->pw),
+                    'type' => "1",
+                    'create_user_id' => 1,
+                    'updated_user_id' => 1,
+                    'phone' => null,
+                    'address' => null,
+                    'dob' => null,
+                    'deleted_user_id' => null
+                ]);
+                //return $existinguser;
+            });
+            //dd($existinguser);
+            return $existinguser;
+        }catch(\Illuminate\Database\QueryException $e){
+            //dd("heee");
+            $request->session()->flash('error', 'Signup unsuccessful!');
+            //return view('users.create_user');
+            return redirect()->route('register');
+        }
+
     }
     public static function signUpNewUser($request)
     {
@@ -196,11 +223,18 @@ class User extends Authenticatable
         $user->update($request->all());
     }
 
-    public static function searchUser($pageSize)
+    public static function searchUser($pageSize,$request,$search)
     {
+        $pageSize = $request->input('pageSize', 4);
         if (auth()->user()->type == 'admin') {
-            $users = User::latest()->paginate($pageSize);
-            return $users;
+            $search = strtolower($request->input('search'));
+            $posts = User::where(function ($query) use ($search) {
+                $query->where('title', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            })
+                ->latest()
+                ->paginate($pageSize);
+              return $posts;
         } else {
             $userId = auth()->user()->id;
             $users = User::where('create_user_id', $userId)
@@ -210,9 +244,11 @@ class User extends Authenticatable
         }
 
     }
-    public static function searchFilter($pageSize, $name, $email, $start_date, $end_date)
+    public static function searchFilter($pageSize, $name, $email, $start_date, $end_date,$request)
     {
+        
         if (auth()->user()->type == 'admin') {
+            $pageSize = $request->input('pageSize', 8);
             $users = User::
                 whereNull('deleted_at')
                 ->when($name, function ($query, $name) {
@@ -226,9 +262,12 @@ class User extends Authenticatable
                 })
                 ->when($end_date, function ($query) use ($end_date) {
                     return $query->whereDate('created_at', '<=', $end_date);
-                })->paginate($pageSize);
+                })
+                ->latest()
+                ->paginate($pageSize);
             return $users;
         } else {
+            $pageSize = $request->input('pageSize', 8);
             $users = User::where('create_user_id', auth()->id())
                 ->whereNull('deleted_at')->when($name, function ($query, $name) {
                     return $query->where('name', 'like', '%' . $name . '%');
@@ -249,7 +288,6 @@ class User extends Authenticatable
     public static function updatePassword($request, $user)
     {
         $newPw = Hash::make($request->newPw);
-        //$newConfirmPw = Hash::make($request->pw_confirmation);
         $user->password = $newPw;
         $user->save();
     }

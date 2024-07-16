@@ -1,6 +1,29 @@
 @extends('layouts.app')
 @section('title', 'Post list')
 @section('contents')
+@if(Session::has('create'))
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight', 
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.success({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('create') }}`
+    });
+    });
+  </script>
+  @php
+        Session::forget('create');
+@endphp
+@endif 
+
 <div class="mb-4 mt">
   <!-- Page size -->
   <form action="{{ route('searchPost', ['search' => request('search')]) }}" method="get" class="d-inline" style="position:relative;">
@@ -15,6 +38,7 @@
     </select>
   </form>
   <!-- Page size -->
+
   <!-- Search by title and description start-->
   <form action="{{ route('searchPost', ['search' => request('search')]) }}" method="get" class="d-inline" style="position:relative;">
     @csrf
@@ -176,28 +200,9 @@
     </div>
   </div>
 </div><!-- Post Detail Modal end-->
-@if(Session::has('create'))
-  <script>
-    iziToast.settings({
-    timeout: 5000,
-    resetOnHover: true,
-    transitionIn: 'flipInX',
-    transitionOut: 'flipOutX',
-    position: 'topRight', 
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-    iziToast.success({
-      title: '',
-      position: 'topRight',
-      class: 'iziToast-custom',
-      message: `{{ Session::get('create') }}`
-    });
-    });
-  </script>
-@endif 
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Modal for showing post details
     const postDetailModal = document.getElementById('postDetailModal');
     postDetailModal.addEventListener('show.bs.modal', function (event) {
       const link = event.relatedTarget;

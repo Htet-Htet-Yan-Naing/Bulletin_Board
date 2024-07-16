@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Session;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -19,13 +20,11 @@ class UserController extends Controller
         return view('users.user_list', compact('users'));
     }
 
-
     public function userListUser()
     {
         $users = $this->userService->userListUser();
         return view('users.user_list', compact('users'));
     }
-
 
     public function deleteUser(Request $request, $id)
     {
@@ -36,7 +35,6 @@ class UserController extends Controller
             return redirect()->route('user.userList');
         }
     }
-
 
     public function register(Request $request)
     {
@@ -51,9 +49,17 @@ class UserController extends Controller
     {
         $this->userService->userSave($request);
         if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin.userList');
-        } else {
-            return redirect()->route('user.userList');
+            if (Session::has('error')) {
+                return redirect()->route('register')->withInput();
+            } else {
+                return redirect()->route('admin.userList');
+            }
+        } elseif (auth()->user()->type == 'user') {
+            if (Session::has('error')) {
+                return redirect()->route('register')->withInput();
+            } else {
+                return redirect()->route('user.userList');
+            }
         }
     }
 

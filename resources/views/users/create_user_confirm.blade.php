@@ -18,10 +18,10 @@
                         <!-- Profile Column -->
                         <div class="col-md-4 mb-4 mb-md-0">
                             <div class="mb-3">
-                               
+
                                 @if(Session::has('profile'))
                                     <img src="{{ asset(Session::get('profile')) }}" alt="Profile Image" class="rounded" width="150" height="150">
-                               
+
                                 @endif
                                 <input type="hidden" class="form-control mt-2" value="{{ Session::get('profile') }}" name="profile" id="profile" />
                             </div>
@@ -70,15 +70,33 @@
                         <!-- Type to Address Column -->
                         <div class="col-md-4">
                             <!-- Type -->
-                            <div class="mb-3">
+                            <!--<div class="mb-3">
                                 <select name="type" id="type" class="form-select">
                                     <option value="1" {{ $user->type == null ? 'selected' : '' }}>Select Type</option>
                                     <option value="0" {{ $user->type == 0 ? 'selected' : '' }}>Admin</option>
                                     <option value="1" {{ $user->type == 1 ? 'selected' : '' }}>User</option>
-                                   
-                                    
                                 </select>
-                            </div>
+                            </div>-->
+                            @auth
+                                <div class="mb-3">
+                                    <div>
+                                        @if(auth()->user()->type == 'admin')
+                                            <select name="type" id="type" class="form-select">
+                                                <!--<option value="1" {{ $user->type == null ? 'selected' : '' }}>Select Type</option>-->
+                                                <option value="1" {{ $user->type == 1 ? 'selected' : '' }}>User</option>
+                                                <option value="0" {{ $user->type == 0 ? 'selected' : '' }}>Admin</option>
+                                                
+                                            </select>
+                                        @elseif(auth()->user()->type == 'user')
+                                            <select name="type" id="type" class="form-select" disabled>
+                                                <option value="1" {{ $user->type == 1 ? 'selected' : '' }}>User</option>
+                                            </select>
+                                        @else
+                                            <p>Unknown role</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endauth
 
                             <!-- Phone -->
                             <div class="mb-3">

@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Session;
+use App\Models\Posts;
 use App\Services\PostService;
 use Illuminate\Http\Request;
 
@@ -58,10 +61,13 @@ class PostsController extends Controller
     {
         $this->postService->postSave($request);
         if (auth()->user()->type == 'admin') {
+           
             return redirect()->route('admin.postList');
+           
         } else {
             return redirect()->route('user.postList');
         }
+        
     }
     public function edit(string $id)
     {
@@ -70,20 +76,7 @@ class PostsController extends Controller
     }
     public function confirmEdit(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|max:255|unique:posts',
-            'description' => 'required|max:255',
-        ], [
-            'title.required' => 'The title field can\'t be blank.',
-            'title.unique' => 'The title has already be taken.',
-            'description.required' => 'The description field can\'t be blank.',
-            'title.max' => '255 characters is the maximum allowed',
-            'description.max' => '255 characters is the maximum allowed'
-        ]);
-        $post = $request;
-        $toggleStatus = $post->toggle_switch;
-        $request->session()->flash('toggleStatus', $toggleStatus);
-        return view('posts.edit_confirm_post', compact('post', 'toggleStatus'));
+        return $this->postService->confirmEdit($request, $id);
     }
 
     public function update(Request $request, string $id)

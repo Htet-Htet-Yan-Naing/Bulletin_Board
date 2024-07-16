@@ -47,13 +47,8 @@ class Posts extends Model
     {
         foreach ($records as $record) {
             if (count($record) !== 3) {
-                //dd("Header is not equal to three");
-                //return ['error' => 'Each row in the CSV must have exactly 3 columns.'];
                 return redirect()->back()->with('error', 'Each row in the CSV must have exactly 3 columns.')->withInput();
             }
-
-            //Posts::savePost($records);
-            // Create or update posts based on CSV data
             Posts::create([
                 'title' => $record['title'],
                 'description' => $record['description'],
@@ -135,5 +130,22 @@ class Posts extends Model
     public static function deletePost($id)
     {
         $deleted = Posts::destroy($id);
+    }
+    public static function postExistByTitle($request,$id)
+    {
+        $title = $request->title;
+        $existingPost = Posts
+            ::where('title', $title)
+            ->where('id',$id)
+            ->first();
+        return $existingPost;
+    }
+    public static function postExist($request)
+    {
+        $title = $request->title;
+        $existingPost = Posts
+            ::where('title', $title)
+            ->first();
+        return $existingPost;
     }
 }

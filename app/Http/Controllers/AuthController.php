@@ -20,6 +20,19 @@ class AuthController extends Controller
     public function signupSave(Request $request)
     {
         return $this->authService->signupSave($request);
+        
+        //if ($user) {
+        //    if (!Auth::attempt($request->only('email', 'pw'))) {
+        //        return redirect()->back()->with('error', 'Incorrect password')->withInput();
+        //    }
+        //    if (auth()->user()->type == 'admin') {
+        //        return redirect()->route('admin.postList');
+        //    } else {
+        //        return redirect()->route('user.postList');
+        //    }
+        //} else {
+        //    return redirect()->back()->with('error', 'Email  does\'t exit.')->withInput();
+        //}
     }
 
     public function login()
@@ -38,8 +51,6 @@ class AuthController extends Controller
             } else {
                 return redirect()->route('user.postList');
             }
-            
-
         } else {
             return redirect()->back()->with('error', 'Email  does\'t exit.')->withInput();
         }

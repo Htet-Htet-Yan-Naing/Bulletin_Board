@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Posts;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -65,7 +66,7 @@ class PostService
             'description.max' => '255 characters is the maximum allowed'
         ]);
         Posts::savePost($request);
-        $request->session()->flash('create', 'Post created successfully!');
+        Session::flash('create', 'Post created successfully!');
     }
     public function edit(string $id)
     {
@@ -79,29 +80,29 @@ class PostService
             'description' => 'required|max:255',
         ], [
             'title.required' => 'The title field can\'t be blank.',
-            'title.unique' => 'The title has already been taken.',
+            'title.unique' => 'The title has already been taken.Cannot edit!',
             'description.required' => 'The description field can\'t be blank.',
             'title.max' => '255 characters is the maximum allowed',
             'description.max' => '255 characters is the maximum allowed'
         ]);
+        $existingPost = Posts::postExist($request);
+        $existingPostBySameUser = Posts::postExistByTitle($request,$id);
+        if($existingPostBySameUser){
+            $post = $request;
+            $toggleStatus = $post->toggle_switch;
+            $request->session()->flash('toggleStatus', $toggleStatus);
+            return view('posts.edit_confirm_post', compact('post', 'toggleStatus'));
+        }
+        if($existingPost){
+            return redirect()->back()->withErrors(['title' => 'This title is already taken'])->withInput();
+        }
         $post = $request;
         $toggleStatus = $post->toggle_switch;
         $request->session()->flash('toggleStatus', $toggleStatus);
         return view('posts.edit_confirm_post', compact('post', 'toggleStatus'));
     }
-
     public function update(Request $request, string $id)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|max:255|unique:posts',
-            'description' => 'required|max:255',
-        ], [
-            'title.required' => 'The title field can\'t be blank.',
-            'title.unique' => 'The title has already been taken.',
-            'description.required' => 'The description field can\'t be blank.',
-            'title.max' => '255 characters is the maximum allowed',
-            'description.max' => '255 characters is the maximum allowed'
-        ]);
         $post=Posts::findPost($id);
         $toggleStatus = $request->session()->get('toggleStatus');
         $request->session()->put('toggleStatus', $toggleStatus);
@@ -132,7 +133,8 @@ class PostService
                     $handle = fopen('php://output', 'w');
                     fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
                     foreach ($posts as $post) {
-                        fputcsv($handle, [$post->id, $post->title, $post->description,$post->status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
+                        $status = $post->status == 1 ? 'Active' : 'Inactive';
+                        fputcsv($handle, [$post->id, $post->title, $post->description,$status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
                     }
                     fclose($handle);
                 }, 200, [
@@ -145,7 +147,8 @@ class PostService
                 $handle = fopen('php://output', 'w');
                 fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
                 foreach ($posts as $post) {
-                    fputcsv($handle, [$post->id, $post->title, $post->description,$post->status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
+                    $status = $post->status == 1 ? 'Active' : 'Inactive';
+                    fputcsv($handle, [$post->id, $post->title, $post->description,$status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
                 }
                 fclose($handle);
             }, 200, [
@@ -160,7 +163,8 @@ class PostService
                     $handle = fopen('php://output', 'w');
                     fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
                     foreach ($posts as $post) {
-                        fputcsv($handle, [$post->id, $post->title, $post->description,$post->status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
+                        $status = $post->status == 1 ? 'Active' : 'Inactive';
+                        fputcsv($handle, [$post->id, $post->title, $post->description,$status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
                     }
                     fclose($handle);
                 }, 200, [
@@ -174,7 +178,8 @@ class PostService
                 $handle = fopen('php://output', 'w');
                 fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
                 foreach ($posts as $post) {
-                    fputcsv($handle, [$post->id, $post->title, $post->description,$post->status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
+                    $status = $post->status == 1 ? 'Active' : 'Inactive';
+                    fputcsv($handle, [$post->id, $post->title, $post->description,$status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
                 }
                 fclose($handle);
             }, 200, [
@@ -231,5 +236,4 @@ class PostService
             return redirect()->back()->with('error', 'There was an error processing the CSV file.')->withInput();
         }
     }
-
 }

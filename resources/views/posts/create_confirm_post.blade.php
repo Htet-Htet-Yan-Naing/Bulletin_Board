@@ -36,12 +36,12 @@
             <div class="col-sm-6">
               <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-sm-5">Confirm</button>
               <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-5" id="resetBtn" onclick="history.back()">Cancel</button>
-              </form>
-            </div>
-          </div>
         </form>
       </div>
     </div>
+    </form>
   </div>
+</div>
+</div>
 </div>
 @endsection

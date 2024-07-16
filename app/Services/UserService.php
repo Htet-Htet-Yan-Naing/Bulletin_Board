@@ -70,21 +70,14 @@ class UserService
         }else {
           return redirect()->back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
         }
-
-
-
-
       }
         if ($request->hasFile('profile')) {
           $fileName = time() . '.' . $request->file('profile')->getClientOriginalExtension();
           $request->profile->move(public_path('img'), $fileName);
-          //$file->move(public_path('img'), $fileName);
           Session::put('profile', 'img/' . $fileName);
         }
         $user = $request;
         return view('users.create_user_confirm', compact('user'));
-      
-    
   }
   public function userSave(Request $request)
   {
@@ -95,7 +88,6 @@ class UserService
       if ($existingemail) {
         if ($existingemail->deleted_at) {
           User::saveExistingUser($existingemail, $request, $profile);
-          Session::flash('create', 'Register Successfully');
         } else {
           return redirect()->back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
         }
@@ -103,7 +95,7 @@ class UserService
       if ($existingname) {
         if ($existingname->deleted_at) {
           User::saveExistingUser($existingname, $request, $profile);
-          Session::flash('create', 'Register Successfully');
+          //Session::flash('create', 'Register Successfully');
         } else {
           return redirect()->back()->withErrors(['name' => 'The name has already been taken.'])->withInput();
         }
@@ -150,14 +142,11 @@ class UserService
   public function searchUser(Request $request)
   {
       $pageSize = $request->input('pageSize', 8);
-      $users = User::searchUser($pageSize);
-      $userId = auth()->id();
       $start_date = $request->input('start_date');
       $end_date = $request->input('end_date');
-      $end_date_inclusive = Carbon::parse($end_date)->endOfDay();
       $name = strtolower($request->input('name'));
       $email = strtolower($request->input('email'));
-      $users=User::searchFilter($pageSize,$name,$email,$start_date,$end_date);
+      $users=User::searchFilter($pageSize,$name,$email,$start_date,$end_date,$request);
       return $users;
   }
 }

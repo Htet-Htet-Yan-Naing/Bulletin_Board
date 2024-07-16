@@ -55,13 +55,14 @@
                                     <div>
                                         @if(auth()->user()->type == 'admin')
                                             <select name="type" id="type" class="form-select">
-                                                <option value=" " {{ old('type') == ' ' ? 'selected' : '' }} selected>Select Type</option>
-                                                <option value="0" {{ old('type') == '0' ? 'selected' : '' }}>Admin</option>
+                                                <!--<option value=" " {{ old('type') == ' ' ? 'selected' : '' }} selected>Select Type</option>-->
                                                 <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>User</option>
+                                                <option value="0" {{ old('type') == '0' ? 'selected' : '' }}>Admin</option>
+                                               
                                             </select>
                                         @elseif(auth()->user()->type == 'user')
-                                            <select name="type" id="type" class="form-select">
-                                                <option value=" " {{ old('type') == ' ' ? 'selected' : '' }} selected>Select Type</option>
+                                            <select name="type" id="type" class="form-select" disabled>
+                                                <!--<option value=" " {{ old('type') == ' ' ? 'selected' : '' }} selected>Select Type</option>-->
                                                 <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>User</option>
                                             </select>
                                         @else
@@ -110,4 +111,23 @@
         </div>
     </div>
 </div>
+@if(Session::has('error'))
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight',
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.error({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('error') }}`
+    });
+    });
+  </script>
+@endif 
 @endsection
