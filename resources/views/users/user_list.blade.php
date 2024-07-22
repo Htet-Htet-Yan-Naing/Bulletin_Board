@@ -7,6 +7,26 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 @endif-->
+@if(Session::has('create'))
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight',
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.success({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('create') }}`
+    });
+    });
+   
+  </script>
+@endif 
 <div class="row d-flex justify-content-center align-items-center h-100 mb">
   <div class="col-md-12">
     <!-- User Search Container start -->
@@ -195,28 +215,7 @@
   </div>
 </div>
 <!-- Post Detail Modal end-->
-@if(Session::has('create'))
-  <script>
-    iziToast.settings({
-    timeout: 5000,
-    resetOnHover: true,
-    transitionIn: 'flipInX',
-    transitionOut: 'flipOutX',
-    position: 'topRight',
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-    iziToast.success({
-      title: '',
-      position: 'topRight',
-      class: 'iziToast-custom',
-      message: `{{ Session::get('create') }}`
-    });
-    });
-    function refreshPage() {
-        location.reload(true); // Reloads the current page
-    }
-  </script>
-@endif 
+
 <script>
   
   const deleteModal = document.getElementById('deleteModal');

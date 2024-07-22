@@ -37,13 +37,37 @@
             <div class="col-md-4">
               <label class="mb-0">Type</label>
             </div>
+            <!--@auth
             <div class="col-md-8">
+                    @if(auth()->user()->type == 'admin')
                     <select name="type" id="type" class="form-select">
-                       <option value=" " {{ $user->type == '' ? 'selected' : '' }}>Select</option>
                        <option value="0" {{ $user->type == 'admin' ? 'selected' : '' }}>Admin</option>
                        <option value="1" {{ $user->type == 'user' ? 'selected' : '' }}>User</option>
                     </select>
+                    @endif
+                    @if(auth()->user()->type  == 'user')
+                    <select name="type" id="type" class="form-select" disabled>
+                       <option value="1" {{ $user->type == 'user' ? 'selected' : '' }}>User</option>
+                    </select>
+                    @endif
             </div>
+            @endauth-->
+
+            <div class="col-md-8">
+    @auth
+        @if(auth()->user()->type == 'admin')
+            <select name="type" id="type" class="form-select">
+                <option value="0" {{ $user->type == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="1" {{ $user->type == 'user' ? 'selected' : '' }}>User</option>
+            </select>
+        @elseif(auth()->user()->type == 'user')
+            <select name="type" id="type" class="form-select">
+                <option value="1" {{ $user->type == 'user' ? 'selected' : '' }}>User</option>
+            </select>
+        @endif
+    @endauth
+</div>
+
           </div>
 
 

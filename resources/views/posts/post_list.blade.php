@@ -10,18 +10,14 @@
     transitionOut: 'flipOutX',
     position: 'topRight', 
     });
-    document.addEventListener('DOMContentLoaded', function () {
     iziToast.success({
       title: '',
       position: 'topRight',
       class: 'iziToast-custom',
       message: `{{ Session::get('create') }}`
     });
-    });
+   
   </script>
-  @php
-        Session::forget('create');
-@endphp
 @endif 
 
 <div class="mb-4 mt">

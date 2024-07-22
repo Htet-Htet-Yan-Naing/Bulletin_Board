@@ -111,6 +111,7 @@ class Posts extends Model
         $post->create_user_id = auth()->id();
         $post->updated_user_id = auth()->id();
         $post->save();
+        return $post;
     }
     public static function findPost($id)
     {

@@ -95,7 +95,6 @@ class UserService
       if ($existingname) {
         if ($existingname->deleted_at) {
           User::saveExistingUser($existingname, $request, $profile);
-          //Session::flash('create', 'Register Successfully');
         } else {
           return redirect()->back()->withErrors(['name' => 'The name has already been taken.'])->withInput();
         }
@@ -136,8 +135,13 @@ class UserService
       $user = User::findUser($id);
       $user->profile = $imagePath;
     }
-    User::updateProfile($request,$user);
-    $request->session()->flash('create', 'User updated successfully!');
+    $user=User::updateProfile($request,$id);
+    Session::flash('create', 'User updated successfully!');
+        if ($user->type == 'admin') {
+            return redirect()->route('admin.userList');
+        } else {
+            return redirect()->route('user.userList');
+        }
   }
   public function searchUser(Request $request)
   {

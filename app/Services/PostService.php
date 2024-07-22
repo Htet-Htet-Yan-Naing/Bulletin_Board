@@ -159,6 +159,7 @@ class PostService
             $search = $request->input('search');
             if ($search) {
                 $posts = Posts::searchPost($request,$pageSize,$search);
+                //$data= new StreamedResponse(function () use ($posts) {
                 return new StreamedResponse(function () use ($posts) {
                     $handle = fopen('php://output', 'w');
                     fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
@@ -174,6 +175,7 @@ class PostService
 
             }
             $posts = Posts::findByCreateUID();
+            //$data= new StreamedResponse(function () use ($posts) {
             return new StreamedResponse(function () use ($posts) {
                 $handle = fopen('php://output', 'w');
                 fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
@@ -187,6 +189,7 @@ class PostService
                 'Content-Disposition' => 'attachment; filename="posts.csv"',
             ]);
         }
+        //return response()->json($data);
     }
     public function upload(Request $request)
     {

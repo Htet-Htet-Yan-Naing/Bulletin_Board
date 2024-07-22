@@ -16,13 +16,11 @@
     transitionOut: 'flipOutX',
     position: 'topRight', 
     });
-    document.addEventListener('DOMContentLoaded', function () {
     iziToast.success({
       title: '',
       position: 'topRight',
       class: 'iziToast-custom',
       message: `{{ Session::get('success') }}`
-    });
     });
   </script>
    @elseif(Session::has('error'))

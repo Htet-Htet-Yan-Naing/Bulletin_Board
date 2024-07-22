@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Session;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -81,12 +82,13 @@ class UserController extends Controller
 
     public function updateProfile(Request $request, string $id)
     {
-        $this->userService->updateProfile($request, $id);
-        if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin.userList');
-        } else {
-            return redirect()->route('user.userList');
-        }
+        return $this->userService->updateProfile($request, $id);
+        //Session::flash('create', 'User updated successfully!');
+        //if (auth()->user()->type == 'admin') {
+        //    return redirect()->route('admin.userList');
+        //} else {
+        //    return redirect()->route('user.userList');
+        //}
     }
     public function searchUser(Request $request)
     {

@@ -22,19 +22,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/createPost', [PostsController::class, 'createPost'])->name("createPost");
     Route::get('/confirmPost', [PostsController::class, 'confirmPost'])->name("confirmPost");
     Route::post('/postSave', [PostsController::class, 'postSave'])->name("post.save");
-   
     Route::get('/searchUser', [UserController::class, 'searchUser'])->name("searchUser");
     Route::get('/register', [UserController::class, 'register'])->name('register');
     Route::post('/register', [UserController::class, 'register'])->name('register');
     Route::get('/confirmRegister',  [UserController::class, 'confirmRegister'])->name("confirmRegister");
     Route::post('/confirmRegister',  [UserController::class, 'confirmRegister'])->name("confirmRegister");
-
 //    Route::get('/register', [UserController::class, 'register'])->name('register');
 //Route::post('/register', [UserController::class, 'register']);
 //Route::get('/confirmRegister', [UserController::class, 'confirmRegister'])->name('confirmRegister');
 //Route::post('/confirmRegister', [UserController::class, 'confirmRegister'])->name('user.save');
-
-
     Route::post('/userSave', [UserController::class, 'userSave'])->name("user.save");
     Route::get('/edit/{id}', [PostsController::class, 'edit']);
     Route::post('/edit/{id}', [PostsController::class, 'edit'])->name("edit");
@@ -55,13 +51,19 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/adminPostList', [PostsController::class, 'postlist'])->name('admin.postList');
     Route::get('/admin/userList', [UserController::class, 'userListAdmin'])->name('admin.userList');
     
+    
 });
- 
 Route::middleware(['auth', 'user-access:user'])->group(function () {
     Route::get('/userPostList', [PostsController::class, 'postlist'])->name('user.postList');
     Route::get('/user/userList', [UserController::class, 'userListUser'])->name('user.userList');
 });
-
+Route::middleware('auth')->get('/', function () {
+    if (auth()->user()->type == 'admin') {
+        return redirect()->route('admin.postList');
+    } elseif (auth()->user()->type == 'user') {
+        return redirect()->route('user.postList');
+    } 
+});
 Route::get('forget-password', [AuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
 Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
 Route::get('reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.get');

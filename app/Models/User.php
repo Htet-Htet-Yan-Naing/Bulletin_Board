@@ -218,9 +218,38 @@ class User extends Authenticatable
         $user = User::findOrFail($id);
         return $user;
     }
-    public static function updateProfile($request, $user)
+    public static function updateProfile($request, $id)
     {
-        $user->update($request->all());
+        //dd($request->type);
+        //$user->update($request->all());
+        if($request->new_profile){
+            $imageName=time().'.'.$request->new_profile->extension();
+            $success=$request->new_profile->move(public_path('uploads'),$imageName);
+            $imagePath = 'uploads/' . $imageName;
+            User::where('id',$id)->update([
+                'name'=>$request->name,
+                'email'=>$request->email,
+                'phone'=>$request->phone,
+                'dob'=>$request->dob,
+                'address'=>$request->address,
+                'type'=>$request->type,
+                'profile'=>$imagePath,
+                'updated_at'=>Carbon::now()
+            ]);
+        }
+        else{
+           User::where('id',$id)->update([
+                'name'=>$request->name,
+                'email'=>$request->email,
+                'phone'=>$request->phone,
+                'dob'=>$request->dob,
+                'type'=>$request->type,
+                'address'=>$request->address,
+                'updated_at'=>Carbon::now()
+            ]);
+        }
+        $user = User::where('id', $id)->first();
+        return $user;
     }
 
     public static function searchUser($pageSize,$request,$search)

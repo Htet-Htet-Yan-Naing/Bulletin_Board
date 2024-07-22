@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
                     'name' => 'Htet Htet Yan Naing',
                     'email' => 'htethtetyannaing@gmail.com',
                     'password' =>Hash::make('1234'),
-                    'type' => '1',
+                    'type' => '0',
                     'phone' => '912345678',
                     'address' => 'Mawlamyine',
                     'dob' => '6.1.2001',
