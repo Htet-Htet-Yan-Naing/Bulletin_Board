@@ -1,96 +1,291 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>User List</title>
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <style>
-        </style>
-    </head>
-    <body class="antialiased">
-    <nav class="navbar navbar-expand-sm bg-success">
-  <div class="container-fluid">
-     <span class="navbar-text text-white">User List</span>
-  </div>
-</nav>
-    <div class="container py-5">
-    @if(Session::has('success'))
-        <div class="alert alert-success" role="alert">
-            {{ Session::get('success') }}
+@extends('layouts.app')
+@section('title', 'User List')
+@section('contents') 
+<div class="row d-flex justify-content-center align-items-center h-100 mb">
+  <div class="col-md-12">
+    <!-- User Search Container start -->
+    <!-- Search Row Start -->
+    <div class="user-search-container">
+      <form action="{{ route('searchUser')}}" method="get" class="form-horizontal row mb-3">
+        @csrf
+        <!-- Page Size -->
+        <div class="col-md-2">
+          <label class="form-label txtColor">Page size:</label>
+          <select name="pageSize" class="form-control pagination-selector" onchange="this.form.submit()">
+            <option value="8" {{ request()->input('pageSize') == 8 ? 'selected' : '' }}>8</option>
+            <option value="10" {{ request()->input('pageSize') == 10 ? 'selected' : '' }}>10</option>
+            <option value="20" {{ request()->input('pageSize') == 20 ? 'selected' : '' }}>20</option>
+            <option value="30" {{ request()->input('pageSize') == 30 ? 'selected' : '' }}>30</option>
+          </select>
         </div>
-    @endif
 
-<div class="col-md-3 float-start mb-5 ml-5">
-  <label class=""> Name: </label>
-  <input class="search-btn p-2" type="text" name="name" style="border:1px solid black;border-radius:8px;">
-</div>   
+        <!-- Name -->
+        <div class="col-md-2">
+          <label class="form-label txtColor">Name:</label>
+          <input class="form-control" type="text" name="name" value="{{ request('name') }}" style="border-radius: 8px;">
+          @error('name')
+        <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
+      @enderror
+        </div>
+        <!-- Email -->
+        <div class="col-md-2">
+          <label class="form-label txtColor">Email:</label>
+          <input class="form-control" type="email" name="email" value="{{ request('email') }}" style="border-radius: 8px;">
 
-<div class="col-md-3 float-start mb-5">
-  <label class=""> Email: </label>
-  <input class="search-btn p-2" type="email" name="email" style="border:1px solid black;border-radius:8px;">
-</div> 
-
-<div class="col-md-3 float-start mb-5">
-  <label class=""> From: </label>
-  <input class="search-btn p-2" type="date" name="start-date" style="border:1px solid black;border-radius:8px;">
-</div> 
-
-<div class="col-md-3 float-start mb-5">
-  <label class=""> To: </label>
-  <input class="search-btn p-2" type="date" name="end-date" style="border:1px solid black;border-radius:8px;">
-</div> 
-
-
-
-    <table class="table table-hover table-striped">
-        <thead class="table-primary">
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Created User</th>
-                <th>Type</th>
-                <th>Phone</th>
-                <th>Date of Birth</th>
-                <th>Address</th>
-                <th>Operation</th>
-            </tr>
-        </thead>
-        <tbody>
-        @if($users->count() > 0)
-                @foreach($users as $rs)
-                    <tr>
-                        <td class="align-middle">{{ $rs->name }}</td>
-                        <td class="align-middle">{{ $rs->email }}</td>
-                        <td class="align-middle">-</td>
-                        <td class="align-middle">admin</td>
-                        <td class="align-middle">{{ $rs->phone }}</td>
-                        <td class="align-middle">{{ $rs->dob }}</td>
-                        <td class="align-middle">{{ $rs->address }}</td>
-                        <td class="align-middle">
-                           
-                                <a href="{{ route('edit', $rs->id)}}" type="button" class="btn btn-warning">Edit</a>
-                                <form action="#" method="POST" type="button" class="btn btn-danger p-0" onsubmit="return confirm('Delete?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger m-0">Delete</button>
-                                </form>
-                           
-                        </td>
-                    </tr>
-                    @endforeach
-            @else
-                <tr>
-                    <td class="text-center" colspan="5">Product not found</td>
-                </tr>
-            @endif
-        </tbody>
-    </table>
-    {!! $users->links() !!}
+        </div>
+        <!-- From Date -->
+        <div class="col-md-2">
+          <label class="form-label txtColor">From:</label>
+          <input class="form-control" type="date" name="start_date" value="{{ request('start_date') }}" style="border-radius: 8px;">
+        </div>
+        <!-- To Date -->
+        <div class="col-md-2">
+          <label class="form-label txtColor">To:</label>
+          <input class="form-control" type="date" name="end_date" value="{{ request('end_date') }}" style="border-radius: 8px;">
+          @error('end_date')
+        <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
+        @enderror
+        </div>
+        <!-- Search Button -->
+        <div class="col-md-2 user-search-div">
+          <button type="submit" class="btn btnColor user-search-btn" style="width:100%;">Search</button>
+        </div>
+      </form>
     </div>
+    <!-- Search Row End -->
+    <!-- User Search Contaienr end -->
+    <!-- User Table start -->
+    <table class="table">
+      <thead class="txtColor">
+        <tr class="thead">
+          <th class="profile-head">Profile</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Created User</th>
+          <th>Type</th>
+          <th>Phone</th>
+          <th>Date of Birth</th>
+          <th>Address</th>
+          <th>Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if($users->count() > 0)
+      @foreach($users as $rs)
+      <tr class="row-des-color grow-on-hover">
+      <td class="align-middle rounded-content" style="border-bottom:1px solid #EBEBEB;padding:5px;">
+      <div class="icon">
+        <img src="../{{$rs->profile}}" class="profile-img" alt="Profile">
+      </div>
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email="{{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address="{{ $rs->address }}" data-created-at="{{ $rs->created_at }}" data-updated-at="{{ $rs->updated_at }}" 
+      data-created-user="{{ $rs->creator && $rs->creator->name ? $rs->creator->name : 'USER DELETED' }}"
+      data-updated-user="{{ $rs->creator && $rs->creator->name ? $rs->creator->name : 'USER DELETED' }}"
+     id="user-detail-link">
+      {{$rs->name}}
+      </a>
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{$rs->email}}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      {{$rs->creator && $rs->creator->name ? $rs->creator->name : 'USER DELETED'}}
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      {{ $rs->type}}
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      @if($rs->phone == null)
+      <span class="text-center">-</span>
+    @else
+      {{ $rs->phone}}
+    @endif
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      @if($rs->dob == null)
+      <span class="text-center">-</span>
+    @else
+      {{ $rs->dob}}
+    @endif
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      @if($rs->address == null)
+      <span class="text-center">-</span>
+    @else
+      {{ $rs->address}}
+    @endif
+      </td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      <button type="button" class="user-trash" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email=" {{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address=" {{ $rs->address }}">
+        <img src="../img/trash.png" class="img-trash">
+      </button>
+      </td>
+      </tr>
+    @endforeach
+    @else
+    <tr>
+      <td class="text-center pt-3 pb-3" colspan="9">No User Data</td>
+    </tr>
+  @endif
+      </tbody>
+    </table>
+    <!-- User Table end -->
+    <div class="pagination-container textColor">
+      {{ $users->appends(request()->query())->links() }}
+    </div>
+  </div>
+</div>
+</div>
+<!-- Delete Confirmation Modal start-->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger pb-4">Are you sure to delete user?</p>
+        <p class="row mb-2"><strong class="col-md-3">ID: </strong> <span id="userId" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Name:</strong> <span id="userName" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Type:</strong> <span id="userType" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Email:</strong> <span id="userEmail" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Phone:</strong> <span id="userPhone" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Dob:</strong> <span id="userDob" class="col-md-9"></span></p>
+        <p class="row mb-2"><strong class="col-md-3">Address:</strong> <span id="userAddr" class="col-md-9"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <form id="deleteForm" action="#" method="POST">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Delete Confirmation Modal end -->
+<!-- User Detail Modal start-->
+<div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailModalLabel">Post Detail</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="row mb-2"><strong class="col-md-4">Name:</strong> <span id="userName" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Type:</strong> <span id="userType" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Email:</strong> <span id="userEmail" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Phone:</strong> <span id="userPhone" class="col-md-8"></span>
+        <p class="row mb-2"><strong class="col-md-4">Date of Birth:</strong> <span id="userDob" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Address:</strong> <span id="userAddress" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Created at:</strong> <span id="userCreatedAt" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Created user:</strong> <span id="userCreated" class="col-md-8"></span>
+        <p class="row mb-2"><strong class="col-md-4">Updated at:</strong> <span id="userUpdatedAt" class="col-md-8"></span></p>
+        <p class="row mb-2"><strong class="col-md-4">Updated user:</strong> <span id="userUpdated" class="col-md-8"></span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Post Detail Modal end-->
+@if(Session::has('create'))
+  <script>
+    iziToast.settings({
+    timeout: 5000,
+    resetOnHover: true,
+    transitionIn: 'flipInX',
+    transitionOut: 'flipOutX',
+    position: 'topRight',
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    iziToast.success({
+      title: '',
+      position: 'topRight',
+      class: 'iziToast-custom',
+      message: `{{ Session::get('create') }}`
+    });
+    });
+    function refreshPage() {
+        location.reload(true); // Reloads the current page
+    }
+  </script>
+@endif 
+<script>
+  
+  const deleteModal = document.getElementById('deleteModal');
+  deleteModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const userId = button.getAttribute('data-id');
+    const userName = button.getAttribute('data-name');
+    const userType = button.getAttribute('data-type');
+    const userEmail = button.getAttribute('data-email');
+    const userPhone = button.getAttribute('data-phone');
+    const userDob = button.getAttribute('data-dob');
+    const userAddress = button.getAttribute('data-address');
+    const modalBodyId = deleteModal.querySelector('#userId');
+    const modalBodyName = deleteModal.querySelector('#userName');
+    const modalBodyType = deleteModal.querySelector('#userType');
+    const modalBodyEmail = deleteModal.querySelector('#userEmail');
+    const modalBodyPhone = deleteModal.querySelector('#userPhone');
+    const modalBodyDob = deleteModal.querySelector('#userDob');
+    const modalBodyAddress = deleteModal.querySelector('#userAddr');
+    modalBodyId.textContent = userId;
+    modalBodyName.textContent = userName;
+    modalBodyType.textContent = userType;
+    modalBodyEmail.textContent = userEmail;
+    //modalBodyPhone.textContent = userPhone;
+    //modalBodyDob.textContent = userDob;
+    //modalBodyAddress.textContent = userAddress;
+    modalBodyDob.textContent = userDob == '' ? '-' : userDob;
+    modalBodyAddress.textContent = userAddress == " " ? '-' : userAddress;
+    modalBodyPhone.textContent = userPhone == '' ? '-' : userPhone;
+    const deleteForm = deleteModal.querySelector('#deleteForm');
+    deleteForm.action = `/userlists/${userId}/destroy`;
+  });
 
-    </body>
-</html>
+  document.addEventListener('DOMContentLoaded', function () {
+    const userDetailModal = document.getElementById('userDetailModal');
+    const userDetailLink = document.getElementById('user-detail-link');
+    userDetailModal.addEventListener('show.bs.modal', function (event) {
+      const link = event.relatedTarget;
+      const userName = link.getAttribute('data-name');
+      const userType = link.getAttribute('data-type');
+      const userEmail = link.getAttribute('data-email');
+      const userPhone = link.getAttribute('data-phone');
+      const userDob = link.getAttribute('data-dob');
+      const userAddress = link.getAttribute('data-address');
+      const userCreatedAt = link.getAttribute('data-created-at');
+      const userUpdatedAt = link.getAttribute('data-updated-at');
+      const userCreated = link.getAttribute('data-created-user');
+      const userUpdated = link.getAttribute('data-updated-user');
+      const modalTitle = userDetailModal.querySelector('.modal-title');
+      const modalBodyName = userDetailModal.querySelector('#userName');
+      const modalBodyType = userDetailModal.querySelector('#userType');
+      const modalBodyEmail = userDetailModal.querySelector('#userEmail');
+      const modalBodyPhone = userDetailModal.querySelector('#userPhone');
+      const modalBodyDob = userDetailModal.querySelector('#userDob');
+      const modalBodyAddress = userDetailModal.querySelector('#userAddress');
+      const modalBodyCreatedAt = userDetailModal.querySelector('#userCreatedAt');
+      const modalBodyUpdatedAt = userDetailModal.querySelector('#userUpdatedAt');
+      const modalBodyCreatedUser = userDetailModal.querySelector('#userCreated');
+      const modalBodyUpdatedUser = userDetailModal.querySelector('#userUpdated');
+      modalTitle.textContent = "User Detail";
+      modalBodyName.textContent = userName;
+      modalBodyEmail.textContent = userEmail;
+      //modalBodyPhone.textContent = userPhone;
+      modalBodyType.textContent = userType == 0 ? 'Admin' : 'User';
+      modalBodyDob.textContent = userDob == '' ? '-' : userDob;
+      modalBodyAddress.textContent = userAddress == '' ? '-' : userAddress;
+      modalBodyPhone.textContent = userPhone == '' ? '-' : userPhone;
+      modalBodyCreatedAt.textContent = userCreatedAt;
+      modalBodyUpdatedAt.textContent = userUpdatedAt;
+      modalBodyCreatedUser.textContent = userCreated;
+      modalBodyUpdatedUser.textContent = userUpdated;
+    });
+  }); 
+</script>
+@endsection

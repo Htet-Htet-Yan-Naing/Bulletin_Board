@@ -1,0 +1,347 @@
+/* Common */
+html {
+    position: relative;
+    box-sizing: border-box;
+    min-height: 100%;
+}
+
+body {
+    font-size:14px;
+    display: flex;
+    margin: 0;
+    padding-bottom: 60px;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+}
+.mt{
+    margin-top:21px;
+}
+.mb{
+    margin-bottom:60px;
+}
+.table>:not(caption)>*>* {
+    padding: .2rem .5rem;
+    background-color: var(--bs-table-bg);
+    border-bottom-width: 1px;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+/* Custom Card*/
+.card-custom{
+    background-color:#FFFFFF;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    border-radius:10px;
+    /*background-color:red;margin-top:25%;transform: translateY(-25%);*/
+    }
+    .card-header-custom{
+       background-color:#f1fbfc;
+       border-top-left-radius:10px;
+       border-top-right-radius:10px;
+    }
+    
+a {
+    text-decoration: none;
+}
+
+.page-item.active .page-link {
+    background-color: #1a5276;
+    border-color: #1a5276;
+}
+
+.post-list-container {
+    width: 98%;
+    margin: 0 auto;
+    max-width: 1250px;
+}
+
+main {
+    flex: 1;
+    background-color: #f1fbfc;
+}
+
+.nav-link {
+    padding: 0;
+}
+
+.nav-link .txtColor {
+    color: #1a5276;
+}
+
+.dropdown-menu {
+    margin: 0.5rem -7.5rem;
+}
+
+.dropdown-item:focus,
+.dropdown-item:hover {
+    background-color: transparent;
+    color: #000000;
+}
+.navbar-link{
+    border: 1px solid transparent;
+    padding: 7px;
+    border-radius: 10px;
+}
+.nav-active {
+    background-color: rgba(221, 231, 232, 0.65);
+    border: 1px solid #f1fbfc;
+    padding: 7px;
+    border-radius: 10px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+}
+
+.txtColor {
+    color: #1a5276;
+    font-weight: 600;
+}
+
+.f-bold {
+    font-weight: 600;
+}
+
+.btnColor {
+    background-color: #1a5276;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.btnColor:hover {
+    border: 1px solid #1a5276;
+    background-color: white;
+    color: #1a5276;
+}
+
+.main-sec {
+    padding: 69px 0 80px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 20px 0 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    background-color: #ffffff;
+}
+
+/* Common icon */
+.trash,
+.user-trash {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* Post List Card */
+.search {
+    margin-left: 1rem;
+}
+
+.pagination-selector,
+.search-btn {
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.pagination-selector {
+    padding: 5px;
+}
+
+.card {
+    position: relative;
+    height: 300px;
+    overflow: auto;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.grow-on-hover {
+    transition: transform 0.3s ease;
+}
+
+.grow-on-hover:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    border-collapse: separate;
+    transform: scale(1.05);
+    border-radius: 10px;
+}
+
+.c-details span {
+    font-size: 13px;
+    font-weight: 300;
+}
+
+.badge {
+    padding: 0;
+}
+
+.badge .active-span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 25px;
+    padding-bottom: 3px;
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+}
+.badge .inactive-span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 25px;
+    padding-bottom: 3px;
+    background-color: #808080;
+    color: #ffffff;
+    border-radius: 5px;
+}
+.text1 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.text2 {
+    color: #a5aec0;
+}
+
+.icon {
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profile-name{
+    cursor: context-menu;
+}
+.user-name {
+    font-size: 13px;
+}
+
+.trash {
+    position: absolute;
+    bottom: 17px;
+    margin-left: 30px;
+}
+
+.img-trash {
+    width: 25px;
+    height: 25px;
+}
+
+.edit {
+    position: absolute;
+    bottom: 20px;
+    padding-right: 30px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.img-edit {
+    width: 20px;
+    height: 20px;
+}
+
+.view {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+    padding: 5px 15px;
+    border: 1px solid #1a5276;
+    background-color: white;
+    color: #1a5276;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.view:hover {
+    background-color: #1a5276;
+    color: #ffffff;
+}
+
+/* User List */
+.user-search-container {
+    width: 98%;
+    max-width: 1260px;
+}
+
+.user-search-div {
+    position: relative;
+}
+
+.user-search-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.row-des-color {
+    background-color: white;
+}
+
+.user-trash {
+    padding-left: 25px;
+}
+
+.thead {
+    padding: 20px;
+}
+
+/* User Table */
+table {
+    border-spacing: 0;
+    border-collapse: separate;
+}
+
+td {
+    padding: 10px;
+    border: solid 1px #000;
+    border-style: none solid solid none;
+}
+
+.grow-on-hover:hover td:first-child {
+    border-top-left-radius: 10px;
+}
+
+.grow-on-hover:hover td:last-child {
+    border-top-right-radius: 10px;
+}
+
+.grow-on-hover:hover td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.grow-on-hover:hover td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.table {
+    font-size:14px;
+    padding: 10px 20px 0px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    background-color: white;
+    border-collapse: separate;
+    border-radius: 10px;
+}
+
+.profile-head {
+    padding: 20px 10px 20px;
+}

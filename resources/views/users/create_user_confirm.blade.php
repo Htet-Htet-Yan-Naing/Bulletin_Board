@@ -1,183 +1,116 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Register</title>
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <style>
-        </style>
-    </head>
+@extends('layouts.app')
 
-    <body class="antialiased">
-      <!--Nav bar -->
-    <nav class="navbar navbar-expand-sm bg-success">
-  <div class="container-fluid">
-     <span class="navbar-text text-white">Register</span>
-  </div>
-</nav>
+@section('title', 'Register Confirm')
+
+@section('contents')
 
 
-
-<!--Register -->
-<section class="vh-100">
-  <div class="container h-100 mt-5">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-xl-9">
-
-     
-
-        <div class="card" style="border-radius: 15px;">
-          <div class="card-body">
-            
-
-          <form action="{{ route('confirmRegister') }}" method="POST">
-          @csrf
-
-
-
-          <div class="row align-items-center pt-4 pb-3">
-              <div class="col-md-3 ps-5">
-
-                <h6 class="mb-0">Full name</h6>
-
-              </div>
-              <div class="col-md-9 pe-5">
-
-                <input type="text" class="form-control form-control-lg" value="{{ $user->name }}"/>
-
-              </div>
+<div class="row justify-content-center align-items-center h-100 mt">
+    <div class="col-lg-6">
+        <div class="card-custom" style="border-radius: 15px;">
+            <div class="card-header-custom p-3 txtColor">
+                Register Confirm
             </div>
+            <div class="card-body">
+                <form action="{{ route('user.save')}}" method="POST" enctype="multipart/form-data" novalidate>
+                    @csrf
+                    <div class="row">
+                        <!-- Profile Column -->
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div class="mb-3">
 
-          
+                                @if(Session::has('profile'))
+                                    <img src="{{ asset(Session::get('profile')) }}" alt="Profile Image" class="rounded" width="150" height="150">
 
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
+                                @endif
+                                <input type="hidden" class="form-control mt-2" value="{{ Session::get('profile') }}" name="profile" id="profile" />
+                            </div>
+                        </div>
 
-                <h6 class="mb-0">Email address</h6>
+                        <!-- Name to Confirm Password Column -->
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <!-- Name -->
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Full name" value="{{$user->name}}" name="name" id="name" />
+                                @error('name')
+                                    <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
 
-              </div>
-              <div class="col-md-9 pe-5">
+                            <!-- Email address -->
+                            <div class="mb-3">
+                                <input type="email" class="form-control" placeholder="Email address" value="{{$user->email}}" name="email" id="email" />
+                                @error('email')
+                                    <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
 
-                <input type="email" class="form-control form-control-lg" placeholder="example@example.com"  value="{{ $user->email }}"/>
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <input type="password" class="form-control" placeholder="Password" value="{{$user->pw}}" name="pw" id="pw" />
+                                @error('pw')
+                                    <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                            <!-- Confirm Password -->
+                            <div class="mb-3">
+                                <input type="password" class="form-control" placeholder="Confirm Password" value="{{$user->pw_confirmation}}" name="pw_confirmation" id="pw_confirmation" />
+                            </div>
+                        </div>
 
-              </div>
+                        <div class="col-md-4">
+                            @auth
+                                <div class="mb-3">
+                                    <div>
+                                        @if(auth()->user()->type == 'admin')
+                                            <select name="type" id="type" class="form-select">
+                                                <!--<option value="1" {{ $user->type == null ? 'selected' : '' }}>Select Type</option>-->
+                                                <option value="1" {{ $user->type == 1 ? 'selected' : '' }}>User</option>
+                                                <option value="0" {{ $user->type == 0 ? 'selected' : '' }}>Admin</option>
+                                                
+                                            </select>
+                                        @elseif(auth()->user()->type == 'user')
+                                            <select name="type" id="type" class="form-select">
+                                                <option value="1" {{ $user->type == 1 ? 'selected' : '' }}>User</option>
+                                            </select>
+                                        @else
+                                            <p>Unknown role</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endauth
+
+                            <!-- Phone -->
+                            <div class="mb-3">
+                                <input type="phone" class="form-control" placeholder="Phone" value="{{$user->phone}}" name="phone" id="phone" />
+                                @error('phone')
+                                    <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+
+                            <!-- Date of Birth -->
+                            <div class="mb-3">
+                                <input type="date" class="form-control" placeholder="DOB" value="{{$user->dob}}" name="dob" id="dob" />
+                            </div>
+
+                            <!-- Address -->
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Address" value="{{$user->address}}" name="address" id="address" />
+                                @error('address')
+                                    <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+
+                            <div class="d-flex">
+                                <button type="submit" class="btnColor col-sm-5" style="border:none;border-radius:5px;border:1px solid #1a5276;">Confirm</button>
+                                <button type="reset" class="btn btnColor btn-secondary col-sm-5 ms-2" onclick="window.history.back();">Cancel</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
             </div>
-
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
-
-                <h6 class="mb-0">Password</h6>
-
-              </div>
-              <div class="col-md-9 pe-5">
-
-              <input type="password" class="form-control form-control-lg"  value="{{ $user->password }}"/>
-
-              </div>
-            </div>
-
-
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
-
-                <h6 class="mb-0">Confirm Password</h6>
-
-              </div>
-              <div class="col-md-9 pe-5">
-
-              <input type="password" class="form-control form-control-lg"  value="{{ $user->password }}"/>
-
-              </div>
-            </div>
-
-
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
-                <h6 class="mb-0">Type</h6>
-              </div>
-              <div class="col-md-9 pe-5">
-              <select name="type" id="" class="form-select" value="{{ $user->type }}">
-          <option>Admin</option>
-          <option>User</option>
-        </select>
-              </div>
-            </div>
-
-
-
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
-
-                <h6 class="mb-0">Phone</h6>
-
-              </div>
-              <div class="col-md-9 pe-5">
-
-              <input type="phone" class="form-control form-control-lg"  value="{{ $user->phone }}"/>
-
-              </div>
-            </div>
-
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
-
-                <h6 class="mb-0">Date of Birth</h6>
-
-              </div>
-              <div class="col-md-9 pe-5">
-              <input class="form-control form-control-lg" id="dd" type="date" name="date" value="{{ $user->date }}"/>
-              </div>
-            </div>
-
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
-
-                <h6 class="mb-0">Address</h6>
-
-              </div>
-              <div class="col-md-9 pe-5">
-
-              <input type="phone" class="form-control form-control-lg"  value="{{ $user->address }}"/>
-
-              </div>
-            </div>
-
-          
-
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
-
-                <h6 class="mb-0">Profile</h6>
-
-              </div>
-              <div class="col-md-9 pe-5">
-
-              <img src="{{asset($imagePath)}}" alt="error" class="rounded" width="200" height="200" name="profile">
-              </div>
-            </div>
-              <!-- Button -->
-  <div class="row d-flex justify-content-center align-content-center">
-  <div class="col-sm-6">
-    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-4">Register</button>
-  <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
-</div>
-</div>
-
-
-          </form>
-
-          </div>
         </div>
-
-      </div>
     </div>
-
-  </div>
-</section>
-    
-    </body>
-</html>
+</div>
+@endsection
