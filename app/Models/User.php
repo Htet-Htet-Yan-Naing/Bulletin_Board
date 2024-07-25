@@ -2,6 +2,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -13,6 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+  
     use HasApiTokens, HasFactory, Notifiable;
     use SoftDeletes;
 
@@ -24,7 +27,6 @@ class User extends Authenticatable
 
 
     protected $fillable = [
-        'id',
         'name',
         'email',
         'password',
@@ -40,7 +42,7 @@ class User extends Authenticatable
         'updated_at',
         'deleted_at'
     ];
-
+    
     public function posts()
     {
         return $this->hasMany(Posts::class, 'create_user_id', 'id');
@@ -166,16 +168,11 @@ class User extends Authenticatable
             $request->session()->flash('create', 'User created successfully');
             });
         }catch(\Illuminate\Database\QueryException $e){
-            //dd("heee");
             $request->session()->flash('error', 'Register unsuccessful!');
-            //return view('users.create_user');
-           // return redirect()->route('register');
         }
     }
     public static function signUpExistingUser($request, $existinguser)
     {
-        try {
-            DB::transaction(function () use ( $request,$existinguser) {
                 $existinguser->restore();
                 $existinguser->update([
                     'name' => $request->name,
@@ -189,17 +186,7 @@ class User extends Authenticatable
                     'dob' => null,
                     'deleted_user_id' => null
                 ]);
-                //return $existinguser;
-            });
-            //dd($existinguser);
             return $existinguser;
-        }catch(\Illuminate\Database\QueryException $e){
-            //dd("heee");
-            $request->session()->flash('error', 'Signup unsuccessful!');
-            //return view('users.create_user');
-            return redirect()->route('register');
-        }
-
     }
     public static function signUpNewUser($request)
     {

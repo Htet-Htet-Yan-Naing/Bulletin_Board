@@ -6,18 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>@yield('title')</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
-  <link rel="preconnect" href="https://fonts.bunny.net">
-  <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/izitoast@1.4.0/dist/js/iziToast.min.js"></script>
   <style>
     {!! file_get_contents(public_path('css/style.css')) !!}
     {!! file_get_contents(public_path('css/reset.css')) !!}
   </style>
 </head>
-
 <body>
   <!-- Navigation bar start -->
   <nav class="navbar navbar-expand-sm navbar-light header bg-white">
@@ -31,7 +27,7 @@
     @endauth
       @guest
       <a class="navbar-brand nav-link pt-2 pb-2" href="{{ route('posts') }}" style="color:#1A5276;font-weight:bold;">Bulletin_Board</a>
-      <a class="ms-3 txtColor nav-link {{ request()->routeIs('posts') ? 'nav-active' : '' }}" href="{{ route('posts') }}">Posts</a>
+      <a class="ms-3 txtColor nav-link {{ request()->routeIs('posts','searchPost') ? 'nav-active' : '' }}" href="{{ route('posts') }}">Posts</a>
     @endguest
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
         <span class="navbar-toggler-icon"></span>
@@ -41,19 +37,19 @@
           @auth
         <li class="nav-item">
         @if(auth()->user()->type == 'admin')
-      <a href="{{ route('admin.userList') }}" class="txtColor link {{ request()->routeIs('admin.userList') ? 'nav-active' : '' }}">Users</a>
+      <a href="{{ route('admin.userList') }}" class="txtColor link {{ request()->routeIs('admin.userList','searchUser') ? 'nav-active' : '' }}">Users</a>
     @else
-    <a href="{{ route('user.userList') }}" class="txtColor link {{ request()->routeIs('user.userList') ? 'nav-active' : '' }}">Users</a>
+    <a href="{{ route('user.userList') }}" class="txtColor link {{ request()->routeIs('user.userList','searchUser') ? 'nav-active' : '' }}">Users</a>
   @endif
         </li>
       @endauth
-          @auth
+      @auth
         <li class="nav-item">
         @if(auth()->user()->type == 'admin')
-      <a href="{{ route('admin.postList') }}" class="ms-3 txtColor link {{ request()->routeIs('admin.postList') ? 'nav-active' : '' }}" >Posts</a>
-    @else
-    <a href="{{ route('user.postList') }}" class="ms-3 txtColor link {{ request()->routeIs('user.postList') ? 'nav-active' : '' }}">Posts</a>
-  @endif
+          <a href="{{ route('admin.postList') }}" class="ms-3 txtColor link {{ request()->routeIs('admin.postList','searchPost') ? 'nav-active' : '' }}" >Posts</a>
+        @else
+          <a href="{{ route('user.postList') }}" class="ms-3 txtColor link {{ request()->routeIs('user.postList','searchPost') ? 'nav-active' : '' }}">Posts</a>
+        @endif
         </li>
       @endauth
         </ul>
@@ -61,7 +57,7 @@
         @auth
       <form class="d-flex align-items-center">
         <a class="ms-3 txtColor nav-link {{ request()->routeIs('register') ? 'nav-active' : '' }}" href="{{ route('register') }}">Create User</a>
-        <a class="ms-3 txtColor profile-name nav-link {{ request()->routeIs('profile') ? 'nav-active' : '' }}" href="#">{{ auth()->user()->name }}</a>
+        <a class="ms-3 txtColor  {{ request()->routeIs('profile') ? 'nav-active' : ''}}">{{ auth()->user()->name }}</a>
         <div class="icon" style="width:27px;height:27px;margin-left:5px;">
         <img src="../{{auth()->user()->profile}}" class="profile-img" alt="Profile">
         </div>
@@ -108,79 +104,3 @@
       </div>
     </div>
   </footer>
-  <!-- Footer end -->
-  <!--<script>
-// Add active class to the current button (highlight it)
-
-  var header = document.getElementById("nav");
-var btns = header.getElementsByClassName("navbar-link");
-for (var i = 0; i < btns.length; i++) {
-  btns[i].addEventListener("click", function() {
-    
-  var current = document.getElementsByClassName("navbar-active");
-  current[0].className = current[0].className.replace(" navbar-active", "");
-  this.className += " navbar-active";
-
-  });
-
-}
-
-
-
-</script>-->
-<!--<script>
-document.addEventListener("DOMContentLoaded", function() {
-    var header = document.getElementsByClassName("navbar-link");
-    var btns = header.getElementsByClassName("nav");
-
-    for (var i = 0; i < btns.length; i++) {
-        btns[i].addEventListener("click", function() {
-            // Remove active class from current active element
-            var current = header.getElementsByClassName("navbar-active");
-            if (current.length > 0) {
-                current[0].classList.remove("navbar-active");
-            }
-            // Add active class to clicked element
-            this.classList.add(" navbar-active");
-        });
-    }
-});
-</script>-->
-<!--<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Add active class to the current button (highlight it)
-var header = document.getElementById("myDIV");
-var btns = document.getElementsByClassName("link");
-for (var i = 0; i < btns.length; i++) {
-  btns[i].addEventListener("click", function() {
-  var current = document.getElementsByClassName("active");
-  current[0].className = current[0].className.replace(" active", "");
-  this.className += " active";
-  });
-}
-});
-</script>-->
-<script>
-//document.addEventListener('DOMContentLoaded', function() {
-//    // Get the current path of the URL
-//    var currentPath = window.location.pathname;
-//
-//    // Find all navigation links
-//    //var navLinks = document.querySelectorAll('.nav-item a');
-//    var link=this.getElementsByClassName('link');
-//    // Loop through each navigation link
-//    //navLinks.forEach(function(link) {
-//        // Check if the link's href matches the current path
-//        if (link.getAttribute('href') === currentPath) {
-//            // Add 'active' class to the link
-//            link.classList.add('active');
-//        } else {
-//            // Remove 'active' class if it's not the current path
-//            link.classList.remove('active');
-//        }
-//    //});
-//});
-</script>
-</body>
-
-</html>

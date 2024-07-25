@@ -1,6 +1,5 @@
 <?php
 namespace App\Services;
-
 use App\Mail\SendMail;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
@@ -61,12 +60,10 @@ class AuthService
                         $user->save();
                         Session::flash('success', 'Sign up Successfully.');
                         return redirect()->route('login');
-                    //return $user;
                 } else {
                     return redirect()->back()->withErrors(['name' => 'The name has already been taken.'])->withInput();
                 }
             }
-
             if ($existingUserByEmail) {
                 if ($existingUserByEmail->deleted_at) {
                     $user = User::signUpExistingUser($request, $existingUserByEmail);
@@ -75,7 +72,6 @@ class AuthService
                     $user->save();
                     Session::flash('success', 'Sign up Successfully.');
                     return redirect()->route('login');
-                    //return $user;
                 } else {
                     return redirect()->back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
                 }
@@ -87,11 +83,8 @@ class AuthService
                 $user->save();
                 Session::flash('success', 'Sign up Successfully.');
                 return redirect()->route('login');
-                
             }
-        }        
-
-             
+        }   
             else {
                 $existingUserByEmail = User::userExistByEmail($request);
                 $existingUserByName = User::userExistByName($request);
@@ -103,7 +96,6 @@ class AuthService
                         $user->save();
                         Session::flash('success', 'Sign up Successfully.');
                         return redirect()->route('login');
-                        //return $user;
                     } else {
                         return redirect()->back()->withErrors(['name' => 'The name has already been taken.'])->withInput();
                     }
@@ -117,7 +109,6 @@ class AuthService
                         $user->save();
                         Session::flash('success', 'Sign up Successfully.');
                         return redirect()->route('login');
-                        //return $user;
                     } else {
                         return redirect()->back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
                     }
@@ -129,7 +120,6 @@ class AuthService
                         $user->save();
                         Session::flash('success', 'Sign up Successfully.');
                         return redirect()->route('login');
-                        //return $user;
                     }
             }
         
@@ -174,7 +164,7 @@ class AuthService
         $request->session()->put('reset_password_email', $request->email);
         $user = User::where('email', $request->email)->first();
         if (!$user) {
-            return $user;
+            return redirect()->back()->withInput()->with('error', 'Email not found')->withInput();
         }
         $name = $user->name;
         $token = Str::random(64);
@@ -184,8 +174,12 @@ class AuthService
             'email' => $request->email,
             'name' => $name,
         ];
-        Mail::to($request->email)->send(new SendMail($data));
-        return $user;
+        try {
+                Mail::to($request->email)->send(new SendMail($data));
+                return redirect()->back()->with('success', 'Email sent with password reset instructions.');
+        }  catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'No internet');
+        }
     }
     public function showResetPasswordForm(Request $request, $token)
     {

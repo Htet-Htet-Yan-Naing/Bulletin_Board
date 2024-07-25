@@ -70,7 +70,7 @@ class PostService
     }
     public function edit(string $id)
     {
-        $posts=Posts::findPost($id);
+        $posts = Posts::findPost($id);
         return $posts;
     }
     public function confirmEdit(Request $request, $id)
@@ -86,14 +86,14 @@ class PostService
             'description.max' => '255 characters is the maximum allowed'
         ]);
         $existingPost = Posts::postExist($request);
-        $existingPostBySameUser = Posts::postExistByTitle($request,$id);
-        if($existingPostBySameUser){
+        $existingPostBySameUser = Posts::postExistByTitle($request, $id);
+        if ($existingPostBySameUser) {
             $post = $request;
             $toggleStatus = $post->toggle_switch;
             $request->session()->flash('toggleStatus', $toggleStatus);
             return view('posts.edit_confirm_post', compact('post', 'toggleStatus'));
         }
-        if($existingPost){
+        if ($existingPost) {
             return redirect()->back()->withErrors(['title' => 'This title is already taken'])->withInput();
         }
         $post = $request;
@@ -103,7 +103,7 @@ class PostService
     }
     public function update(Request $request, string $id)
     {
-        $post=Posts::findPost($id);
+        $post = Posts::findPost($id);
         $toggleStatus = $request->session()->get('toggleStatus');
         $request->session()->put('toggleStatus', $toggleStatus);
         $toggleStatus = $request->toggleStatus;
@@ -112,7 +112,7 @@ class PostService
         } else {
             $post->status = 0;
         }
-        Posts::updatePost($post,$request);
+        Posts::updatePost($post, $request);
         $request->session()->flash('create', 'Post updated successfully!');
     }
     public function destroy(Request $request, $id)
@@ -128,13 +128,13 @@ class PostService
         if (auth()->user()->type == "admin") {
             $search = $request->input('search');
             if ($search) {
-                $posts = Posts::searchPost($request,$pageSize,$search);
+                $posts = Posts::searchPost($request, $pageSize, $search);
                 return new StreamedResponse(function () use ($posts) {
                     $handle = fopen('php://output', 'w');
-                    fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
+                    fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id', 'updated_user_id', 'deleted_user_id', 'deleted_at', 'created_at', 'updated_at']);
                     foreach ($posts as $post) {
                         $status = $post->status == 1 ? 'Active' : 'Inactive';
-                        fputcsv($handle, [$post->id, $post->title, $post->description,$status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
+                        fputcsv($handle, [$post->id, $post->title, $post->description, $status, $post->create_user_id, $post->updated_user_id, $post->deleted_user_id, $post->deleted_at, $post->created_at, $post->updated_at]);
                     }
                     fclose($handle);
                 }, 200, [
@@ -145,10 +145,10 @@ class PostService
             $posts = Posts::get();
             return new StreamedResponse(function () use ($posts) {
                 $handle = fopen('php://output', 'w');
-                fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
+                fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id', 'updated_user_id', 'deleted_user_id', 'deleted_at', 'created_at', 'updated_at']);
                 foreach ($posts as $post) {
                     $status = $post->status == 1 ? 'Active' : 'Inactive';
-                    fputcsv($handle, [$post->id, $post->title, $post->description,$status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
+                    fputcsv($handle, [$post->id, $post->title, $post->description, $status, $post->create_user_id, $post->updated_user_id, $post->deleted_user_id, $post->deleted_at, $post->created_at, $post->updated_at]);
                 }
                 fclose($handle);
             }, 200, [
@@ -158,28 +158,27 @@ class PostService
         } else {
             $search = $request->input('search');
             if ($search) {
-                $posts = Posts::searchPost($request,$pageSize,$search);
+                $posts = Posts::searchPost($request, $pageSize, $search);
                 return new StreamedResponse(function () use ($posts) {
                     $handle = fopen('php://output', 'w');
-                    fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
+                    fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id', 'updated_user_id', 'deleted_user_id', 'deleted_at', 'created_at', 'updated_at']);
                     foreach ($posts as $post) {
                         $status = $post->status == 1 ? 'Active' : 'Inactive';
-                        fputcsv($handle, [$post->id, $post->title, $post->description,$status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
+                        fputcsv($handle, [$post->id, $post->title, $post->description, $status, $post->create_user_id, $post->updated_user_id, $post->deleted_user_id, $post->deleted_at, $post->created_at, $post->updated_at]);
                     }
                     fclose($handle);
                 }, 200, [
                     'Content-Type' => 'text/csv',
                     'Content-Disposition' => 'attachment; filename="posts.csv"',
                 ]);
-
             }
             $posts = Posts::findByCreateUID();
             return new StreamedResponse(function () use ($posts) {
                 $handle = fopen('php://output', 'w');
-                fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id','updated_user_id','deleted_user_id','deleted_at', 'created_at','updated_at']);
+                fputcsv($handle, ['id', 'title', 'description', 'status', 'create_user_id', 'updated_user_id', 'deleted_user_id', 'deleted_at', 'created_at', 'updated_at']);
                 foreach ($posts as $post) {
                     $status = $post->status == 1 ? 'Active' : 'Inactive';
-                    fputcsv($handle, [$post->id, $post->title, $post->description,$status, $post->create_user_id,$post->updated_user_id, $post->deleted_user_id, $post->deleted_at,$post->created_at, $post->updated_at]);
+                    fputcsv($handle, [$post->id, $post->title, $post->description, $status, $post->create_user_id, $post->updated_user_id, $post->deleted_user_id, $post->deleted_at, $post->created_at, $post->updated_at]);
                 }
                 fclose($handle);
             }, 200, [
@@ -214,6 +213,9 @@ class PostService
             $csv = Reader::createFromPath($tempPath, 'r');
             $csv->setHeaderOffset(0);
             $records = $csv->getRecords();
+            if (iterator_count($records) === 0) {
+                return redirect()->back()->with('error', 'Your CSV file is empty!')->withInput();
+            }
             foreach ($records as $record) {
                 if (count($record) !== 3) {
                     DB::rollBack();
@@ -221,7 +223,7 @@ class PostService
                 }
                 $existingPost = Posts::where('title', $record['title'])->first();
                 if ($existingPost) {
-                   return redirect()->back()->with('error', 'Post title already exists:'. $record['title'])->withInput();
+                    return redirect()->back()->with('error', 'Post title already exists:' . $record['title'])->withInput();
 
                 }
             }

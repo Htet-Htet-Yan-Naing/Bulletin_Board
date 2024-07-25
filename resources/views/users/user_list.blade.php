@@ -1,12 +1,6 @@
 @extends('layouts.app')
 @section('title', 'User List')
 @section('contents') 
-<!--@if(Session::has('create'))
-  <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
-    {{ Session::get('create') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-@endif-->
 <div class="row d-flex justify-content-center align-items-center h-100 mb">
   <div class="col-md-12">
     <!-- User Search Container start -->
@@ -50,16 +44,13 @@
           <input class="form-control" type="date" name="end_date" value="{{ request('end_date') }}" style="border-radius: 8px;">
           @error('end_date')
         <div class="alert alert-danger mt-1 mb-0">{{ $message }}</div>
-      @enderror
+        @enderror
         </div>
         <!-- Search Button -->
         <div class="col-md-2 user-search-div">
           <button type="submit" class="btn btnColor user-search-btn" style="width:100%;">Search</button>
         </div>
       </form>
-
-
-
     </div>
     <!-- Search Row End -->
     <!-- User Search Contaienr end -->
@@ -88,11 +79,17 @@
       </div>
       </td>
       <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
-      <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email="{{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address="{{ $rs->address }}" data-created-at="{{ $rs->created_at }}" data-created-user="{{$rs->creator->name}}" data-updated-at="{{ $rs->updated_at }}" data-updated-user="{{$rs->updateBy->name}}" id="user-detail-link">{{ $rs->name }}
+      <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" data-id="{{ $rs->id }}" data-name="{{ $rs->name }}" data-type="{{ $rs->type }}" data-email="{{ $rs->email }}" data-phone="{{ $rs->phone }}" data-dob="{{ $rs->dob }}" data-address="{{ $rs->address }}" data-created-at="{{ $rs->created_at }}" data-updated-at="{{ $rs->updated_at }}" 
+      data-created-user="{{ $rs->creator && $rs->creator->name ? $rs->creator->name : 'USER DELETED' }}"
+      data-updated-user="{{ $rs->creator && $rs->creator->name ? $rs->creator->name : 'USER DELETED' }}"
+     id="user-detail-link">
+      {{$rs->name}}
       </a>
       </td>
       <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{$rs->email}}</td>
-      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">{{ $rs->creator->name }}</td>
+      <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
+      {{$rs->creator && $rs->creator->name ? $rs->creator->name : 'USER DELETED'}}
+      </td>
       <td class="align-middle" style="border-bottom:1px solid #EBEBEB;">
       {{ $rs->type}}
       </td>
@@ -284,14 +281,6 @@
       modalBodyDob.textContent = userDob == '' ? '-' : userDob;
       modalBodyAddress.textContent = userAddress == '' ? '-' : userAddress;
       modalBodyPhone.textContent = userPhone == '' ? '-' : userPhone;
-      //if(userDob==null)
-      //{
-      //  modalBodyDob.textContent = '-';
-      //}else{
-      //  modalBodyDob.textContent = userDob;
-      //}
-      //modalBodyDob.textContent = userDob;
-      //modalBodyAddress.textContent = userAddress;
       modalBodyCreatedAt.textContent = userCreatedAt;
       modalBodyUpdatedAt.textContent = userUpdatedAt;
       modalBodyCreatedUser.textContent = userCreated;

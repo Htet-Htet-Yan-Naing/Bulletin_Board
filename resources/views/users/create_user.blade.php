@@ -55,14 +55,11 @@
                                     <div>
                                         @if(auth()->user()->type == 'admin')
                                             <select name="type" id="type" class="form-select">
-                                                <!--<option value=" " {{ old('type') == ' ' ? 'selected' : '' }} selected>Select Type</option>-->
                                                 <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>User</option>
                                                 <option value="0" {{ old('type') == '0' ? 'selected' : '' }}>Admin</option>
-                                               
                                             </select>
                                         @elseif(auth()->user()->type == 'user')
-                                            <select name="type" id="type" class="form-select" disabled>
-                                                <!--<option value=" " {{ old('type') == ' ' ? 'selected' : '' }} selected>Select Type</option>-->
+                                            <select name="type" id="type" class="form-select">
                                                 <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>User</option>
                                             </select>
                                         @else

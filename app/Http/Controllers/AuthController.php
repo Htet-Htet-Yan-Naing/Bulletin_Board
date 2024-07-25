@@ -20,19 +20,6 @@ class AuthController extends Controller
     public function signupSave(Request $request)
     {
         return $this->authService->signupSave($request);
-        
-        //if ($user) {
-        //    if (!Auth::attempt($request->only('email', 'pw'))) {
-        //        return redirect()->back()->with('error', 'Incorrect password')->withInput();
-        //    }
-        //    if (auth()->user()->type == 'admin') {
-        //        return redirect()->route('admin.postList');
-        //    } else {
-        //        return redirect()->route('user.postList');
-        //    }
-        //} else {
-        //    return redirect()->back()->with('error', 'Email  does\'t exit.')->withInput();
-        //}
     }
 
     public function login()
@@ -52,9 +39,8 @@ class AuthController extends Controller
                 return redirect()->route('user.postList');
             }
         } else {
-            return redirect()->back()->with('error', 'Email  does\'t exit.')->withInput();
+            return redirect()->back()->with('error', 'Email  does\'t exist.')->withInput();
         }
-        //return redirect()->back()->withInput($request->only('email', 'remember'));
     }
 
     public function logout(Request $request)
@@ -77,12 +63,7 @@ class AuthController extends Controller
     }
     public function submitForgetPasswordForm(Request $request)
     {
-        $user = $this->authService->submitForgetPasswordForm($request);
-        if (!$user) {
-            return redirect()->back()->withInput()->with('error', 'Email not found')->withInput();
-        } else {
-            return redirect()->back()->with('success', 'Email sent with password reset instructions.');
-        }
+        return $this->authService->submitForgetPasswordForm($request);
     }
     public function showResetPasswordForm(Request $request, $token)
     {

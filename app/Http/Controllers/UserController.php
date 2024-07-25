@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Session;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-
+use App\Models\User;
 class UserController extends Controller
 {
     protected $userService;
@@ -17,6 +17,7 @@ class UserController extends Controller
     public function userListAdmin(UserService $userService)
     {
         $users = $this->userService->userListAdmin();
+      
         return view('users.user_list', compact('users'));
     }
 
@@ -81,12 +82,7 @@ class UserController extends Controller
 
     public function updateProfile(Request $request, string $id)
     {
-        $this->userService->updateProfile($request, $id);
-        if (auth()->user()->type == 'admin') {
-            return redirect()->route('admin.userList');
-        } else {
-            return redirect()->route('user.userList');
-        }
+        return $this->userService->updateProfile($request, $id);
     }
     public function searchUser(Request $request)
     {

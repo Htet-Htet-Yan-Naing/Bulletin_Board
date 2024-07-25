@@ -56,27 +56,9 @@
                             <div class="mb-3">
                                 <input type="password" class="form-control" placeholder="Confirm Password" value="{{$user->pw_confirmation}}" name="pw_confirmation" id="pw_confirmation" />
                             </div>
-                            <!--                            
-                            <div class="mb-3 row text-end">
-                        <div class="col-md-12">
-                            <button type="submit" class="btn btnColor col-sm-5">Register</button>
-                            <button type="reset" class="btn btn-secondary col-sm-5">Clear</button>
-                        </div>
-                    </div>-->
-
-
                         </div>
 
-                        <!-- Type to Address Column -->
                         <div class="col-md-4">
-                            <!-- Type -->
-                            <!--<div class="mb-3">
-                                <select name="type" id="type" class="form-select">
-                                    <option value="1" {{ $user->type == null ? 'selected' : '' }}>Select Type</option>
-                                    <option value="0" {{ $user->type == 0 ? 'selected' : '' }}>Admin</option>
-                                    <option value="1" {{ $user->type == 1 ? 'selected' : '' }}>User</option>
-                                </select>
-                            </div>-->
                             @auth
                                 <div class="mb-3">
                                     <div>
@@ -88,7 +70,7 @@
                                                 
                                             </select>
                                         @elseif(auth()->user()->type == 'user')
-                                            <select name="type" id="type" class="form-select" disabled>
+                                            <select name="type" id="type" class="form-select">
                                                 <option value="1" {{ $user->type == 1 ? 'selected' : '' }}>User</option>
                                             </select>
                                         @else

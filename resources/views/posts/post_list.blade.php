@@ -176,6 +176,7 @@
   </div>
 </div>
 <!-- Delete Confirmation Modal end-->
+
 <!-- Post Detail Modal start-->
 <div class="modal fade" id="postDetailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
   <div class="modal-dialog">
