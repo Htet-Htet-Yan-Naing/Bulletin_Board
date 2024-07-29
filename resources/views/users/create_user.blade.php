@@ -99,7 +99,7 @@
                     <!-- Button -->
                     <div class="mb-3 row">
                         <div class="col-md-12">
-                            <button type="submit" class="btn btnColor col-sm-2">Register</button>
+                            <button type="submit" class="btn btnColor col-sm-2" id="register">Register</button>
                             <button type="reset" class="btn btn-secondary col-sm-2">Clear</button>
                         </div>
                     </div>

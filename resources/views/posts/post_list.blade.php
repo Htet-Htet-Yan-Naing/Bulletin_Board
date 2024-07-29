@@ -58,7 +58,7 @@
   <!-- Upload -->
   <form action="{{ route('posts.upload')}}" method="get" class="d-inline">
     @csrf
-    <button type="submit" class="btn btnColor">Upload</button>
+    <button type="submit" class="btn btnColor" id="upload-btn">Upload</button>
   </form>
   <!-- Upload -->
 
