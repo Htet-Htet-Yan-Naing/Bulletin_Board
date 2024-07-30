@@ -7,8 +7,8 @@ Scenario('Register', ({ I }) => {
   I.seeInCurrentUrl('/adminPostList');
   I.click('#createUser'); 
   I.seeInCurrentUrl('http://localhost:8000/register'); 
-  I.fillField('input[name="name"]', 'Htet Htet Yan Naing'); 
-  I.fillField('input[name="email"]', 'htethtetyannaing@gmail.com'); 
+  I.fillField('input[name="name"]', 'Htet Htet'); 
+  I.fillField('input[name="email"]', 'htethtetyannaing33@gmail.com'); 
   I.fillField('input[name="pw"]', 'password123'); 
   I.fillField('input[name="pw_confirmation"]', 'password123'); 
   I.attachFile('input[name="profile"]', 'image/profile.png'); 
