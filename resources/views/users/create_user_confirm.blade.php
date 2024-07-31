@@ -102,7 +102,7 @@
                             </div>
 
                             <div class="d-flex">
-                                <button type="submit" class="btnColor col-sm-5" style="border:none;border-radius:5px;border:1px solid #1a5276;">Confirm</button>
+                                <button type="submit" class="btnColor col-sm-5" style="border:none;border-radius:5px;border:1px solid #1a5276;" id="confirm">Confirm</button>
                                 <button type="reset" class="btn btnColor btn-secondary col-sm-5 ms-2" onclick="window.history.back();">Cancel</button>
                             </div>
 

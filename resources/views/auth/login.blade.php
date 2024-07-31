@@ -86,7 +86,7 @@
             <!-- Submit button -->
             <div class="mb-3 mt-3 row justify-content-center align-items-center">
               <div class="col-md-2"></div>
-              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-md-8" onclick="lsRememberMe()">Log In</button>
+              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btnColor btn-block col-md-8" onclick="lsRememberMe()" id="login">Log In</button>
             </div>
 
             <!-- Register buttons -->

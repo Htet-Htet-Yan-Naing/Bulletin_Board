@@ -56,7 +56,7 @@
         <!-- Displayed if the user is authenticated start-->
         @auth
       <form class="d-flex align-items-center">
-        <a class="ms-3 txtColor nav-link {{ request()->routeIs('register') ? 'nav-active' : '' }}" href="{{ route('register') }}">Create User</a>
+        <a class="ms-3 txtColor nav-link {{ request()->routeIs('register') ? 'nav-active' : '' }}" href="{{ route('register') }}" id="createUser">Create User</a>
         <a class="ms-3 txtColor  {{ request()->routeIs('profile') ? 'nav-active' : ''}}">{{ auth()->user()->name }}</a>
         <div class="icon" style="width:27px;height:27px;margin-left:5px;">
         <img src="../{{auth()->user()->profile}}" class="profile-img" alt="Profile">

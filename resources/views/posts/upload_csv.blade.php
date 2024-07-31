@@ -60,7 +60,7 @@
                 <!-- Button -->
                 <div class="row d-flex justify-content-center align-content-center">
                   <div class="col-sm-6">
-                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-4">Upload</button>
+                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-block col-sm-4" id="upload">Upload</button>
                     <button type="reset" data-mdb-button-init data-mdb-ripple-init class="btn btn-secondary btn-block col-sm-4">Clear</button>
                   </div>
                 </div>
